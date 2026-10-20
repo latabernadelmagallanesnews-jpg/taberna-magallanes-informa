@@ -1,0 +1,29 @@
+{
+  "name": "la-taberna-del-magallanes-news",
+  "version": "1.0.0",
+  "private": true,
+  "description": "La Taberna del Magallanes News · portal editorial estático con CMS estilo Word, alojado en Firebase Hosting y publicable en GitHub Pages.",
+  "author": "Luis Enrique Aponte Guzmán",
+  "license": "UNLICENSED",
+  "scripts": {
+    "servidor": "node scripts/servidor-local.js",
+    "start": "node scripts/servidor-local.js",
+    "parche": "node scripts/aplicar-editor-word.js",
+    "paginas": "node scripts/aplicar-rico-paginas.js",
+    "data": "node scripts/generar-data-json.js",
+    "sintaxis": "node scripts/verificar-sintaxis.js index.html publicar/index.html",
+    "verificar": "node scripts/verificar-portal.js",
+    "build": "npm run parche && npm run paginas && npm run data && npm run sintaxis && npm run verificar",
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "deploy:todo": "npm run build && firebase deploy",
+    "firebase:login": "firebase login",
+    "firebase:use": "firebase use la-taberna-del-magallanes-news",
+    "firebase:sitios": "firebase hosting:sites:list"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

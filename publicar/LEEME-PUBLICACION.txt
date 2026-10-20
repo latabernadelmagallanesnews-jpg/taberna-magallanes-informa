@@ -1,0 +1,422 @@
+=======================================================================
+  LA TABERNA DEL MAGALLANES NEWS  ·  GUÍA DE PUBLICACIÓN
+=======================================================================
+
+QUÉ HAY EN ESTA CARPETA
+  · index.html ............ EL PORTAL COMPLETO (módulos, CMS, VIP, El Paredón).
+                            Es el archivo imprescindible.
+  · redaccion-cms.html .... puerta privada del equipo: abre el portal en modo
+                            redacción y pide la clave.
+  · buscador.html ......... buscador general del diario.
+  · cronica.html .......... muro de crónicas sabermétricas (lectura larga).
+  · roster.html ........... roster filtrable + tabla de posiciones.
+  · vip.html .............. registro del Círculo VIP (lleva al WhatsApp del
+                            director y desbloquea la Cabina).
+  · 404.html .............. página de error (GitHub Pages la usa sola).
+  · data.json ............. contenido en texto plano para esas cuatro páginas.
+  · rico.js ............... lector de contenido con formato (lo usan el buscador,
+                            las crónicas, el roster y el VIP para mostrar los
+                            textos con el formato del editor Word).
+  · robots.txt ............ permiso para buscadores (opcional, recomendado)
+  · .nojekyll ............. necesario en GitHub Pages (evita que filtre archivos)
+  · README.md ............. instrucciones para GitHub Pages
+  · LEEME-PUBLICACION.txt  esta guía
+
+No necesita instalación, base de datos ni servidor especial: cualquier hosting,
+incluso el plan más básico, sirve estos archivos tal cual. También funciona en
+el móvil (diseño adaptativo) y en PC.
+
+Suba TODOS los archivos a la misma carpeta (en la raíz del repositorio, no
+dentro de una subcarpeta) para que los enlaces entre páginas funcionen.
+
+
+-----------------------------------------------------------------------
+0) NOVEDAD: EL ÁREA DE TRABAJO ESTILO WORD
+-----------------------------------------------------------------------
+Dentro del CMS, los textos largos (titulares, cuerpos de crónica, entradillas,
+descripciones, notas, citas, beneficios del Círculo VIP, etc.) se escriben
+ahora en un EDITOR CON FORMATO, igual que en Microsoft Word:
+
+  · Negrita, cursiva, subrayado y tachado
+  · Títulos 2/3/4 y citas
+  · Alineación a izquierda, centro, derecha y justificado
+  · Listas con viñetas y numeradas
+  · Color del texto, enlaces e imágenes
+  · Contador de palabras, vista previa y modo texto simple
+
+El portal se actualiza mientras usted escribe, y lo que se publica conserva
+ese formato. Los textos del sistema (metaetiquetas de SEO, avisos, mensajes
+automáticos de WhatsApp y comentarios de los lectores) siguen siendo texto
+plano, a propósito.
+
+
+-----------------------------------------------------------------------
+1) PUBLICAR PASO A PASO (cualquier hosting)
+-----------------------------------------------------------------------
+a) Entre al panel de su hosting (Hostinger, cPanel, Plesk, etc.).
+b) Abra el "Administrador de archivos" y entre a la carpeta pública:
+      · public_html        (lo más común en cPanel/Hostinger)
+      · httpdocs / www / htdocs   (según el hosting)
+c) Suba el archivo index.html (y robots.txt) a ESA carpeta.
+   Si ya existe un index.html anterior: sobrescríbalo (reemplazar).
+d) Abra su dominio en el navegador. ¡Listo!
+   Debe verse igual que al pulsar "👁️ Ver portada" dentro del CMS.
+
+Si el hosting trae "Constructor de sitios" o WordPress instalado de fábrica,
+no lo use: suba el archivo por el administrador de archivos y borre el
+index.php / index.html de ejemplo para que no tape el suyo.
+
+
+-----------------------------------------------------------------------
+2) PUBLICAR GRATIS EN GITHUB PAGES (recomendado)
+-----------------------------------------------------------------------
+1. Cree una cuenta en https://github.com y verifique su correo.2. Pulse "New repository": nombre  taberna-magallanes  ·  Visibility Public
+   ·  marque "Add a README file"  ·  Create repository.
+3. En el repositorio: Add file → Upload files. Arrastre TODOS los archivos
+   (index.html, redaccion-cms.html, buscador.html, cronica.html, roster.html,
+   vip.html, 404.html, data.json, rico.js, robots.txt y .nojekyll).
+   Escriba un mensaje y pulse Commit changes.
+   IMPORTANTE: los archivos deben quedar en la RAÍZ del repositorio.
+4. Settings → Pages → Source: "Deploy from a branch" → Branch: main → / (root)
+   → Save.
+5. Espere 1–2 minutos. Su dirección será:
+      https://SU-USUARIO.github.io/taberna-magallanes/
+   (el nombre del repositorio en minúsculas).
+
+Actualizar el contenido: Upload files otra vez y sobrescriba index.html
+(Commit changes). Luego abra su enlace con Ctrl+F5.
+
+Límites de GitHub Pages: archivos de hasta 100 MB y repositorio de 1 GB.
+Si incrusta muchos audios/videos, súbalos por enlace (YouTube/Drive) para
+aligerar el archivo.
+
+
+-----------------------------------------------------------------------
+2-B) PUBLICAR EN FIREBASE HOSTING (una sola orden)
+-----------------------------------------------------------------------
+Si su repositorio incluye el archivo firebase.json (con "public": "publicar"),
+la publicación completa se hace desde la terminal del repositorio:
+
+  1. Instale la herramienta (una sola vez):
+         npm install -g firebase-tools
+  2. Entre con su cuenta de Google (la del proyecto Firebase):
+         firebase login
+  3. Elija el proyecto:
+         firebase use la-taberna-del-magallanes-news
+  4. Publique:
+         firebase deploy --only hosting
+
+  Si la consola dice que el proyecto no tiene Hosting, activeselo en:
+  https://console.firebase.google.com/u/1/project/la-taberna-del-magallanes-news/overview
+  (menú de la izquierda -> Build -> Hosting -> Get started) y repita el paso 4.
+
+  El portal queda en:
+      https://la-taberna-del-magallanes-news.web.app
+
+  Para usar su propio dominio: consola de Firebase -> Hosting -> Añadir
+  dominio personalizado. El portal detecta solo la dirección real del sitio.
+
+
+-----------------------------------------------------------------------
+3) ALTERNATIVAS GRATUITAS (arrastrar y soltar)
+-----------------------------------------------------------------------
+· Netlify Drop ......... https://app.netlify.com/drop
+     Arrastre el archivo .zip (o la carpeta "publicar") y le da un enlace
+     HTTPS al instante. Puede conectar después su dominio propio.
+· Cloudflare Pages ..... https://pages.cloudflare.com   (subida directa)
+· Vercel ............... https://vercel.com/new         (arrastre la carpeta)
+
+Las tres son gratuitas, dan HTTPS y admiten dominio propio.
+
+
+-----------------------------------------------------------------------
+4) MUY IMPORTANTE · CÓMO LLEGAN SUS EDICIONES A LOS VISITANTES
+-----------------------------------------------------------------------
+El CMS guarda sus cambios en el navegador donde edita (IndexedDB/localStorage)
+para que pueda trabajar cómodo y sin perder nada. Eso NO viaja por internet:
+lo que ven los visitantes es lo que está DENTRO del archivo index.html.
+
+Para publicar sus ediciones (textos, fotos, audios, videos, PDF, tabla de
+posiciones, roster, flyers, publicaciones incrustadas de redes sociales...):
+
+  1. Abra su index.html e ingrese al CMS.
+  2. Edite todo con tranquilidad (se guarda solo).
+  3. Pulse  🚀 Descargar HTML publicado   (barra superior del CMS).
+  4. Se descarga un index.html NUEVO, con TODO su contenido dentro.
+  5. Suba ese index.html al hosting, sobrescribiendo el anterior.
+  6. Recargue su dominio con Ctrl+F5. Sus visitantes ya ven los cambios.
+
+Hágalo cada vez que termine una tanda de cambios. El archivo pesa más si
+incrusta fotos y audios: para aligerarlo, suba los videos por enlace
+(YouTube / Google Drive) en lugar de incrustarlos.
+
+
+-----------------------------------------------------------------------
+5) CLAVES DE ACCESO (CMS PRIVADO)
+-----------------------------------------------------------------------
+Las claves se guardan cifradas (SHA-256) dentro del propio index.html y NO
+aparecen escritas en ninguna parte. El Director recibe su clave en privado y
+puede cambiarla cuando quiera.
+
+AUTORIZAR A UN PERIODISTA (solo el Director):
+     1. CMS → Seguridad & Accesos → "👥 Periodistas autorizados".
+     2. Escriba el nombre, invente su CÓDIGO PERSONAL (mínimo 6 caracteres)
+        y pulse "✅ Autorizar periodista".
+     3. Entréguele el código EN PRIVADO (WhatsApp personal, no en un grupo).
+     4. Pulse "🚀 Descargar HTML publicado" y súbalo al hosting: desde ese
+        momento el código funciona en el sitio público.
+     5. Para retirar el acceso: "Revocar" (puede reactivarlo) o "Quitar", y
+        vuelva a publicar el HTML.
+
+Modo seguro 🔐: si lo activa, solo entran su clave de Director y los códigos
+personales de la lista (se desactiva la clave genérica de periodista).
+
+Si olvida su clave:
+     · botón 🆘 del modal de acceso (restaura las claves de acceso originales)
+     · botón ♻️ (reinicia el contenido y vuelve a la plantilla)
+
+CÓMO ENTRAR AL CMS (los lectores no ven ninguna puerta)
+
+En resumen, así funciona la seguridad:
+
+  · SU COPIA DE TRABAJO (el archivo index.html que tiene en su computadora y el
+    "redaccion.html" que puede subir a una carpeta protegida) SÍ muestra la
+    puerta "🔒 Acceso Redacción" abajo a la derecha y en el pie de página.
+    Un clic + su clave y está dentro. Nadie más ve esta copia.
+
+  · EL HTML PUBLICADO (el que genera el botón "🚀 Descargar HTML publicado" y el
+    que viene dentro del ZIP) SALE SIN NINGUNA PUERTA: los lectores ven el
+    periódico normal y no ven ningún botón, panel ni rastro del CMS.
+
+  · LOS DISPOSITIVOS DE LA REDACCIÓN que ya introdujeron su clave quedan
+    AUTORIZADOS Y RECORDADOS hasta 180 días: ven "⚙️ Abrir CMS" y no les vuelve
+    a pedir la clave. Para desautorizar un dispositivo:
+    CMS → Seguridad → "🚪 Cerrar sesión".
+
+ENTRAR LA PRIMERA VEZ EN UN DISPOSITIVO NUEVO (elija la más cómoda):
+     1) Vaya a la página del periódico y escriba  ?cms=1  al final de la
+        dirección y pulse Enter.  Ejemplo:  https://su-sitio.com/?cms=1
+        ► RECOMENDADO: guarde esa dirección en FAVORITOS. Un clic y está
+          dentro; nadie más la ve.
+     2) Escriba  #sala-de-redaccion  al final de la dirección.
+     3) Teclado:  Ctrl + Alt + M
+     4) Toque 5 VECES SEGUIDAS el título "La Taberna del Magallanes News".
+
+TIENE UN ATAJO LISTO PARA USTED:
+     El archivo  ENTRAR-AL-CMS.html  (viene en la carpeta del proyecto).
+     Guárdelo en el escritorio junto al index.html y haga doble clic: abre el
+     portal y le pide la clave automáticamente.
+     ⚠️ NO lo suba al hosting ni lo meta en el ZIP: es su llave personal.
+
+¿Quiere que los lectores SÍ vean el botón "🔒 Acceso Redacción" (pidiendo clave)?
+     CMS → Seguridad → marque
+     "Mantener las puertas de acceso también en el HTML publicado".
+     (No lo recomendamos; por defecto viene desmarcado.)
+
+NOTA DE SEGURIDAD HONESTA (importante, léala):
+El portal es un archivo estático, por eso la clave protege el PANEL DE EDICIÓN,
+pero no puede impedir que alguien curioso lea el código fuente de la página.
+Ahora bien, lo que un lector NUNCA puede hacer es cambiar lo que ven los demás:
+sus ediciones solo llegan al público cuando usted descarga el HTML publicado y
+lo sube al hosting con la contraseña de su hosting.
+Para blindaje total (solo usted y sus periodistas), suba su copia de trabajo
+(con CMS) a una CARPETA PROTEGIDA CON CONTRASEÑA del servidor y deje en la raíz
+pública únicamente el index.html ya publicado, que es el que ve el público:
+
+     /public_html/index.html .......... el portal que ve el público
+     /public_html/redaccion/index.html  su copia de trabajo (protegida con
+                                        contraseña desde su hosting)
+
+Para los PERIODISTAS: entran con su CÓDIGO PERSONAL (no la clave del Director)
+desde su propio dispositivo; quedan autorizados y pueden editar todos los
+módulos, subir archivos y preparar notas. Los códigos los crea y revoca el
+Director desde CMS → Seguridad & Accesos → "👥 Periodistas autorizados".
+
+RECUERDE: las ediciones se guardan en el navegador donde las hace. Lo que ve el
+público solo cambia cuando se PUBLICA: o sea, cuando alguien con la contraseña
+del hosting sube el HTML publicado. Si su equipo edita en varios dispositivos,
+cada uno trabaja su parte y es el Director quien reúne y publica.
+
+⚠️ No comparta la dirección de la copia de trabajo por redes sociales y cambie
+las claves de fábrica la primera vez que entre.
+
+NOTA: en un navegador nuevo o en otro teléfono, el CMS arranca con la
+plantilla y las claves de fábrica, hasta que usted suba su propio archivo
+publicado (paso 4 de la sección anterior).
+
+
+-----------------------------------------------------------------------
+6) EL CMS CONTROLA TODO EL PORTAL (31 paneles)
+-----------------------------------------------------------------------
+01 Cabecera · 02 Ticker / pizarra de resultados · 03 WhatsApp (canal + grupo
+general) · 04 Publicidad tier 1 · 05 Hero · 06 Crónicas (muro tipo carrusel:
+foto destacada + entrada + botón "Leer más", que despliega la nota en su
+tarjeta) ·
+07 Cabina Statcast ·
+08 Heatmap (zonas + fotografías y flyers) · 09 Tabla de Posiciones ·
+10 Roster del Equipo · 11 Carruseles publicitarios · 12 Hilos informativos
+(jugada a jugada) · 13 Multimedia y redes sociales (publicaciones incrustadas)
+· 14 Publicidad tier 2 · 15 Footer · 16 Playlist / Radio · 17 Círculo VIP ·
+18 El Paredón del Fanático · 19 Contenido patrocinado nativo ·
+20 Chat del Fanático · 21 Historias (estilo Instagram) ·
+Centro multimedia de los 21 módulos · Seguridad · SEO y Open Graph ·
+Galerías multimedia de cada módulo · Flyers de la Cabina ·
+Comentarios (moderación) · QRs socios y más.
+
+TODOS los módulos aceptan carga de archivos multimedia (imagen, MP3/audio,
+video, PDF) desde PC o teléfono: botón 📁 Subir, arrastrar y soltar, o pegar
+un enlace (Drive, Dropbox, OneDrive, YouTube, Vimeo).
+
+CADA MÓDULO tiene además su barra para TODOS los lectores (con o sin cuenta):
+     📖 Ficha · 💬 Comentar (n) · 🔗 Compartir · 📱 QR · reacciones con emojis
+El lector escribe su comentario ahí mismo (con filtro de respeto) y comparte
+en SUS redes: WhatsApp, Facebook, X, Telegram, LinkedIn, correo, copiar el
+enlace o el menú nativo del teléfono. El botón 📱 QR abre una tarjeta estilo
+Instagram con el código real del contenido para que otro lo escanee con la
+cámara. La ficha completa (imagen destacada, texto y emojis) sigue disponible
+con 📖. Todo lo que se comparte sale con su imagen destacada.
+
+MÓDULO 20 · CHAT DEL FANÁTICO: botón flotante (abajo a la izquierda) con chat
+moderado. En el CMS usted decide: mostrar el botón, ✅ AUTORIZAR el chat,
+abrirlo solo durante la transmisión en vivo o forzar "🔴 EN VIVO ahora".
+Mientras no esté autorizado, el lector ve el aviso y el enlace al grupo
+general de WhatsApp. Los mensajes aceptan foto, nota de voz, video o PDF y
+tienen me gusta, compartir, aprobación y borrado para el equipo.
+
+MÓDULO 21 · HISTORIAS: tira circular con anillo de color (estilo Instagram),
+visor a pantalla completa con barras de progreso, flechas, teclado y swipe.
+Cada historia tiene ❤️, 💬 comentarios, 🔗 compartir y 📱 QR. Se publican en
+la portada, en la sección EN VIVO y junto a El Paredón. Para crear una:
+CMS → 21 Historias → añada la historia, suba imagen o video (o escriba solo
+texto) y elija el tipo. También hay un botón "➕ Nueva historia" en el Centro
+multimedia y en la propia tira (solo para el equipo).
+
+MÓDULO 13 · MULTIMEDIA Y REDES SOCIALES: pegue el enlace de YouTube,
+Instagram, X (Twitter), TikTok, Facebook, Vimeo o Spotify y el portal arma
+la tarjeta incrustada (video/post) automáticamente; también puede subir
+imágenes y videos propios. Trae su caja de comentarios, emojis y compartir.
+
+MÓDULO 08 · HEATMAP: además de las 9 zonas, admite fotografías y flyers
+(dos carruseles que rotan cada 5 segundos) con ficha, comentarios y compartir.
+
+MÓDULO 12 · HILOS INFORMATIVOS: transmisión jugada a jugada con comentarios
+cortos, reacciones por jugada, compartir y carga multimodal en cada jugada.
+
+PIZARRA, TABLA Y ROSTER: además del CMS, con la sesión iniciada puede editar
+directamente sobre la portada: toque un marcador, una celda de la tabla o el
+nombre de un jugador y escriba (Enter guarda, Esc cancela). La tabla se ordena
+al tocar las columnas y tiene buscador; el roster tiene filtros por grupo,
+buscador, foto por jugador y ficha desplegable; la pizarra permite añadir
+partidos con ➕.
+
+
+-----------------------------------------------------------------------
+7) CÍRCULO VIP · SUSCRIPTORES, EL PAREDÓN Y LOS DOS GRUPOS DE WHATSAPP
+-----------------------------------------------------------------------
+· La Cabina VIP (módulo 07), el Heatmap (08) y la Radio/Playlist (16) están
+  protegidos: SOLO los suscriptores registrados en el formulario los ven.
+· El visitante ve el aviso "Contenido Exclusivo para Miembros del Círculo VIP"
+  con el botón de inscripción; al completar el formulario se desbloquea al
+  instante y se guarda en el navegador del suscriptor.
+· Si ya se inscribió antes, puede entrar con el correo registrado.
+· Al registrarse, el portal abre automáticamente el WhatsApp de la Dirección
+  con el mensaje de confirmación (editable en el CMS).
+· Configure el número en el CMS → Círculo VIP → panel 17 / WhatsApp:
+      "Número de la Dirección (ej. 584120000000)"
+  Si lo deja vacío se usa el enlace del pie de página (footer.waUrl).
+· Botón "salir del modo socio" para volver al estado de visitante.
+
+DESPUÉS DE REGISTRARSE, ¿A QUÉ GRUPO ENTRA?
+  El portal maneja DOS grupos distintos (CMS → panel 17 · Círculo VIP):
+
+   · GRUPO GENERAL (abierto a cualquiera): se configura en el panel
+     "Módulo 03 · WhatsApp" con el campo
+     "Enlace del GRUPO GENERAL abierto (https://chat.whatsapp.com/...)".
+     Su enlace aparece en el banner superior, en la franja de El Paredón, en el
+     módulo VIP y en el pie de página.
+
+   · GRUPO VIP PRIVADO (solo suscriptores): se configura en el panel
+     "Módulo 17 · Círculo VIP" con el campo
+     "Enlace del GRUPO VIP PRIVADO (solo suscriptores)".
+     Solo se revela DESPUÉS de completar el registro (en vip.html o en el
+     formulario del portal) y el enlace nunca aparece a los lectores.
+
+  En el panel 17 elija cómo quiere recibir a los socios:
+     · "Al grupo y al número" ...... muestra el grupo y su WhatsApp personal
+     · "Solo al grupo privado" ..... solo el enlace del grupo
+     · "Solo al teléfono personal" . usted invita al grupo personalmente
+  ► En WhatsApp active "Aprobar nuevos participantes" en el grupo VIP: así
+    usted decide quién entra. Para máxima privacidad use "Solo al teléfono
+    personal".
+
+
+MÓDULO 18 · EL PAREDÓN DEL FANÁTICO (el muro de la afición)
+  La sección donde los fanáticos escriben sus opiniones, recuerdos y
+  pronósticos. Viene con:
+   · Filtro automático de groserías e improperios: bloquea el mensaje antes de
+     publicarlo, incluso con mayúsculas, acentos, números (m1erda) o letras
+     repetidas (miiierda). Puede añadir sus propias palabras prohibidas en el
+     CMS (panel 18 → "Palabras y frases prohibidas").
+   · Nombre o apodo, mensaje con emojis rápidos y contador de caracteres.
+   · Reacciones con emojis, compartir por WhatsApp y bloqueo de mensajes
+     repetidos.
+   · MODERACIÓN PREVIA (opcional): active "Revisar los mensajes antes de
+     publicarlos" y los mensajes nuevos quedan con la marca ⏳ en revisión:
+     solo se ven cuando usted pulse "✅ Publicar" en el CMS. También puede
+     retirar cualquier mensaje con el botón 🗑️.
+   · El aviso de respeto ("aquí se opina con respeto") es editable, y el texto
+     del botón, el título, la descripción y el máximo de caracteres también.
+
+
+-----------------------------------------------------------------------
+9) QUÉ NECESITA INTERNET
+-----------------------------------------------------------------------
+· Las tipografías (Google Fonts) y las imágenes de ejemplo (Unsplash) se
+  cargan por internet: con el sitio subido se ven correctamente.
+· Los videos incrustados de YouTube/Instagram/TikTok necesitan internet.
+· Si reemplaza esas imágenes por archivos subidos con el CMS, quedan
+  incrustados dentro del propio archivo y ya no dependen de nadie.
+
+
+-----------------------------------------------------------------------
+10) SOLUCIÓN RÁPIDA DE PROBLEMAS
+-----------------------------------------------------------------------
+· "Veo la versión vieja"
+      → Ctrl+F5 (o ábrala en una ventana de incógnito) para limpiar la caché.
+· "Subí el archivo y aparece la página del hosting"
+      → el archivo debe llamarse exactamente index.html y estar en la carpeta
+        pública raíz (public_html), no dentro de una subcarpeta. En GitHub
+        Pages, en la raíz del repositorio.
+· "No veo mis cambios desde el móvil"
+      → falta publicar: pulse 🚀 Descargar HTML publicado y suba ese archivo.
+· "Se perdieron mis ediciones"
+      → el CMS guarda por navegador. Use ⬇️ Exportar respaldo para guardar un
+        .json y ⬆️ Importar respaldo para restaurarlo en otro equipo.
+· "El archivo es muy pesado al subirlo"
+      → exporte el respaldo, reemplace los audios/videos incrustados por
+        enlaces de Drive/YouTube y vuelva a publicar.
+· "Un video incrustado no aparece"
+      → verifique que la publicación sea pública y que el enlace sea el de
+        "compartir" de la red social (YouTube, Instagram, X, TikTok, Facebook,
+        Vimeo o Spotify). Como respaldo puede asignarle una imagen.
+· "El Paredón no me deja publicar mi mensaje"
+      → el filtro detectó una grosería o improperio. Es intencional: El Paredón
+        es de respeto. Si la palabra es legítima, quítela de la lista en
+        CMS → panel 18 → "Palabras y frases prohibidas".
+· "Buscador, Crónicas o Roster dicen que no pudieron leer data.json"
+      → esas páginas necesitan estar en un servidor (GitHub Pages o cualquier
+        hosting), no abrirse con doble clic desde el escritorio. Verifique
+        además que data.json se subió a la misma carpeta que index.html.
+· "Quiero actualizar buscador/crónicas/roster con mis cambios"
+      → esas cuatro pantallas leen data.json (el contenido que trae el paquete).
+        Si cambia mucho el contenido del portal, data.json se vuelve a generar
+        a partir de su respaldo del CMS (⬇️ Exportar respaldo) y se sube al
+        hosting junto al nuevo index.html. Mientras no lo regenere, esas
+        pantallas siguen mostrando el contenido original del paquete; la
+        portada (index.html) siempre muestra lo último que usted publicó.
+· "¿Dónde van los banners publicitarios?"
+      → 4 espacios: Tier 1 arriba (04), patrocinado nativo tras la portada
+        (19), Tier 2 al centro (14) y los carruseles de flyers antes del pie
+        (11). Ninguno tapa el texto. Se encienden/apagan en el CMS.
+
+=======================================================================

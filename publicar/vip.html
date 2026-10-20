@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Círculo VIP | La Taberna del Magallanes News</title>
+<meta name="description" content="Registro de la membresía VIP: Cabina Statcast, scouting y grupo privado de WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=EB+Garamond:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --marino: #0b2240; --oro: #c59b27; --tinta: #1f2937; --gris: #4a5568; --linea: #e2ded9; --papel: #fbfaf9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: var(--tinta); font-family: Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  a { color: var(--marino); }
+  .cab { border-bottom: 3px solid var(--marino); background: #ffffff; }
+  .cab-in { max-width: 1080px; margin: 0 auto; padding: 12px 18px 0; }
+  .cab-marca { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cab-marca a.nombre { font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; font-weight: 900; color: var(--marino); text-decoration: none; letter-spacing: -0.02em; }
+  .cab-marca a.nombre.tip-nyt { font-family: 'UnifrakturMaguntia', 'Playfair Display', Georgia, serif; font-weight: 400; letter-spacing: 0.01em; }
+  .cab-marca a.nombre.tip-playfair { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; }
+  .cab-marca a.nombre.tip-baskerville { font-family: 'Libre Baskerville', Georgia, serif; font-weight: 700; }
+  .cab-marca a.nombre.tip-garamond { font-family: 'EB Garamond', Georgia, serif; font-weight: 800; }
+  .cab-marca a.nombre.tip-times { font-family: 'Times New Roman', Times, Georgia, serif; font-weight: 700; }
+  .cab-marca a.nombre.tip-moderna { font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-weight: 900; }
+  .cab-marca a.nombre img { display: block; max-width: 100%; }
+  .cab-lema { font-size: 0.68rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; padding: 10px 0 8px; border-top: 1px solid var(--linea); margin-top: 10px; }
+  .nav a { font-size: 0.76rem; font-weight: 700; text-decoration: none; color: var(--marino); padding: 6px 10px; border-radius: 20px; }
+  .nav a:hover { background: var(--papel); color: var(--oro); }
+  main { max-width: 1080px; margin: 0 auto; padding: 26px 18px 60px; }
+  h1.titulo { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.7rem, 4.4vw, 2.5rem); font-weight: 900; color: var(--marino); margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sello { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: var(--oro); }
+  .intro { font-size: 0.9rem; color: var(--gris); line-height: 1.65; max-width: 780px; margin: 0 0 22px; }
+  .regla { border: 0; border-top: 1px solid var(--linea); margin: 22px 0; }
+  .rejilla { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .tarjeta { border: 1px solid var(--linea); border-radius: 12px; padding: 16px; background: #ffffff; box-shadow: 0 2px 10px rgba(11,34,64,0.04); display: flex; flex-direction: column; gap: 8px; }
+  .tarjeta h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.12rem; color: var(--marino); margin: 0; line-height: 1.3; }
+  .tarjeta p { font-size: 0.84rem; color: var(--gris); line-height: 1.6; margin: 0; }
+  .etiqueta { display: inline-block; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oro); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip { border: 1px solid var(--linea); background: #ffffff; border-radius: 20px; padding: 6px 13px; font-size: 0.74rem; font-weight: 700; color: var(--gris); cursor: pointer; font-family: inherit; }
+  .chip.activo, .chip:hover { border-color: var(--oro); color: var(--marino); background: #fffdf5; }
+  .campo { width: 100%; border: 1px solid var(--linea); border-radius: 9px; padding: 11px 13px; font-size: 0.85rem; font-family: inherit; color: var(--tinta); background: #ffffff; }
+  .campo:focus { outline: none; border-color: var(--oro); box-shadow: 0 0 0 3px rgba(197,155,39,0.15); }
+  .boton { display: inline-block; background: var(--marino); color: #ffcc00; border: 1px solid var(--oro); border-radius: 9px; padding: 11px 18px; font-size: 0.82rem; font-weight: 800; cursor: pointer; font-family: inherit; text-decoration: none; }
+  .boton:hover { background: #122c52; }
+  .boton.wa { background: #25d366; color: #06301a; border-color: #128c7e; }
+  .boton.sec { background: #ffffff; color: var(--marino); border-color: var(--linea); }
+  .nota { font-size: 0.76rem; color: var(--gris); line-height: 1.55; }
+  .aviso { background: #fffdf5; border-left: 4px solid var(--oro); border-radius: 8px; padding: 10px 13px; font-size: 0.78rem; color: #5b4a1f; line-height: 1.6; }
+  .pie { border-top: 1px solid var(--linea); background: var(--papel); }
+  .pie-in { max-width: 1080px; margin: 0 auto; padding: 22px 18px 30px; font-size: 0.76rem; color: var(--gris); line-height: 1.7; }
+  .pie-in b { color: var(--marino); }
+  .dos-col { display: grid; gap: 22px; grid-template-columns: 2fr 1fr; }
+  @media (max-width: 780px) { .dos-col { grid-template-columns: 1fr; } }
+  .tabla { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .tabla th, .tabla td { padding: 8px 9px; border-bottom: 1px solid var(--linea); text-align: left; white-space: nowrap; }
+  .tabla th { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris); }
+  .tabla tr.vipfila td { background: #fffdf5; font-weight: 700; }
+  .oculto { display: none; }
+</style>
+</head>
+<body>
+<header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html" style="background:#0b2240;color:#ffffff;">👑 VIP</a></nav></div></header><main>
+<span class="sello" id="vSello">Membresía oficial</span>
+<h1 class="titulo" id="vTitulo">👑 Únete al Círculo VIP</h1>
+<p class="intro" id="vTexto">Regístrese una sola vez y desbloquee la Cabina Statcast, los informes de scouting y el boletín de madrugada. Al terminar, WhatsApp lo lleva directo al grupo privado del director.</p>
+<p id="vCargando" class="nota">Leyendo data.json…</p>
+<div class="dos-col">
+  <div style="display:grid; gap:16px;">
+    <form id="vForm" class="tarjeta" onsubmit="registrar(event)">
+      <h3 id="vFormTitulo">Registro de socio VIP</h3>
+      <p class="nota" id="vFormNota"></p>
+      <input id="vNombre" class="campo" type="text" placeholder="Nombre y apellido" autocomplete="name">
+      <input id="vCorreo" class="campo" type="email" placeholder="Correo electrónico" autocomplete="email">
+      <input id="vTelefono" class="campo" type="tel" placeholder="Teléfono (WhatsApp)" autocomplete="tel">
+      <label class="nota" style="display:flex; gap:8px; align-items:flex-start;"><input id="vAcepta" type="checkbox" style="margin-top:3px;"> Autorizo el uso de mis datos únicamente para la membresía y el contacto del Círculo VIP.</label>
+      <div id="vError" class="oculto"></div>
+      <button type="submit" id="vBoton" class="boton">👑 Completar registro</button>
+      <p class="nota">Al registrarse se desbloquean los módulos VIP en este mismo navegador. Puede entrar a la Cabina desde la portada.</p>
+    </form>
+    <div id="vOk" class="oculto"><span class="etiqueta">Registro confirmado</span><h3>¡Bienvenido al Círculo VIP!</h3><p class="nota">Registro de <b id="vOkNombre"></b> completado. La Cabina Statcast queda desbloqueada en este dispositivo.</p></div>
+    <div id="vWhatsApp" class="oculto"></div>
+  </div>
+  <aside class="tarjeta">
+    <span class="etiqueta">Beneficios</span>
+    <ul style="margin:8px 0 0; padding-left:18px; font-size:0.84rem; color:#4a5568; line-height:1.6;" id="vBeneficios"></ul>
+    <hr class="regla">
+    <p class="aviso">El grupo VIP es <b>privado</b>: solo entran lectores registrados. El grupo general de la afición es abierto y está en la portada.</p>
+    <a class="boton sec" href="index.html#modulo-17-suscripcion-vip">Ver el módulo VIP en la portada</a>
+  </aside>
+</div>
+</main>
+<footer class="pie"><div class="pie-in"><b>La Taberna del Magallanes News</b> · Gaceta sabermétrica, analítica Statcast y scouting de los Navegantes del Magallanes (LVBP).<br>Fundador &amp; Director: Luis Enrique Aponte Guzmán.<br><span style="font-size:0.72rem;">Páginas: <a href="index.html">Portada</a> · <a href="cronica.html">Crónicas</a> · <a href="roster.html">Roster</a> · <a href="buscador.html">Buscador</a> · <a href="vip.html">Círculo VIP</a></span></div></footer>
+<script src="rico.js"></script>
+  <script>
+
+var DATOS = null;
+function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function soloDigitos(t) { return String(t || '').replace(/[^0-9]/g, ''); }
+function registrar(ev) {
+  ev.preventDefault();
+  var nom = document.getElementById('vNombre').value.trim();
+  var cor = document.getElementById('vCorreo').value.trim();
+  var tel = document.getElementById('vTelefono').value.trim();
+  var ok = document.getElementById('vAcepta').checked;
+  var err = document.getElementById('vError');
+  err.className = 'oculto';
+  var problema = '';
+  if (!nom) problema = 'Escriba su nombre.';
+  else if (!/^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$/.test(cor)) problema = 'Revise el correo electrónico.';
+  else if (soloDigitos(tel).length < 7) problema = 'Escriba un teléfono de contacto válido.';
+  else if (!ok) problema = 'Debe aceptar las condiciones de la membresía.';
+  if (problema) {
+    err.textContent = '⚠️ ' + problema;
+    err.className = 'aviso';
+    return;
+  }
+  try {
+    var socios = JSON.parse(localStorage.getItem('taberna_lista_socios_vip')) || [];
+    socios.push({ nombre: nom, correo: cor, telefono: tel, fecha: new Date().toISOString() });
+    localStorage.setItem('taberna_lista_socios_vip', JSON.stringify(socios));
+    localStorage.setItem('taberna_socio_vip_activo', 'true');
+    localStorage.setItem('taberna_socio_vip_email', cor);
+  } catch (e) { }
+  document.getElementById('vForm').className = 'oculto';
+  document.getElementById('vOkNombre').textContent = nom;
+  document.getElementById('vOk').className = 'tarjeta';
+  mostrarWhatsApp(nom, cor);
+}
+function mostrarWhatsApp(nom, cor) {
+  var v = (DATOS && DATOS.circuloVip) || {};
+  var modo = String(v.whatsappModo || 'ambos');
+  var num = soloDigitos(v.whatsappNumero);
+  var grupo = String(v.whatsappGrupoUrl || '').trim();
+  var grupoNom = String(v.whatsappGrupoNombre || 'Círculo VIP · La Taberna del Magallanes');
+  var msj = String(v.whatsappMensaje || 'Hola, acabo de inscribirme en el Círculo VIP. Mi nombre es {nombre} y mi correo es {correo}.')
+    .replace('{nombre}', nom).replace('{correo}', cor).replace('{grupo}', grupoNom);
+  var caja = document.getElementById('vWhatsApp');
+  var html = '<span class="etiqueta">Último paso</span><h3>Confirme su ingreso por WhatsApp</h3>';
+  if (grupo && (modo === 'ambos' || modo === 'grupo')) {
+    html += '<p class="nota">Entre al grupo privado <b>' + esc(grupoNom) + '</b>. El enlace es solo para socios registrados.</p>' +
+      '<a class="boton wa" target="_blank" rel="noopener" href="' + esc(grupo) + '" onclick="setTimeout(function(){window.open(\'https://wa.me/' + num + '?text=' + encodeURIComponent(msj) + '\',\'_blank\');},600)">👥 Entrar al grupo VIP privado</a>';
+  }
+  if (num && (modo === 'ambos' || modo === 'numero')) {
+    html += '<p class="nota" style="margin-top:10px;">' + (v.whatsappNumeroVisible === false ? 'Escriba al director desde el botón para recibir el enlace del grupo.' : 'Teléfono del director: <b>+' + num + '</b>') + '</p>' +
+      '<a class="boton wa" target="_blank" rel="noopener" href="https://wa.me/' + num + '?text=' + encodeURIComponent(msj) + '">💬 Escribir al director por WhatsApp</a>' +
+      '<button type="button" class="boton sec" onclick="copiar(\'' + num + '\')">📋 Copiar número</button>';
+  }
+  if (!grupo && !num) {
+    html += '<p class="aviso">El director todavía no ha publicado el contacto del Círculo VIP. Su registro quedó guardado: vuelva a esta página en unos minutos.</p>';
+  }
+  html += '<hr class="regla"><a class="boton" href="index.html#modulo-07-cabina-statcast">👑 Entrar a la Cabina VIP (desbloqueada) →</a>';
+  caja.innerHTML = html;
+  caja.className = 'tarjeta';
+}
+function copiar(t) {
+  try {
+    if (navigator.clipboard) navigator.clipboard.writeText('+' + t);
+  } catch (e) { }
+}
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {
+    DATOS = d;
+    var v = d.circuloVip || {};
+    document.getElementById('vSello').textContent = v.sello || 'Membresía Oficial';
+    document.getElementById('vTitulo').textContent = v.titulo || 'Únete al Círculo VIP';
+    document.getElementById('vTexto').innerHTML = ricoHtml(v.descripcion || '');
+    document.getElementById('vBeneficios').innerHTML = (v.beneficios || []).map(function (b) {
+      return '<li style="margin-bottom:6px;">' + ricoHtml(b.texto || '') + '</li>';
+    }).join('');
+    document.getElementById('vFormTitulo').textContent = v.formTitulo || 'Registro de socio VIP';
+    document.getElementById('vFormNota').textContent = v.formNota || '';
+    document.getElementById('vBoton').textContent = v.boton || '👑 Completar registro';
+    if (localStorage.getItem('taberna_socio_vip_activo') === 'true') {
+      document.getElementById('vForm').className = 'oculto';
+      document.getElementById('vOkNombre').textContent = localStorage.getItem('taberna_socio_vip_email') || '';
+      document.getElementById('vOk').className = 'tarjeta';
+      mostrarWhatsApp('socio', localStorage.getItem('taberna_socio_vip_email') || '');
+    }
+  }).catch(function () {
+    document.getElementById('vCargando').innerHTML = '<b>⚠️ No se pudo leer data.json.</b> Puede registrarse igualmente: el formulario funciona sin conexión.';
+  });
+});
+
+</script>
+
+<script>
+(function () {
+  function aplicar(d) {
+    if (!d || !d.portal) return;
+    var el = document.getElementById('marcaPrincipal');
+    if (!el) return;
+    var p = d.portal;
+    if (p.marca) el.textContent = p.marca;
+    el.className = 'nombre tip-' + (p.tipografia || 'nyt');
+    if (p.colorLogo) el.style.color = p.colorLogo;
+    var escala = parseFloat(p.escalaTitulo) || 100;
+    if (escala !== 100) el.style.fontSize = (1.15 * (escala / 100)) + 'rem';
+    if (p.logoImagen) {
+      el.textContent = '';
+      var img = document.createElement('img');
+      img.src = p.logoImagen;
+      img.alt = p.marca || 'Logotipo del medio';
+      img.style.height = (parseInt(p.logoAlto, 10) || 48) + 'px';
+      img.style.width = 'auto';
+      el.appendChild(img);
+    }
+  }
+  try {
+    fetch('data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
+  } catch (e) { }
+})();
+</script></body>
+</html>

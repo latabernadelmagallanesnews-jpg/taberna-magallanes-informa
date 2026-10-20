@@ -1,0 +1,18 @@
+# GitHub Pages y el editor Word necesitan finales de línea LF consistentes.
+# Sin esto, Windows convierte los archivos a CRLF al descargarlos del
+# repositorio y los scripts de parche dejan de encontrar los fragmentos.
+* text=auto eol=lf
+
+# Archivos que nunca deben tocarse
+*.zip binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.mp3 binary
+*.mp4 binary

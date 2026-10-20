@@ -1,0 +1,80 @@
+name: Publicar en Firebase Hosting
+
+# Cada vez que se sube algo a la rama principal:
+#   1. se comprueba que el portal y el CMS siguen compiles;
+#   2. se regenera publicar/data.json;
+#   3. se publica la carpeta publicar/ en Firebase Hosting.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: firebase-hosting-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    name: Construir y publicar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Traer el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --omit=dev --no-audit --no-fund || npm install --omit=dev --no-audit --no-fund
+
+      - name: Aplicar el editor con formato (Word)
+        run: npm run parche
+
+      - name: Conectar el lector de formato en las páginas sueltas
+        run: npm run paginas
+
+      - name: Regenerar data.json
+        run: npm run data
+
+      - name: Verificar sintaxis del portal
+        run: npm run sintaxis
+
+      - name: Verificar módulos y CMS
+        run: npm run verificar
+
+      - name: Instalar Firebase CLI
+        run: npm install --global firebase-tools@latest
+
+      - name: Autenticar con Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::Falta el secreto FIREBASE_SERVICE_ACCOUNT en Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          # La clave privada viene con \n escapados en el JSON del secreto.
+          node -e "const fs=require('fs');const p=process.env.RUNNER_TEMP+'/firebase-service-account.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.private_key)j.private_key=j.private_key.replace(/\\\\n/g,'\n');fs.writeFileSync(p,JSON.stringify(j));"
+
+      - name: Publicar en Firebase Hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID || 'la-taberna-del-magallanes-news' }}
+        run: |
+          firebase deploy \
+            --only hosting \
+            --project "$FIREBASE_PROJECT_ID" \
+            --non-interactive \
+            --message "Publicación automática desde GitHub (${{ github.sha }})"
+
+      - name: Resumen
+        run: |
+          echo "### Portal publicado ✅"
+          echo "Proyecto: $FIREBASE_PROJECT_ID"
+          echo "Siguiente paso: en la consola de Firebase, Hosting → Añadir dominio personalizado si quiere usar su dominio."

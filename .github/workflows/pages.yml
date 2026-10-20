@@ -1,0 +1,69 @@
+name: Publicar en GitHub Pages
+
+# Espejo del portal en GitHub Pages (además de Firebase Hosting).
+# La carpeta que se publica es `publicar/`.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    name: Construir y publicar en Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Traer el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --omit=dev --no-audit --no-fund || npm install --omit=dev --no-audit --no-fund
+
+      - name: Aplicar el editor con formato (Word)
+        run: npm run parche
+
+      - name: Conectar el lector de formato en las páginas sueltas
+        run: npm run paginas
+
+      - name: Regenerar data.json
+        run: npm run data
+
+      - name: Verificar sintaxis del portal
+        run: npm run sintaxis
+
+      - name: Verificar módulos y CMS
+        run: npm run verificar
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Publicar la carpeta publicar/
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: publicar
+          retention-days: 1
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
