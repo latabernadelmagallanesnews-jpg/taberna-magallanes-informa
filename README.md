@@ -144,21 +144,30 @@ sirven exactamente el mismo sitio**, sin depender de cuál elija.
 > En `editor/index.html` vive la copia de trabajo: el CMS con el que usted
 > escribe. Es el único archivo que se edita a mano; el resto se genera.
 
-Las puertas de acceso del CMS están **visibles** en todo el portal:
+Las puertas de acceso del CMS funcionan en **modo redacción**:
 
-- **⚙️ Abrir CMS** — botón flotante, abajo a la derecha.
-- **⚙️ Sala de redacción / CMS** — en el pie de página.
+| Quién | Qué ve |
+| --- | --- |
+| **Un lector** | Nada. Ni botón flotante, ni puerta en el pie, ni aviso al entrar. |
+| **Usted (Director)** | **⚙️ Abrir CMS** (flotante, abajo a la derecha) y **⚙️ Sala de redacción / CMS** (pie). Entra directo. |
+| **Un periodista con código personal** | Igual que usted, pero con permisos de periodista. |
 
-En los equipos donde usted ya se autenticado aparecen con ese nombre y entran
-directo. En los demás, un lector que las pulse recibe el pedido de clave: las
-claves se guardan cifradas (SHA-256) y **sin la clave no se entra a nada**.
+Para que a usted le aparezcan, basta con **escribir su clave una vez** en cada
+equipo (computadora o celular): ese equipo queda autorizado 180 días y el
+botón se le queda visible para siempre. Si se autoriza a un periodista desde
+**CMS → Seguridad & Accesos → Periodistas autorizados**, a él también le
+aparecerá en el suyo.
 
-Si prefiere que los lectores no vean el botón, se apaga con un comando:
+Las claves se guardan cifradas (SHA-256): **sin la clave no se entra a nada**,
+y el código fuente no contiene ninguna clave en texto plano.
+
+Si en algún momento quiere que los lectores también vean el botón (modo
+público), se cambia con un comando:
 
 ```bash
-node scripts/puertas-de-acceso.js cerrar   # ocultarlas
-node scripts/puertas-de-acceso.js abrir    # mostrarlas
-node scripts/puertas-de-acceso.js estado   # ver cómo están
+node scripts/puertas-de-acceso.js cerrar   # modo redacción (lo normal)
+node scripts/puertas-de-acceso.js abrir    # modo público
+node scripts/puertas-de-acceso.js estado   # ver cómo está
 ```
 
 También puede manejarlas desde el propio CMS, en **Seguridad & Accesos**.
