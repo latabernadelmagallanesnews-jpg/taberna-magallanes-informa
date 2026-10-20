@@ -1,0 +1,75 @@
+/* ============================================================================
+  PUERTAS DE ACCESO DE LA REDACCIÓN
+   ----------------------------------------------------------------------------
+  El portal tiene dos puertas visibles:
+
+    · 🔒 Acceso Redacción  (botón flotante, abajo a la derecha)
+    · 🔒 Redacción         (en el pie de página)
+
+  A un lector que las pulse se le pide la clave (cifrada en SHA-256); sin la
+  clave no entra a nada. En los equipos ya autorizados el botón se transforma
+  en «⚙️ Abrir CMS» y entra directo.
+
+  Este script las enciende o las apaga en el sitio publicado.
+
+  Uso:
+      node scripts/puertas-de-acceso.js            (muestra el estado actual)
+      node scripts/puertas-de-acceso.js abrir      (los lectores ven el botón)
+      node scripts/puertas-de-acceso.js cerrar     (solo la redacción lo ve)
+   ============================================================================ */
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+
+const RAIZ = path.resolve(__dirname, '..');
+const PUBLICAR = path.join(RAIZ, 'publicar', 'index.html');
+const RE = /(<script type="application\/json" id="estadoEmbebido">)([\s\S]*?)(<\/script>)/;
+
+function leerEstado(html) {
+  const m = html.match(RE);
+  if (!m) return null;
+  try { return JSON.parse(m[2] ? m[2] : '{}'); } catch (e) { return null; }
+}
+
+function escribirEstado(html, estado) {
+  return html.replace(RE, function (todo, ini, _cuerpo, fin) {
+    return ini + JSON.stringify(estado) + fin;
+  });
+}
+
+const accion = (process.argv[2] || '').toLowerCase();
+
+let html = fs.readFileSync(PUBLICAR, 'utf8');
+const estado = leerEstado(html);
+if (!estado) {
+  console.error('✗ No se encontró el bloque de estado en publicar/index.html');
+  process.exit(1);
+}
+estado.seguridad = estado.seguridad || {};
+
+if (!accion || accion === 'estado') {
+  const s = estado.seguridad;
+  console.log('\n=== PUERTAS DE ACCESO ===');
+  console.log('  Botón flotante «🔒 Acceso Redacción» : ' + (s.botonFlotante !== false ? 'VISIBLE' : 'oculto'));
+  console.log('  Puerta del pie «🔒 Redacción»         : ' + (s.botonPie !== false ? 'VISIBLE' : 'oculto'));
+  console.log('  Visible para los lectores             : ' + (s.puertasSiempre === true ? 'SÍ' : 'NO'));
+  console.log('  Se mantiene al publicar               : ' + (s.puertasPublicas === true ? 'SÍ' : 'NO'));
+  console.log('\n  (los lectores que lo pulsen siguen teniendo que escribir la clave)\n');
+  process.exit(0);
+}
+
+if (accion === 'abrir' || accion === 'cerrar') {
+  const abierto = accion === 'abrir';
+  estado.seguridad.puertasSiempre = abierto;
+  estado.seguridad.botonPie = abierto;
+  estado.seguridad.botonFlotante = abierto;
+  estado.seguridad.puertasPublicas = abierto;
+  fs.writeFileSync(PUBLICAR, escribirEstado(html, estado), 'utf8');
+  console.log('\n✓ Puertas de acceso ' + (abierto ? 'ABIERTAS' : 'CERRADAS') + ' en publicar/index.html.');
+  console.log('  Ejecute «npm run sync» para llevarlas a la raíz del repositorio.\n');
+  process.exit(0);
+}
+
+console.error('✗ Acción no reconocida. Use: abrir · cerrar · estado');
+process.exit(1);

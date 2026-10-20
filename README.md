@@ -144,9 +144,24 @@ sirven exactamente el mismo sitio**, sin depender de cuál elija.
 > En `editor/index.html` vive la copia de trabajo: el CMS con el que usted
 > escribe. Es el único archivo que se edita a mano; el resto se genera.
 
-Las puertas de acceso del CMS están cerradas en los tres: un lector que abra
-cualquiera de ellos no ve ningún botón de edición. El botón **⚙️ Abrir CMS**
-aparece solo en los equipos donde usted ya se autenticó.
+Las puertas de acceso del CMS están **visibles** en todo el portal:
+
+- **⚙️ Abrir CMS** — botón flotante, abajo a la derecha.
+- **⚙️ Sala de redacción / CMS** — en el pie de página.
+
+En los equipos donde usted ya se autenticado aparecen con ese nombre y entran
+directo. En los demás, un lector que las pulse recibe el pedido de clave: las
+claves se guardan cifradas (SHA-256) y **sin la clave no se entra a nada**.
+
+Si prefiere que los lectores no vean el botón, se apaga con un comando:
+
+```bash
+node scripts/puertas-de-acceso.js cerrar   # ocultarlas
+node scripts/puertas-de-acceso.js abrir    # mostrarlas
+node scripts/puertas-de-acceso.js estado   # ver cómo están
+```
+
+También puede manejarlas desde el propio CMS, en **Seguridad & Accesos**.
 
 ---
 
@@ -264,6 +279,7 @@ y añada el rol **Firebase Hosting Admin** → cree una clave JSON.
 | `npm run data` | Regenera `publicar/data.json` |
 | `npm run sync` | Copia `publicar/` a la raíz del repositorio |
 | `npm run paginas` | Conecta el lector de formato en las páginas sueltas |
+| `node scripts/puertas-de-acceso.js` | Enciende o apaga la puerta «🔒 Acceso Redacción» |
 | `npm run sintaxis` | Comprueba que el JavaScript del portal compile |
 | `npm run verificar` | Comprueba módulos, CMS y que no se perdió nada |
 | `npm run build` | Todo lo anterior, en orden |
