@@ -32,4 +32,8 @@ http.createServer((req, res) => {
       res.end(data);
     });
   });
-}).listen(PUERTO, () => console.log('Servidor local en http://localhost:' + PUERTO + '/'));
+}).listen(PUERTO, () => {
+  console.log('Servidor local en http://localhost:' + PUERTO + '/');
+  console.log('  portal publicado : http://localhost:' + PUERTO + '/');
+  console.log('  copia de trabajo : http://localhost:' + PUERTO + '/editor/index.html');
+});

@@ -106,48 +106,54 @@ el HTML publicado es válido y limpio.
 
 ```
 .
-├── index.html                 ← COPIA DE TRABAJO (con el CMS y las puertas de acceso)
-├── publicar/                  ← LO QUE SE PUBLICA (Firebase Hosting y GitHub Pages)
-│   ├── index.html             ←   el portal con el contenido incrustado
-│   ├── buscador.html          ←   buscador general
-│   ├── cronica.html           ←   muro de crónicas
-│   ├── roster.html            ←   roster y tabla de posiciones
-│   ├── vip.html               ←   registro del Círculo VIP
-│   ├── redaccion-cms.html     ←   puerta de la sala de redacción
-│   ├── 404.html               ←   página de error
-│   ├── data.json              ←   contenido en texto plano para las páginas sueltas
-│   ├── rico.js                ←   lector de contenido con formato (páginas sueltas)
-│   ├── robots.txt
-│   └── .nojekyll
+├── index.html                 ← EL SITIO (copia de publicar/, la que sirve GitHub Pages)
+├── buscador.html  cronica.html  roster.html  vip.html
+├── redaccion-cms.html  404.html  data.json  rico.js  robots.txt  .nojekyll
+├── editor/
+│   └── index.html             ← COPIA DE TRABAJO (la que usted edita)
+├── publicar/                  ← EL SITIO (fuente de Firebase Hosting)
+│   ├── index.html
+│   ├── buscador.html, cronica.html, roster.html, vip.html
+│   ├── redaccion-cms.html, 404.html
+│   ├── data.json, rico.js, robots.txt, .nojekyll
+│   ├── README.md, LEEME-PUBLICACION.txt
 ├── scripts/
 │   ├── aplicar-editor-word.js ←   instala el editor estilo Word en los HTML
 │   ├── aplicar-rico-paginas.js←   conecta el lector de formato en las páginas sueltas
 │   ├── generar-data-json.js   ←   regenera publicar/data.json
+│   ├── sincronizar-raiz.js    ←   copia publicar/ a la raíz del repositorio
 │   ├── verificar-sintaxis.js  ←   comprueba que el JavaScript compile
 │   ├── verificar-portal.js     ←   comprueba módulos, CMS y que nada se perdió
+│   ├── subir-a-github.ps1      ←   publica los cambios en GitHub con un comando
 │   └── servidor-local.js       ←   servidor local para trabajar sin internet
 ├── firebase.json              ← configuración de Firebase Hosting
 ├── .firebaserc                ← proyecto de Firebase asociado
 └── .github/workflows/         ← publicación automática
 ```
 
-Las dos copias del portal (`index.html` y `publicar/index.html`) son idénticas
-**salvo el bloque `estadoEmbebido`**: ahí va el contenido final que ve el
-lector. El contenido que usted edita vive en el navegador de la computadora del
-editor (IndexedDB), y solo baja al archivo cuando usted descarga el HTML
-publicado.
+### Por qué el sitio está dos veces
 
-En las dos copias las **puertas de acceso del CMS están cerradas** para quien
-no es la redacción: un lector que abra `index.html` directamente no ve ningún
-botón de edición. El botón **⚙️ Abrir CMS** aparece solo en los equipos donde
-usted ya se autenticó.
+`publicar/` es la fuente y la que sube **Firebase Hosting**. La raíz es una
+copia exacta que `npm run sync` mantiene al día.
+
+Motivo: **GitHub Pages** publica *la carpeta que le indique la configuración*.
+Si usted usa "GitHub Actions", publica `publicar/`. Si usa "Deploy from a
+branch" sobre la raíz, publica la raíz. Con esta copia, **las dos formas
+sirven exactamente el mismo sitio**, sin depender de cuál elija.
+
+> En `editor/index.html` vive la copia de trabajo: el CMS con el que usted
+> escribe. Es el único archivo que se edita a mano; el resto se genera.
+
+Las puertas de acceso del CMS están cerradas en los tres: un lector que abra
+cualquiera de ellos no ve ningún botón de edición. El botón **⚙️ Abrir CMS**
+aparece solo en los equipos donde usted ya se autenticó.
 
 ---
 
 ## 3 · Flujo de trabajo del editor
 
-1. Copia de trabajo: `index.html` de la raíz del repositorio.
-2. Ábrala con doble clic (o `npm run servidor` → `http://localhost:8099/`).
+1. Copia de trabajo: `editor/index.html`.
+2. Ábrala con doble clic (o `npm run servidor` → `http://localhost:8099/editor/index.html`).
 3. Entre al CMS: botón **⚙️ Abrir CMS** (aparece en los equipos ya
    autenticados), o `?cms=1` al final de la dirección, o `Ctrl+Alt+M`, o
    `publicar/redaccion-cms.html`.
@@ -155,8 +161,9 @@ usted ya se autenticó.
 5. Pulse **💾 Guardar** (se guarda en el navegador) y luego
    **🚀 Descargar HTML publicado**.
 6. Copie el `index.html` descargado sobre `publicar/index.html`.
-7. `npm run data` para regenerar `publicar/data.json`.
-8. `npm run deploy` para publicar en Firebase (o `git push` para GitHub).
+7. `npm run build` → regenera `publicar/data.json` y copia `publicar/` a la
+   raíz del repositorio.
+8. `npm run deploy` para publicar en Firebase, o `git push` para GitHub.
 
 ---
 
@@ -255,6 +262,8 @@ y añada el rol **Firebase Hosting Admin** → cree una clave JSON.
 | `npm run servidor` | Abre el portal en `http://localhost:8099/` |
 | `npm run parche` | Instala (o actualiza) el editor estilo Word en los HTML |
 | `npm run data` | Regenera `publicar/data.json` |
+| `npm run sync` | Copia `publicar/` a la raíz del repositorio |
+| `npm run paginas` | Conecta el lector de formato en las páginas sueltas |
 | `npm run sintaxis` | Comprueba que el JavaScript del portal compile |
 | `npm run verificar` | Comprueba módulos, CMS y que no se perdió nada |
 | `npm run build` | Todo lo anterior, en orden |

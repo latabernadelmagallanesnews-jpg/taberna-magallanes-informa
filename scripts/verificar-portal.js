@@ -30,7 +30,7 @@ let fallos = 0;
 const ok = (m) => console.log('  ✓ ' + m);
 const ko = (m) => { fallos++; console.log('  ✗ ' + m); };
 
-const archivos = ['index.html', path.join('publicar', 'index.html')];
+const archivos = ['editor/index.html', path.join('publicar', 'index.html'), 'index.html'];
 
 archivos.forEach((rel) => {
   const f = path.join(RAIZ, rel);
@@ -70,19 +70,25 @@ archivos.forEach((rel) => {
   }
 });
 
-// Las dos copias del portal solo deben diferir en el bloque de estado
+// Las copias del portal deben coincidir en lo importante
+console.log('\n=== comparación de las copias ===');
 const raizH = fs.readFileSync(path.join(RAIZ, 'index.html'), 'utf8');
 const pubH = fs.readFileSync(path.join(RAIZ, 'publicar', 'index.html'), 'utf8');
-console.log('\n=== comparación de las dos copias ===');
-const la = raizH.split('\n'), lb = pubH.split('\n');
-let difs = 0;
-for (let i = 0; i < Math.max(la.length, lb.length); i++) if (la[i] !== lb[i]) difs++;
-if (difs <= 1) ok('difieren en ' + difs + ' línea(s) (solo el bloque de contenido incrustado)');
-else ko('difieren en ' + difs + ' líneas (debería ser 0 o 1)');
+const ediH = fs.readFileSync(path.join(RAIZ, 'editor', 'index.html'), 'utf8');
+if (raizH === pubH) ok('la raíz y publicar/ son idénticas (GitHub Pages sirve lo mismo en ambos modos)');
+else ko('la raíz y publicar/ difieren: la raíz debe ser una copia de publicar/');
+if (ediH === pubH) ok('la copia de trabajo y la publicada coinciden');
+else {
+  const la = ediH.split('\n'), lb = pubH.split('\n');
+  let difs = 0;
+  for (let i = 0; i < Math.max(la.length, lb.length); i++) if (la[i] !== lb[i]) difs++;
+  if (difs <= 1) ok('la copia de trabajo difiere solo en el bloque de contenido incrustado');
+  else ko('la copia de trabajo difiere en ' + difs + ' líneas');
+}
 
 // La puerta del CMS no debe ser visible para el lector en ninguna de las dos
 console.log('\n=== puertas de acceso ===');
-[['index.html', raizH], ['publicar/index.html', pubH]].forEach(function (par) {
+[['editor/index.html', ediH], ['publicar/index.html', pubH], ['index.html', raizH]].forEach(function (par) {
   const m = par[1].match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
   let seg = {};
   try { seg = JSON.parse(m ? m[1] : '{}').seguridad || {}; } catch (e) { }

@@ -733,8 +733,9 @@ function aplicar(archivo) {
 
 const raiz = path.resolve(__dirname, '..');
 const porDefecto = [
-  path.join(raiz, 'index.html'),
-  path.join(raiz, 'publicar', 'index.html')
+  path.join(raiz, 'editor', 'index.html'),
+  path.join(raiz, 'publicar', 'index.html'),
+  path.join(raiz, 'index.html')
 ];
 
 const objetivos = process.argv.slice(2).length ? process.argv.slice(2) : porDefecto;
