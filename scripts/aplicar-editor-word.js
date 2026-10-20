@@ -967,6 +967,60 @@ function aplicar(archivo) {
     'compartirParedon()'
   );
 
+  /* --- en el CMS, cada elemento de una lista tiene su enlace ------------ */
+  h = reemplazar(
+    h,
+    `          '<button type="button" class="cms-boton rojo mini" data-accion="eliminarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Eliminar">✕</button>' +`,
+    `          '<button type="button" class="cms-boton sec mini" data-accion="copiarEnlaceItem" data-ruta="' + esc(base) + '" title="Copiar el enlace de este contenido para compartirlo">🔗</button>' +
+          '<button type="button" class="cms-boton rojo mini" data-accion="eliminarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Eliminar">✕</button>' +`,
+    'botón de enlace en cada elemento del CMS'
+  );
+
+  h = reemplazar(
+    h,
+    `    if (accion === 'pestanaItem') {`,
+    `    if (accion === 'copiarEnlaceItem') {
+      const ruta = el.getAttribute('data-ruta');
+      const item = valorDeRuta(portalState, ruta);
+      const enlace = enlaceDeElemento(ruta, item);
+      copiarTextoAlPortapapeles(enlace, '🔗 Enlace copiado: ' + enlace);
+      return;
+    }
+    if (accion === 'pestanaItem') {`,
+    'acción copiarEnlaceItem'
+  );
+
+  h = reemplazar(
+    h,
+    `  function buscarRepeater(pathLista) {`,
+    `  /* Ancla de cada módulo del portal, para los enlaces profundos. */
+  const MODULO_ANCLA = {
+    'cronicas': 'modulo-06-cronica',
+    'publicidadCarruseles': 'modulo-11-carruseles-publicidad',
+    'hilos': 'modulo-12-hilos-informativos',
+    'redesMultimedia': 'modulo-13-multimedia-redes',
+    'cabinaVip': 'modulo-07-cabina-statcast',
+    'infografias': 'modulo-07-cabina-statcast',
+    'memes': 'modulo-07-cabina-statcast',
+    'paredon': 'modulo-18-paredon-fanatico',
+    'historias': 'modulo-05-hero',
+    'chatFanatico': 'modulo-12-hilos-informativos'
+  };
+
+  /* Enlace público de un elemento concreto del portal.
+     Las crónicas llevan su ancla propia (#cronica-<id>), que abre la nota. */
+  function enlaceDeElemento(ruta, item) {
+    const base = urlPublicaPortal();
+    const modulo = String(ruta || '').split('.')[0];
+    if (modulo === 'cronicas' && item && item.id) return base + '#cronica-' + item.id;
+    const ancla = MODULO_ANCLA[modulo];
+    return ancla ? base + '#' + ancla : base;
+  }
+
+  function buscarRepeater(pathLista) {`,
+    'enlaceDeElemento()'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

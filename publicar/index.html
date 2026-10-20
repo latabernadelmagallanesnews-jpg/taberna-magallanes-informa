@@ -5260,6 +5260,30 @@
     return '#0b2240';
   }
 
+  /* Ancla de cada módulo del portal, para los enlaces profundos. */
+  const MODULO_ANCLA = {
+    'cronicas': 'modulo-06-cronica',
+    'publicidadCarruseles': 'modulo-11-carruseles-publicidad',
+    'hilos': 'modulo-12-hilos-informativos',
+    'redesMultimedia': 'modulo-13-multimedia-redes',
+    'cabinaVip': 'modulo-07-cabina-statcast',
+    'infografias': 'modulo-07-cabina-statcast',
+    'memes': 'modulo-07-cabina-statcast',
+    'paredon': 'modulo-18-paredon-fanatico',
+    'historias': 'modulo-05-hero',
+    'chatFanatico': 'modulo-12-hilos-informativos'
+  };
+
+  /* Enlace público de un elemento concreto del portal.
+     Las crónicas llevan su ancla propia (#cronica-<id>), que abre la nota. */
+  function enlaceDeElemento(ruta, item) {
+    const base = urlPublicaPortal();
+    const modulo = String(ruta || '').split('.')[0];
+    if (modulo === 'cronicas' && item && item.id) return base + '#cronica-' + item.id;
+    const ancla = MODULO_ANCLA[modulo];
+    return ancla ? base + '#' + ancla : base;
+  }
+
   function buscarRepeater(pathLista) {
     for (let i = 0; i < ESQUEMA_CMS.length; i++) {
       const listas = ESQUEMA_CMS[i].listas || [];
@@ -5291,7 +5315,8 @@
             '<button type="button" class="cms-boton sec mini" data-accion="subirItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Subir">↑</button>' +
             '<button type="button" class="cms-boton sec mini" data-accion="bajarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Bajar">↓</button>' +
             '<button type="button" class="cms-boton sec mini" data-accion="duplicarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Duplicar">⧉</button>' +
-            '<button type="button" class="cms-boton rojo mini" data-accion="eliminarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Eliminar">✕</button>' +
+            '<button type="button" class="cms-boton sec mini" data-accion="copiarEnlaceItem" data-ruta="' + esc(base) + '" title="Copiar el enlace de este contenido para compartirlo">🔗</button>' +
+          '<button type="button" class="cms-boton rojo mini" data-accion="eliminarItem" data-lista="' + esc(rep.path) + '" data-indice="' + i + '" title="Eliminar">✕</button>' +
           '</span>' +
         '</div>' +
         '<div class="cms-rep-body">' + (rep.campos || []).map(function (c) { return construirCampo(c, base); }).join('') + '</div>' +
@@ -6052,6 +6077,13 @@
     const rep = pathLista ? buscarRepeater(pathLista) : null;
     const lista = pathLista ? (valorDeRuta(portalState, pathLista) || []) : [];
 
+    if (accion === 'copiarEnlaceItem') {
+      const ruta = el.getAttribute('data-ruta');
+      const item = valorDeRuta(portalState, ruta);
+      const enlace = enlaceDeElemento(ruta, item);
+      copiarTextoAlPortapapeles(enlace, '🔗 Enlace copiado: ' + enlace);
+      return;
+    }
     if (accion === 'pestanaItem') {
       const item = el.closest('.cms-rep-item');
       if (item) item.classList.toggle('abierto');
