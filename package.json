@@ -20,9 +20,6 @@
     "firebase:use": "firebase use la-taberna-del-magallanes-news",
     "firebase:sitios": "firebase hosting:sites:list"
   },
-  "devDependencies": {
-    "firebase-tools": "^15.0.0"
-  },
   "engines": {
     "node": ">=18"
   }
