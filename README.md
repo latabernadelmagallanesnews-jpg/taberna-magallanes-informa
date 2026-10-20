@@ -50,6 +50,11 @@ con formato:
 - **Muro de Crónicas (Módulo 06):** cada crónica tiene su propio editor con
   formato para el **título**, la **entradilla** y el **texto completo**. Con 4
   crónicas publicadas son 12 editores.
+- **Cada nota se lee en su propia página**, como en cualquier medio:
+  `cronica.html?c=<id>`, con la foto grande, el texto íntegro y con formato,
+  la firma, botones para compartir, otras notas para seguir leyendo y sus
+  propias etiquetas sociales. El botón «Leer la nota completa» del muro lleva
+  a ella, y el enlace que se comparte es esa dirección (un permalink).
 - Portada (titular, cita, epígrafe y cuerpo completo)
 - Banner de WhatsApp, publicidad nativa, Cabina VIP y scouting rival
 - Tabla de posiciones, roster y su leyenda

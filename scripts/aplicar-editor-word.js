@@ -1059,6 +1059,42 @@ function aplicar(archivo) {
     'enlace de redacción en el pie de página'
   );
 
+  /* --- "Leer más" lleva a la NOTA COMPLETA en su propia página ---------- */
+  h = reemplazar(
+    h,
+    `          (tieneCuerpo ? '<div class="muro-leer"><button type="button" class="btn-leer-mas" aria-expanded="false" onclick="toggleCronica(\\'' + esc(c.id) + '\\', this)"><span>Leer más ▾</span></button></div>' : '') +`,
+    `          (tieneCuerpo ? '<div class="muro-leer"><a class="btn-leer-mas" href="cronica.html?c=' + encodeURIComponent(c.id) + '" title="Leer la nota completa"><span>Leer la nota completa →</span></a></div>' : '') +`,
+    'botón Leer más de la crónica'
+  );
+
+  /* --- cada crónica tiene su dirección propia (permalink) ---------------- */
+  h = reemplazar(
+    h,
+    `      clave: 'cronica-' + c.id,
+      modulo: '06-cronica',`,
+    `      clave: 'cronica-' + c.id,
+      url: urlPublicaPortal() + 'cronica.html?c=' + encodeURIComponent(c.id),
+      modulo: '06-cronica',`,
+    'enlace propio de cada crónica'
+  );
+
+  h = reemplazar(
+    h,
+    `  function enlaceFicha(d) {
+    const propio = String((d && d.enlace) || '').trim();
+    if (propio && /^https?:\\/\\//i.test(propio)) return propio;
+    return urlPublicaPortal() + ((d && d.clave) ? '#' + d.clave : '');
+  }`,
+    `  function enlaceFicha(d) {
+    const propio = String((d && d.enlace) || '').trim();
+    if (propio && /^https?:\\/\\//i.test(propio)) return propio;
+    /* Las crónicas tienen página propia (cronica.html?c=ID). */
+    if (d && d.url) return String(d.url);
+    return urlPublicaPortal() + ((d && d.clave) ? '#' + d.clave : '');
+  }`,
+    'enlaceFicha()'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

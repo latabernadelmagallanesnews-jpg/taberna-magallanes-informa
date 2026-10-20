@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Investigación de largo aliento sobre los Navegantes del Magallanes: contacto, rotación, bullpen y señales Statcast.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="La Taberna del Magallanes News">
+<meta property="og:title" content="Crónicas sabermétricas · La Taberna del Magallanes News">
+<meta property="og:description" content="Investigación de largo aliento sobre los Navegantes del Magallanes: contacto, rotación, bullpen y señales Statcast.">
+<meta property="og:url" content="">
+<meta property="og:image" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Crónicas sabermétricas · La Taberna del Magallanes News">
+<meta name="twitter:description" content="Investigación de largo aliento sobre los Navegantes del Magallanes: contacto, rotación, bullpen y señales Statcast.">
+<meta name="twitter:image" content="">
 <title>Crónicas sabermétricas | La Taberna del Magallanes News</title>
 <meta name="description" content="Crónicas de investigación y scouting de los Navegantes del Magallanes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,13 +70,43 @@
   .tabla th { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris); }
   .tabla tr.vipfila td { background: #fffdf5; font-weight: 700; }
   .oculto { display: none; }
+
+  /* ===== LECTOR DE NOTA COMPLETA (cronica.html?c=ID) ===== */
+  .nota { max-width: 760px; margin: 0 auto; }
+  .volver { display: inline-block; font-size: 0.76rem; font-weight: 700; color: #0b2240; text-decoration: none; margin-bottom: 1rem; }
+  .volver:hover { text-decoration: underline; }
+  .nota-etiqueta { display: inline-block; font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 20px; padding: 4px 12px; }
+  .nota-titulo { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 4.6vw, 2.9rem); line-height: 1.16; font-weight: 900; color: #0b2240; margin: 0.85rem 0 0.6rem; letter-spacing: -0.015em; }
+  .nota-entradilla { font-family: 'EB Garamond', Georgia, serif; font-size: 1.22rem; line-height: 1.55; color: #3f3f46; margin: 0 0 1rem; }
+  .nota-firma { font-size: 0.78rem; color: #6b7280; border-top: 1px solid #e2ded9; border-bottom: 1px solid #e2ded9; padding: 9px 0; margin-bottom: 1.1rem; }
+  .nota-foto { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 1.4rem; background: #0b1118; }
+  .nota-foto img { width: 100%; max-height: 520px; object-fit: cover; display: block; }
+  .nota-cuerpo { font-family: 'EB Garamond', Georgia, serif; font-size: 1.16rem; line-height: 1.85; color: #1f2937; }
+  .nota-cuerpo p { margin: 0 0 1.1em; }
+  .nota-cuerpo h2, .nota-cuerpo h3, .nota-cuerpo h4 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; line-height: 1.25; margin: 1.5em 0 0.5em; font-weight: 800; }
+  .nota-cuerpo h2 { font-size: 1.6rem; } .nota-cuerpo h3 { font-size: 1.32rem; } .nota-cuerpo h4 { font-size: 1.12rem; }
+  .nota-cuerpo ul, .nota-cuerpo ol { margin: 0 0 1.2em; padding-left: 1.5rem; }
+  .nota-cuerpo li { margin-bottom: 0.45em; }
+  .nota-cuerpo blockquote { border-left: 4px solid #c59b27; background: #fffdf5; margin: 1.3em 0; padding: 0.8em 1.2em; font-style: italic; color: #4a3f1c; border-radius: 0 8px 8px 0; }
+  .nota-cuerpo a { color: #0b2240; text-decoration: underline; }
+  .nota-cuerpo img { max-width: 100%; height: auto; border-radius: 10px; margin: 1em 0; }
+  .nota-cuerpo mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
+  .nota-cuerpo table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: 0.92rem; }
+  .nota-cuerpo td, .nota-cuerpo th { border: 1px solid #cbd5e1; padding: 7px 9px; text-align: left; }
+  .nota-cuerpo hr { border: 0; border-top: 1px solid #dcd9d9; margin: 1.6em 0; }
+  .nota-acciones { display: flex; flex-wrap: wrap; gap: 7px; margin: 1.6rem 0 2rem; padding-top: 1.1rem; border-top: 1px solid #e2ded9; }
+  .nota-relacionadas { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin-top: 1.6rem; }
+  .nota-pie { font-size: 0.72rem; color: #8a8a8a; margin-top: 1.4rem; line-height: 1.7; }
+  /* Párrafos sueltos en las tarjetas del muro */
+  .tarjeta .mural-texto p { font-size: 0.9rem; line-height: 1.7; color: #1f2937; margin: 0 0 10px; }
+  .tarjeta .mural-texto p:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
 <header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html" style="background:#0b2240;color:#ffffff;">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
-<span class="sello">Muro de la crónica &amp; scouting</span>
-<h1 class="titulo">📖 Crónicas sabermétricas</h1>
-<p class="intro">Investigación de largo aliento sobre los Navegantes del Magallanes: contacto, rotación, bullpen y señales Statcast. Pulse «Leer la crónica» para desplegar el análisis completo sin salir de esta página.</p>
+<span class="sello" id="sello">Muro de la crónica &amp; scouting</span>
+<h1 class="titulo" id="titulo">📖 Crónicas sabermétricas</h1>
+<p class="intro" id="intro">Investigación de largo aliento sobre los Navegantes del Magallanes: contacto, rotación, bullpen y señales Statcast. Cada nota se lee en su propia página, con la foto grande y el texto íntegro.</p>
 <p id="cargando" class="nota">Leyendo data.json…</p>
 <div class="dos-col">
   <div id="cronicas" style="display:grid; gap:16px;"></div>
@@ -83,9 +124,9 @@ function parrafos(t) {
   /* Si el texto viene con formato (editor Word), se muestra tal cual. */
   if (ricoEsRico(s)) return ricoHtml(s);
   return s.split(/\n\s*\n/).filter(function (x) { return x.trim(); })
-    .map(function (p) { return '<p style="font-size:0.92rem; line-height:1.75; color:#1f2937; margin:0 0 12px;">' + esc(p.trim()) + '</p>'; }).join('');
+    .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
 }
-function pintar(d) {
+function pintarMuralAntiguo(d) {
   var caja = document.getElementById('cronicas');
   caja.innerHTML = (d.cronicas || []).map(function (c) {
     return '<article class="tarjeta" id="' + esc(c.id) + '" style="gap:10px;">' +
@@ -133,6 +174,153 @@ function compartir(t) {
   var txt = '«' + t + '» — La Taberna del Magallanes News';
   try { if (navigator.share) { navigator.share({ title: t, text: txt, url: url }); return; } } catch (e) { }
   try { window.open('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + url), '_blank', 'noopener'); } catch (e) { }
+}
+
+/* =======================================================================
+   LECTOR DE NOTA COMPLETA  ·  cronica.html?c=ID
+   Como en cualquier medio: una nota se lee en su propia página, con la
+   foto grande, el texto íntegro y con formato, la firma y para compartir.
+   ======================================================================= */
+function idDeNota() {
+  try {
+    var q = (location.search || '').split('c=')[1];
+    if (!q) return '';
+    return decodeURIComponent(q.split('&')[0] || '').trim();
+  } catch (e) { return ''; }
+}
+
+function ponerMeta(prop, valor) {
+  try {
+    var sel = prop === 'og' ? 'meta[property="' + valor.nombre + '"]' : 'meta[name="' + valor.nombre + '"]';
+    var el = document.querySelector(sel);
+    if (el) el.setAttribute('content', valor.contenido);
+  } catch (e) { }
+}
+
+function pintarNota(d, id) {
+  var lista = d.cronicas || [];
+  var c = null;
+  for (var i = 0; i < lista.length; i++) { if (lista[i] && lista[i].id === id) { c = lista[i]; break; } }
+  if (!c) { mostrarIndice(d); return; }
+
+  var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'cronica.html?c=' + encodeURIComponent(c.id);
+  var titulo = ricoTexto(c.titulo) || 'Crónica';
+  var entrada = ricoTexto(c.entradilla) || '';
+
+  document.title = titulo + ' · La Taberna del Magallanes News';
+  ponerMeta('og', { nombre: 'og:title', contenido: titulo });
+  ponerMeta('og', { nombre: 'og:description', contenido: entrada.slice(0, 200) });
+  ponerMeta('og', { nombre: 'og:url', contenido: url });
+  ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
+  ponerMeta('twitter', { nombre: 'twitter:description', contenido: entrada.slice(0, 200) });
+  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+
+  var html =
+    '<article class="nota">' +
+      '<a class="volver" href="cronica.html">← Volver al muro de crónicas</a>' +
+      '<span class="nota-etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
+      '<h2 class="nota-titulo">' + ricoHtml(c.titulo) + '</h2>' +
+      '<p class="nota-entradilla">' + ricoHtml(c.entradilla) + '</p>' +
+      '<div class="nota-firma">✍️ <b>' + esc(c.autor || 'Redacción') + '</b>' + (c.fecha ? ' · ' + esc(c.fecha) : '') + ' · La Taberna del Magallanes News</div>' +
+      (c.imagen ? '<div class="nota-foto"><img src="' + esc(c.imagen) + '" alt="' + esc(titulo) + '"></div>' : '') +
+      '<div class="nota-cuerpo">' + parrafos(c.cuerpo || c.entradilla || '') + '</div>' +
+      '<div class="nota-acciones">' +
+        '<a class="boton" href="https://wa.me/?text=' + encodeURIComponent(titulo + '\n\n' + entrada + '\n\n' + url) + '" target="_blank" rel="noopener">💬 WhatsApp</a>' +
+        '<a class="boton sec" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(titulo + ' ' + url) + '" target="_blank" rel="noopener">𝕏 Compartir</a>' +
+        '<a class="boton sec" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" rel="noopener">Facebook</a>' +
+        '<a class="boton sec" href="https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(titulo) + '" target="_blank" rel="noopener">Telegram</a>' +
+        '<button type="button" class="boton sec" id="notaCopiar" data-url="' + esc(url) + '">📋 Copiar enlace</button>' +
+        '<a class="boton sec" href="index.html#modulo-06-cronica">Ver en el portal</a>' +
+      '</div>' +
+      '<div class="nota-pie">' +
+        '<b>La Taberna del Magallanes News</b> · Gaceta sabermétrica, analítica Statcast y scouting de los Navegantes del Magallanes (LVBP).<br>' +
+        'Fundador &amp; Director: Luis Enrique Aponte Guzmán. Esta nota puede reenviarse o citarse dando crédito al diario.' +
+      '</div>' +
+    '</article>';
+
+  /* Lecturas relacionadas */
+  var otras = lista.filter(function (x) { return x && x.id !== c.id; }).slice(0, 3);
+  if (otras.length) {
+    html += '<div style="max-width:760px; margin:2.2rem auto 0; padding-top:1.4rem; border-top:3px double #1a1a1a;">' +
+      '<h3 style="font-family:Playfair Display, Georgia, serif; color:#0b2240; margin:0 0 0.9rem;">📖 Seguir leyendo</h3>' +
+      '<div class="nota-relacionadas">' +
+      otras.map(function (o) {
+        return '<a class="tarjeta" style="text-decoration:none; color:inherit;" href="cronica.html?c=' + encodeURIComponent(o.id) + '">' +
+          (o.imagen ? '<img src="' + esc(o.imagen) + '" alt="" style="width:100%; height:120px; object-fit:cover; border-radius:8px 8px 0 0;">' : '') +
+          '<div style="padding:10px 12px;">' +
+            '<span class="etiqueta">' + esc(o.badge || 'Crónica') + '</span>' +
+            '<h3 style="font-family:Playfair Display, Georgia, serif; font-size:1rem; color:#0b2240; margin:5px 0 0; line-height:1.3;">' + ricoHtml(o.titulo) + '</h3>' +
+          '</div>' +
+        '</a>';
+      }).join('') +
+      '</div></div>';
+  }
+
+  var destino = document.getElementById('cronicas');
+  destino.innerHTML = html;
+  document.getElementById('cargando').className = 'oculto';
+  document.getElementById('lateral').innerHTML = '';
+
+  /* En modo lectura no hace falta el encabezado del índice. */
+  ['sello', 'titulo', 'intro'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  var botonCopiar = document.getElementById('notaCopiar');
+  if (botonCopiar) {
+    botonCopiar.onclick = function () {
+      var enlace = botonCopiar.getAttribute('data-url');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(enlace).then(function () { alert('Enlace copiado:\n' + enlace); });
+      } else { alert('Enlace de la nota:\n' + enlace); }
+    };
+  }
+  window.scrollTo(0, 0);
+}
+
+function mostrarIndice(d) {
+  var caja = document.getElementById('cronicas');
+  caja.innerHTML = (d.cronicas || []).map(function (c) {
+    return '<article class="tarjeta" id="' + esc(c.id) + '" style="gap:10px;">' +
+      (c.imagen ? '<img src="' + esc(c.imagen) + '" alt="" style="width:100%; height:170px; object-fit:cover; border-radius:9px;">' : '') +
+      '<span class="etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
+      '<h3>' + ricoHtml(c.titulo) + '</h3>' +
+      '<p>' + ricoHtml(c.entradilla || '') + '</p>' +
+      '<p class="nota"><b>' + esc(c.autor || 'Redacción') + '</b> · ' + esc(c.fecha || '') + '</p>' +
+      '<span style="display:flex; gap:6px; flex-wrap:wrap;">' +
+        '<a class="boton" href="cronica.html?c=' + encodeURIComponent(c.id) + '">📖 Leer la crónica completa</a>' +
+        '<a class="boton sec" href="index.html#modulo-06-cronica">Ver en el portal</a>' +
+        '<button type="button" class="boton sec" onclick="compartir(\'' + ricoTexto(c.titulo).replace(/'/g, '') + '\')">🔗 Compartir</button>' +
+      '</span>' +
+    '</article>';
+  }).join('');
+  var lat = document.getElementById('lateral');
+  lat.innerHTML = '<div class="tarjeta"><span class="etiqueta">Minuto a minuto</span>' +
+    '<h3>' + esc((d.hilosSeccion && d.hilosSeccion.titulo) || 'Transmisión en vivo') + '</h3>' +
+    (d.jugadas || []).slice(-7).reverse().map(function (j) {
+      return '<div style="border-top:1px solid #e2ded9; padding-top:7px; margin-top:7px;">' +
+        '<span class="etiqueta">' + esc(j.tipo || '') + ' · ' + esc(j.hora || '') + '</span>' +
+        '<div style="font-size:0.84rem; font-weight:700; color:#0b2240;">' + esc(j.titulo || '') + '</div>' +
+        '<div class="nota">' + esc(String(j.texto || '').slice(0, 150)) + '</div>' +
+      '</div>';
+    }).join('') +
+    '</div>' +
+    '<div class="tarjeta"><span class="etiqueta">El Paredón del Fanático</span>' +
+      '<h3>La voz de la afición</h3>' +
+      (d.paredon && d.paredon.mensajes || []).slice(-3).map(function (m) {
+        return '<div style="border-top:1px solid #e2ded9; padding-top:7px; margin-top:7px;">' +
+          '<div style="font-size:0.72rem; font-weight:800; color:#0b2240;">🧱 ' + esc(m.autor || 'Fanático') + '</div>' +
+          '<div class="nota">' + esc(String(m.texto || '').slice(0, 150)) + '</div></div>';
+      }).join('') +
+      '<a class="boton sec" href="index.html#modulo-18-paredon-fanatico">Escribir en El Paredón →</a>' +
+    '</div>';
+}
+
+function pintar(d) {
+  var id = idDeNota();
+  if (id) { pintarNota(d, id); return; }
+  mostrarIndice(d);
 }
 document.addEventListener('DOMContentLoaded', function () {
   fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {
