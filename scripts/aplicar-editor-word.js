@@ -574,8 +574,8 @@ const CAMPOS_RICO = [
   "{ path: 'hero.cita', label: 'Cita destacada (pull quote)', tipo: 'area' },",
   "{ path: 'hero.epigrafe', label: 'Epígrafe de la fotografía', tipo: 'area' },",
   "{ path: 'hero.cuerpo', label: 'Cuerpo completo de la crónica (separe párrafos con línea vacía)', tipo: 'area', filas: true },",
-  "{ path: 'titulo', label: 'Título', tipo: 'area' },",
-  "{ path: 'entradilla', label: 'Entradilla', tipo: 'area' },",
+  "{ path: 'titulo', label: 'Titular', tipo: 'area' },",
+  "{ path: 'entradilla', label: 'Entrada (el párrafo que engancha)', tipo: 'area' },",
   "{ path: 'cuerpo', label: 'Texto completo', tipo: 'area', filas: true },",
   "{ path: 'cabinaVip.subtitulo', label: 'Subtítulo del flyer', tipo: 'area' },",
   "{ path: 'cabinaVip.scoutingRival.notas', label: 'Notas de inteligencia', tipo: 'area' },",
@@ -1149,6 +1149,26 @@ function aplicar(archivo) {
     const cajaNota = document.getElementById('cronicasNota');
     if (cajaNota) cajaNota.style.display = String(s.nota || '').trim() ? '' : 'none';`,
     'render de la nota derecha'
+  );
+
+  /* --- la crónica lleva titular, subtítulo y entrada ------------------------ */
+  h = reemplazar(
+    h,
+    `            { path: 'titulo', label: 'Título', tipo: 'area', rico: true },
+            { path: 'entradilla', label: 'Entradilla', tipo: 'area', rico: true },`,
+    `            { path: 'titulo', label: 'Titular', tipo: 'area', rico: true },
+            { path: 'subtitulo', label: 'Subtítulo', tipo: 'area', rico: true },
+            { path: 'entradilla', label: 'Entrada (el párrafo que engancha)', tipo: 'area', rico: true },`,
+    'titular, subtítulo y entrada de la crónica'
+  );
+
+  /* --- el muro muestra también el subtítulo ------------------------------- */
+  h = reemplazar(
+    h,
+    `          '<h4 style="font-family: \\'Playfair Display\\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.5rem;">' + esc(c.titulo) + '</h4>' +`,
+    `          '<h4 style="font-family: \\'Playfair Display\\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.35rem;">' + esc(c.titulo) + '</h4>' +
+          (c.subtitulo ? '<p style="font-family: \\'EB Garamond\\', Georgia, serif; font-size: 1.02rem; line-height: 1.45; color: #6b5b2e; margin: 0 0 0.55rem; font-style: italic;">' + esc(c.subtitulo) + '</p>' : '') +`,
+    'subtítulo en la tarjeta del muro'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */

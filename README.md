@@ -50,11 +50,19 @@ con formato:
 - **Muro de Crónicas (Módulo 06):** cada crónica tiene su propio editor con
   formato para el **título**, la **entradilla** y el **texto completo**. Con 4
   crónicas publicadas son 12 editores.
-- **Cada nota se lee en su propia página**, como en cualquier medio:
-  `cronica.html?c=<id>`, con la foto grande, el texto íntegro y con formato,
-  la firma, botones para compartir, otras notas para seguir leyendo y sus
-  propias etiquetas sociales. El botón «Leer la nota completa» del muro lleva
-  a ella, y el enlace que se comparte es esa dirección (un permalink).
+- **Cada nota se lee en su propia página**, como en cualquier medio, en
+  **formato longform / reportaje inmersivo**:
+  - **Portada a sangre** con la foto grande, un velo oscuro y encima la
+    etiqueta, el **titular**, el **subtítulo**, la **entrada** y la firma.
+  - **Columna de lectura** con capitular en la primera letra, 730 px de ancho,
+    interlineado de 1,82 y citas destacadas.
+  - **Carril lateral** con el material de la nota (video, MP3, enlace) y los
+    archivos del Centro multimedia del módulo.
+  - Botones para compartir y sus propias etiquetas sociales.
+- En el área de trabajo, cada crónica tiene **titular, subtítulo, entrada y
+  cuerpo**, los cuatro con el editor estilo Word.
+- En el muro, cada tarjeta muestra **la foto, el titular, el subtítulo y la
+  entrada**, y su botón lleva a la nota completa.
 - **Columna derecha del muro de crónicas**: la «Nota de la redacción» es un
   bloque de verdad, no una línea. Se escribe en el **editor estilo Word** (con
   formato, títulos, listas, enlaces) y se publica como una caja lateral con

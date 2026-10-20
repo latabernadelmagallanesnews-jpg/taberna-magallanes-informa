@@ -3185,7 +3185,8 @@
             '<span style="color: #a3a3a3;">Nota ' + (i + 1) + ' de ' + visibles.length + (c.video ? ' · 🎬 video' : '') + '</span>' +
           '</div>' +
           (img ? '<div class="muro-foto" role="button" tabindex="0" onclick="abrirFichaCronica(\'' + esc(c.id) + '\')" title="Abrir la nota completa"><img src="' + esc(img) + '" alt="' + escTexto(c.titulo) + '" loading="lazy"><span class="muro-foto-pie">📸 Foto destacada · toque para abrir la nota</span></div>' : '') +
-          '<h4 style="font-family: \'Playfair Display\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.5rem;">' + esc(c.titulo) + '</h4>' +
+          '<h4 style="font-family: \'Playfair Display\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.35rem;">' + esc(c.titulo) + '</h4>' +
+          (c.subtitulo ? '<p style="font-family: \'EB Garamond\', Georgia, serif; font-size: 1.02rem; line-height: 1.45; color: #6b5b2e; margin: 0 0 0.55rem; font-style: italic;">' + esc(c.subtitulo) + '</p>' : '') +
           '<p style="font-family: \'Inter\', sans-serif; font-size: 0.8125rem; color: #4a4a4a; line-height: 1.55;">' + esc(c.entradilla) + '</p>' +
           (tieneCuerpo ? '<div class="muro-leer"><a class="btn-leer-mas" href="cronica.html?c=' + encodeURIComponent(c.id) + '" title="Leer la nota completa"><span>Leer la nota completa →</span></a></div>' : '') +
           (tieneCuerpo ? '<div class="cronica-texto-expandido" id="cronica-expandida-' + esc(c.id) + '">' + textoAParrafos(c.cuerpo) + '</div>' : '') +
@@ -4238,8 +4239,9 @@
           campos: [
             { path: 'activo', label: 'Publicada', tipo: 'booleano' },
             { path: 'badge', label: 'Etiqueta / Badge', tipo: 'texto' },
-            { path: 'titulo', label: 'Título', tipo: 'area', rico: true },
-            { path: 'entradilla', label: 'Entradilla', tipo: 'area', rico: true },
+            { path: 'titulo', label: 'Titular', tipo: 'area', rico: true },
+            { path: 'subtitulo', label: 'Subtítulo', tipo: 'area', rico: true },
+            { path: 'entradilla', label: 'Entrada (el párrafo que engancha)', tipo: 'area', rico: true },
             { path: 'autor', label: 'Autor', tipo: 'texto' },
             { path: 'imagen', label: 'Imagen destacada (la que se ve al compartir)', tipo: 'imagen' },
             { path: 'video', label: 'Video de la nota (MP4, YouTube o Drive)', tipo: 'video' },
