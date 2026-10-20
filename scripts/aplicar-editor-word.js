@@ -906,6 +906,32 @@ function aplicar(archivo) {
     'compartirEnRed()'
   );
 
+  /* --- la ficha también muestra el enlace (no solo el texto) ------------- */
+  h = reemplazar(
+    h,
+    `          htmlRedesCompartir() +
+        '</div>' +
+        '<div class="ficha-bloque" id="fichaBloqueComentarios">' +`,
+    `          '<div class="compartir-enlace" style="margin:9px 0 10px;">' +
+            '<a class="compartir-enlace-txt" href="' + esc(enlaceFicha(d)) + '" target="_blank" rel="noopener" title="Abrir este enlace">' +
+              '🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(d)) + '</span>' +
+            '</a>' +
+            '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
+          '</div>' +
+          htmlRedesCompartir() +
+        '</div>' +
+        '<div class="ficha-bloque" id="fichaBloqueComentarios">' +`,
+    'enlace de la ficha de contenido'
+  );
+
+  /* --- los enlaces del Paredón también usan la URL pública ---------------- */
+  h = reemplazar(
+    h,
+    `    const url = location.href.split('#')[0] + '#modulo-18-paredon-fanatico';`,
+    `    const url = urlPublicaPortal() + '#modulo-18-paredon-fanatico';`,
+    'compartirParedon()'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

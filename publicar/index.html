@@ -7313,6 +7313,12 @@
               '<span class="cp-desc">' + esc(String(d.sub || d.texto || '').slice(0, 190)) + '</span>' +
             '</div>' +
           '</div>' +
+          '<div class="compartir-enlace" style="margin:9px 0 10px;">' +
+            '<a class="compartir-enlace-txt" href="' + esc(enlaceFicha(d)) + '" target="_blank" rel="noopener" title="Abrir este enlace">' +
+              '🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(d)) + '</span>' +
+            '</a>' +
+            '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
+          '</div>' +
           htmlRedesCompartir() +
         '</div>' +
         '<div class="ficha-bloque" id="fichaBloqueComentarios">' +
@@ -9913,7 +9919,7 @@
   function compartirParedon(id) {
     const m = mensajeParedonPorId(id);
     if (!m) return;
-    const url = location.href.split('#')[0] + '#modulo-18-paredon-fanatico';
+    const url = urlPublicaPortal() + '#modulo-18-paredon-fanatico';
     const texto = '«' + m.texto + '» — ' + (m.autor || 'Fanático') + ' en El Paredón del Fanático · La Taberna del Magallanes News';
     try {
       if (navigator.share) { navigator.share({ title: 'El Paredón del Fanático', text: texto, url: url }); return; }
