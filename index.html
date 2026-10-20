@@ -713,81 +713,9 @@
       .af-form input[type="text"] { flex: 1 1 100%; }
     }
 
-    /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
-    .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
-    .cms-rico-toolbar { display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 6px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); border-bottom: 1px solid #cbd5e1; }
-    .cms-rico-grupo { display: flex; gap: 2px; align-items: center; padding: 0 6px; border-right: 1px solid #d7dee8; }
-    .cms-rico-grupo:last-child { border-right: none; }
-    .cms-rico-btn { min-width: 29px; height: 29px; padding: 0 6px; border: 1px solid transparent; background: transparent; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-family: 'Inter', sans-serif; color: #334155; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
-    .cms-rico-btn:hover { background: #ffffff; border-color: #cbd5e1; color: #0b2240; }
-    .cms-rico-btn:active { background: #e2e8f0; }
-    .cms-rico-btn:focus-visible { outline: 2px solid #c59b27; outline-offset: 1px; }
-    .cms-rico-sel { border: 1px solid #cbd5e1; border-radius: 5px; height: 29px; font-size: 0.72rem; font-family: 'Inter', sans-serif; color: #0b2240; background: #ffffff; padding: 0 4px; }
-    .cms-rico-color { width: 27px; height: 27px; padding: 0; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; cursor: pointer; }
-    .cms-rico-editor { min-height: 168px; max-height: 520px; overflow-y: auto; padding: 0.95rem 1.1rem; outline: none; background: #ffffff; color: #1f2937; font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; }
-    .cms-rico-editor:focus { background: #fffdf7; box-shadow: inset 0 0 0 2px rgba(197,155,39,0.35); }
-    .cms-rico-editor:empty::before { content: attr(data-marcador); color: #94a3b8; font-style: italic; }
-    .cms-rico-editor h1, .cms-rico-editor h2, .cms-rico-editor h3, .cms-rico-editor h4, .cms-rico-editor h5, .cms-rico-editor h6 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; line-height: 1.25; margin: 0.7em 0 0.35em; font-weight: 800; }
-    .cms-rico-editor h2 { font-size: 1.35rem; } .cms-rico-editor h3 { font-size: 1.15rem; } .cms-rico-editor h4 { font-size: 1.02rem; }
-    .cms-rico-editor p { margin: 0 0 0.7em; }
-    .cms-rico-editor ul, .cms-rico-editor ol { margin: 0.4em 0 0.7em; padding-left: 1.5rem; }
-    .cms-rico-editor li { margin-bottom: 0.25em; }
-    .cms-rico-editor blockquote { border-left: 4px solid #c59b27; background: #fffdf5; margin: 0.7em 0; padding: 0.5em 0.9em; font-style: italic; color: #4a3f1c; border-radius: 0 8px 8px 0; }
-    .cms-rico-editor a { color: #0b2240; text-decoration: underline; }
-    .cms-rico-editor img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.4em 0; }
-    .cms-rico-editor hr { border: 0; border-top: 1px solid #dcd9d9; margin: 0.9em 0; }
-    .cms-rico-editor table { border-collapse: collapse; width: 100%; margin: 0.6em 0; font-size: 0.9em; }
-    .cms-rico-editor td, .cms-rico-editor th { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; }
-    .cms-rico-editor mark { background: #ffe9a8; padding: 1px 2px; border-radius: 3px; }
-    .cms-rico-pie { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 6px 8px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 0.66rem; color: #64748b; flex-wrap: wrap; }
-    .cms-rico-accion { font-family: 'Inter', sans-serif; font-size: 0.66rem; font-weight: 700; border: 1px solid #cbd5e1; background: #ffffff; color: #0b2240; border-radius: 5px; padding: 4px 9px; cursor: pointer; }
-    .cms-rico-accion:hover { background: #0b2240; color: #ffcc00; border-color: #0b2240; }
-    .cms-rico-accion.activo { background: #0b2240; color: #ffcc00; border-color: #0b2240; }
-    .cms-rico-contador { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; color: #64748b; }
-    .cms-rico-plano { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 11px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.55; resize: vertical; }
-    .cms-rico-nota { font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block; line-height: 1.5; }
-    .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
 
-    /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
-    .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
-    .cms-rico-toolbar { display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 6px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); border-bottom: 1px solid #cbd5e1; }
-    .cms-rico-grupo { display: flex; gap: 2px; align-items: center; padding: 0 6px; border-right: 1px solid #d7dee8; }
-    .cms-rico-grupo:last-child { border-right: none; }
-    .cms-rico-btn { min-width: 29px; height: 29px; padding: 0 6px; border: 1px solid transparent; background: transparent; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-family: 'Inter', sans-serif; color: #334155; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
-    .cms-rico-btn:hover { background: #ffffff; border-color: #cbd5e1; color: #0b2240; }
-    .cms-rico-btn:active { background: #e2e8f0; }
-    .cms-rico-btn:focus-visible { outline: 2px solid #c59b27; outline-offset: 1px; }
-    .cms-rico-sel { border: 1px solid #cbd5e1; border-radius: 5px; height: 29px; font-size: 0.72rem; font-family: 'Inter', sans-serif; color: #0b2240; background: #ffffff; padding: 0 4px; }
-    .cms-rico-color { width: 27px; height: 27px; padding: 0; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; cursor: pointer; }
-    .cms-rico-editor { min-height: 168px; max-height: 520px; overflow-y: auto; padding: 0.95rem 1.1rem; outline: none; background: #ffffff; color: #1f2937; font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; }
-    .cms-rico-editor:focus { background: #fffdf7; box-shadow: inset 0 0 0 2px rgba(197,155,39,0.35); }
-    .cms-rico-editor:empty::before { content: attr(data-marcador); color: #94a3b8; font-style: italic; }
-    .cms-rico-editor h1, .cms-rico-editor h2, .cms-rico-editor h3, .cms-rico-editor h4, .cms-rico-editor h5, .cms-rico-editor h6 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; line-height: 1.25; margin: 0.7em 0 0.35em; font-weight: 800; }
-    .cms-rico-editor h2 { font-size: 1.35rem; } .cms-rico-editor h3 { font-size: 1.15rem; } .cms-rico-editor h4 { font-size: 1.02rem; }
-    .cms-rico-editor p { margin: 0 0 0.7em; }
-    .cms-rico-editor ul, .cms-rico-editor ol { margin: 0.4em 0 0.7em; padding-left: 1.5rem; }
-    .cms-rico-editor li { margin-bottom: 0.25em; }
-    .cms-rico-editor blockquote { border-left: 4px solid #c59b27; background: #fffdf5; margin: 0.7em 0; padding: 0.5em 0.9em; font-style: italic; color: #4a3f1c; border-radius: 0 8px 8px 0; }
-    .cms-rico-editor a { color: #0b2240; text-decoration: underline; }
-    .cms-rico-editor img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.4em 0; }
-    .cms-rico-editor hr { border: 0; border-top: 1px solid #dcd9d9; margin: 0.9em 0; }
-    .cms-rico-editor table { border-collapse: collapse; width: 100%; margin: 0.6em 0; font-size: 0.9em; }
-    .cms-rico-editor td, .cms-rico-editor th { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; }
-    .cms-rico-editor mark { background: #ffe9a8; padding: 1px 2px; border-radius: 3px; }
-    .cms-rico-pie { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 6px 8px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 0.66rem; color: #64748b; flex-wrap: wrap; }
-    .cms-rico-accion { font-family: 'Inter', sans-serif; font-size: 0.66rem; font-weight: 700; border: 1px solid #cbd5e1; background: #ffffff; color: #0b2240; border-radius: 5px; padding: 4px 9px; cursor: pointer; }
-    .cms-rico-accion:hover { background: #0b2240; color: #ffcc00; border-color: #0b2240; }
-    .cms-rico-accion.activo { background: #0b2240; color: #ffcc00; border-color: #0b2240; }
-    .cms-rico-contador { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; color: #64748b; }
-    .cms-rico-plano { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 11px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.55; resize: vertical; }
-    .cms-rico-nota { font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block; line-height: 1.5; }
-    /* Enlace que se va a compartir: visible y copiable */
-    .compartir-enlace { display: flex; gap: 8px; align-items: center; justify-content: space-between; background: #f6f3f3; border: 1px solid #e5e5e5; border-radius: 9px; padding: 8px 10px; margin: 0 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #0b2240; }
-    .compartir-enlace-txt { min-width: 0; word-break: break-all; line-height: 1.5; }
-    .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
-    .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
-    .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
 
+/*__CSS_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
     .cms-rico-toolbar { display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 6px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); border-bottom: 1px solid #cbd5e1; }
@@ -828,6 +756,10 @@
     .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
     .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
     .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
+    /* Entrada discreta a la sala de redacción, en el pie del diario */
+    footer a[href="redaccion-cms.html"] { opacity: 0.55; transition: opacity .15s ease; }
+    footer a[href="redaccion-cms.html"]:hover { opacity: 1; color: #0b2240 !important; text-decoration: underline !important; }
+/*__CSS_FIN__*/
 </style>
 </head>
 
@@ -1779,7 +1711,8 @@
 
       <div class="newspaper-subdivider"></div>
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #777777; gap: 0.5rem;">
-        <div><span id="footerCopyright">© 2026 La Taberna del Magallanes News. Todos los derechos reservados. Dirección General: Luis Enrique Aponte Guzmán.</span></div>
+        <div><span id="footerCopyright">© 2026 La Taberna del Magallanes News. Todos los derechos reservados. Dirección General: Luis Enrique Aponte Guzmán.</span>
+          <a href="redaccion-cms.html" title="Acceso privado de la redacción (Director y Periodistas)" style="color:#9a9a9a; text-decoration:none; margin-left:10px; white-space:nowrap;">✍️ Redacción</a></div>
         <div id="footerLema" style="font-style: italic; font-family: 'EB Garamond', serif; font-size: 0.85rem; color: #444444;">“Investigar con rigor. Explicar con claridad. Analizar con métricas.”</div>
       </div>
     </footer>

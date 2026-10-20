@@ -52,6 +52,37 @@ function reemplazar(texto, viejo, nuevo, etiqueta, opciones) {
   return texto.split(viejo).join(nuevo);
 }
 
+/* El bloque de CSS se reinstala COMPLETO: quita cualquier copia que haya
+   (marcada o de versiones anteriores) y deja exactamente una. Así el script
+   sigue siendo idempotente aunque se modifique el CSS. */
+function instalarCss(texto, css) {
+  const ini = '/*__CSS_INICIO__*/';
+  const fin = '/*__CSS_FIN__*/';
+  const inicioLegacy = '    /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */';
+
+  let i = texto.indexOf(ini);
+  while (i !== -1) {
+    const j = texto.indexOf(fin, i);
+    if (j === -1) break;
+    /* Se quita también el salto de línea que sigue a la marca, para que el
+       resultado sea idéntico al original. */
+    texto = texto.slice(0, i) + texto.slice(j + fin.length).replace(/^\n/, '');
+    i = texto.indexOf(ini);
+  }
+
+  /* Copias antiguas (sin marcas): se quitan TODAS, ya que van antes de </style> */
+  const cierre = texto.indexOf('</style>');
+  if (cierre === -1) throw new Error('No se encontró </style>');
+  let legado = texto.lastIndexOf(inicioLegacy);
+  while (legado !== -1 && legado < cierre) {
+    texto = texto.slice(0, legado) + texto.slice(cierre);
+    legado = texto.lastIndexOf(inicioLegacy);
+  }
+
+  const p = texto.indexOf('</style>');
+  return texto.slice(0, p) + css + texto.slice(p);
+}
+
 /* -------------------------------------------------------------------------- */
 /* Marcas de los bloques inyectados                                           */
 /* -------------------------------------------------------------------------- */
@@ -65,7 +96,7 @@ const MARCA_EDITOR_FIN = '/*__EDITOR_FIN__*/';
 /* 1 · CSS del editor estilo Word                                             */
 /* -------------------------------------------------------------------------- */
 
-const CSS_WORD = `
+const CSS_WORD = `/*__CSS_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
     .cms-rico-toolbar { display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 6px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); border-bottom: 1px solid #cbd5e1; }
@@ -106,6 +137,10 @@ const CSS_WORD = `
     .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
     .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
     .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
+    /* Entrada discreta a la sala de redacción, en el pie del diario */
+    footer a[href="redaccion-cms.html"] { opacity: 0.55; transition: opacity .15s ease; }
+    footer a[href="redaccion-cms.html"]:hover { opacity: 1; color: #0b2240 !important; text-decoration: underline !important; }
+/*__CSS_FIN__*/
 `;
 
 /* -------------------------------------------------------------------------- */
@@ -562,13 +597,7 @@ function aplicar(archivo) {
   const original = h;
 
   /* --- CSS ------------------------------------------------------------- */
-  h = reemplazar(
-    h,
-    '</style>',
-    CSS_WORD + '</style>',
-    'cierre del <style> principal',
-    { todas: true }
-  );
+  h = instalarCss(h, CSS_WORD);
 
   /* --- esc() pasa a entender el contenido enriquecido ------------------- */
   h = reemplazar(
@@ -1019,6 +1048,15 @@ function aplicar(archivo) {
 
   function buscarRepeater(pathLista) {`,
     'enlaceDeElemento()'
+  );
+
+  /* --- entrada visible a la redacción, discreta para el lector ----------- */
+  h = reemplazar(
+    h,
+    `        <div><span id="footerCopyright">© 2026 La Taberna del Magallanes News. Todos los derechos reservados. Dirección General: Luis Enrique Aponte Guzmán.</span></div>`,
+    `        <div><span id="footerCopyright">© 2026 La Taberna del Magallanes News. Todos los derechos reservados. Dirección General: Luis Enrique Aponte Guzmán.</span>
+          <a href="redaccion-cms.html" title="Acceso privado de la redacción (Director y Periodistas)" style="color:#9a9a9a; text-decoration:none; margin-left:10px; white-space:nowrap;">✍️ Redacción</a></div>`,
+    'enlace de redacción en el pie de página'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */

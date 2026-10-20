@@ -126,5 +126,22 @@ if (fs.existsSync(rico)) {
   else ok(pag + ': usa el lector de formato');
 });
 
+/* La puerta de la redacción debe existir en el sitio publicado y enlazarse
+   desde el pie del portal, para que siempre se pueda llegar al CMS. */
+console.log('\n=== puerta de la redacción ===');
+[['publicar/redaccion-cms.html', 'publicar/'], ['redaccion-cms.html', 'raíz/']].forEach((par) => {
+  const f = path.join(RAIZ, par[0]);
+  if (!fs.existsSync(f)) { ko('falta ' + par[0]); return; }
+  const h = fs.readFileSync(f, 'utf8');
+  if (h.indexOf('index.html?cms=1') === -1) ko(par[0] + ': no abre el CMS');
+  else ok(par[0] + ': abre el CMS');
+});
+if (pubH.indexOf('href="redaccion-cms.html"') !== -1) ok('el pie del portal enlaza a la puerta de redacción');
+else ko('el pie del portal no enlaza a la puerta de redacción');
+if (pubH.indexOf('copiarEnlaceItem') !== -1) ok('el CMS permite copiar el enlace de cada elemento');
+else ko('falta el botón de enlace en el CMS');
+if (pubH.indexOf('compartir-enlace-txt') !== -1) ok('la hoja de compartir muestra el enlace');
+else ko('la hoja de compartir no muestra el enlace');
+
 console.log('\n' + (fallos ? '✗ ' + fallos + ' problema(s)' : '✓ Todo verificado'));
 process.exitCode = fallos ? 1 : 0;

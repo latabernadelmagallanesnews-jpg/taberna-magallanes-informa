@@ -87,6 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
     if (location.search.indexOf('auto=1') !== -1 || location.hash === '#entrar') { irAlCMS(); return; }
   } catch (e) { }
   t.className = 'oculto';
+
+  /* Si quien llega es la redacción, la puerta se abre sola: no tiene que
+     buscar ningún botón. Un lector que llegue aquí ve esta misma pantalla
+     y, sin la clave, no entra a nada. */
+  try {
+    var recordada = JSON.parse(localStorage.getItem('taberna_rol_sesion_v1') || 'null');
+    if (recordada && recordada.rol && (!recordada.expira || recordada.expira > Date.now())) {
+      setTimeout(function () { irAlCMS(); }, 400);
+    }
+  } catch (e) { }
 });
 
 </script>
