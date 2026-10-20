@@ -99,6 +99,11 @@ const CSS_WORD = `
     .cms-rico-contador { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; color: #64748b; }
     .cms-rico-plano { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 11px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.55; resize: vertical; }
     .cms-rico-nota { font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block; line-height: 1.5; }
+    /* Enlace que se va a compartir: visible y copiable */
+    .compartir-enlace { display: flex; gap: 8px; align-items: center; justify-content: space-between; background: #f6f3f3; border: 1px solid #e5e5e5; border-radius: 9px; padding: 8px 10px; margin: 0 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #0b2240; }
+    .compartir-enlace-txt { min-width: 0; word-break: break-all; line-height: 1.5; }
+    .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
+    .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
     .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
 `;
 
@@ -719,6 +724,177 @@ function aplicar(archivo) {
     if (configurada && !esEjemplo && !esLocal) return configurada;
     return lugar || configurada || 'https://latabernadelmagallanes.news';`,
     'urlPublicaPortal()'
+  );
+
+  h = reemplazar(
+    h,
+    `    const img = urlDestacada(fichaActual);
+    const titulo = fichaActual.titulo || 'La Taberna del Magallanes News';`,
+    `    const img = imagenDeFicha(fichaActual);
+    const titulo = fichaActual.titulo || 'La Taberna del Magallanes News';`,
+    'imagen de la hoja de compartir'
+  );
+
+  h = reemplazar(
+    h,
+    `      '<div style="margin-top:0.7rem;">' +
+        '<button type="button" class="red-btn" style="width:100%;" onclick="cerrarHojaCompartir(); abrirFicha(fichaActual)">💬 Ver y escribir comentarios</button>' +
+      '</div>';`,
+    `      '<div style="margin-top:0.7rem; display:flex; gap:6px; flex-wrap:wrap;">' +
+        '<button type="button" class="red-btn" style="flex:1; min-width:150px;" onclick="descargarImagenFicha()">🖼️ Descargar la imagen</button>' +
+        '<button type="button" class="red-btn" style="flex:1; min-width:150px;" onclick="cerrarHojaCompartir(); abrirFicha(fichaActual)">💬 Ver y escribir comentarios</button>' +
+      '</div>';`,
+    'botones de la hoja de compartir'
+  );
+
+  /* --- la hoja de compartir debe MOSTRAR el enlace, no solo el texto ---- */
+  h = reemplazar(
+    h,
+    `      '<p class="compartir-ayuda">Elija su red social o muestre el <b>código QR estilo Instagram</b> para que otro lo escanee con la cámara del teléfono.</p>' +`,
+    `      '<div class="compartir-enlace">' +
+        '<span class="compartir-enlace-txt">🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(fichaActual)) + '</span></span>' +
+        '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
+      '</div>' +
+      '<p class="compartir-ayuda">Elija su red social o muestre el <b>código QR estilo Instagram</b> para que otro lo escanee con la cámara del teléfono.</p>' +`,
+    'hoja de compartir'
+  );
+
+  h = reemplazar(
+    h,
+    `  function cerrarHojaCompartir() {`,
+    `  /* Copia el enlace del contenido que se está compartiendo. */
+  function copiarEnlaceFicha() {
+    const enlace = enlaceFicha(fichaActual);
+    copiarTextoAlPortapapeles(enlace, '📋 Enlace copiado al portapapeles');
+  }
+  function cerrarHojaCompartir() {`,
+    'copiarEnlaceFicha()'
+  );
+
+  /* --- la vista previa Open Graph también muestra la dirección completa -- */
+  h = reemplazar(
+    h,
+    `          <p id="ogModalDesc" style="font-size: 0.75rem; color: #4b5563; line-height: 1.45; margin-bottom: 8px;">
+            Investigación especial: Análisis de comando y telemetría de lanzamientos en Valencia.
+          </p>`,
+    `          <p id="ogModalDesc" style="font-size: 0.75rem; color: #4b5563; line-height: 1.45; margin-bottom: 8px;">
+            Investigación especial: Análisis de comando y telemetría de lanzamientos en Valencia.
+          </p>
+          <p id="ogModalUrl" style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #6b7280; word-break: break-all; margin: 0 0 8px; user-select: all; -webkit-user-select: all;">—</p>`,
+    'vista previa Open Graph (elemento)'
+  );
+
+  h = reemplazar(
+    h,
+    `    try { setTxt('ogModalDominio', new URL(urlPublicaPortal()).hostname); } catch (e) { }`,
+    `    try { setTxt('ogModalDominio', new URL(urlPublicaPortal()).hostname); } catch (e) { }
+    setTxt('ogModalUrl', urlPublicaPortal());`,
+    'vista previa Open Graph (contenido)'
+  );
+
+  /* --- compartir: imagen + entrada + enlace en TODAS las plataformas ------ */
+  h = reemplazar(
+    h,
+    `  function compartirEnRed(red) {
+    const d = fichaActual || {};
+    const enlace = enlaceFicha(d);
+    const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
+    const texto = aTextoPlano(d.sub || d.texto || titulo).slice(0, 220);
+    const destacada = urlDestacada(d);
+    const abre = function (url) { window.open(url, '_blank', 'noopener,noreferrer,width=820,height=680'); };
+    if (red === 'whatsapp') return abre('https://wa.me/?text=' + encodeURIComponent(titulo + '\\n' + texto + '\\n' + enlace));
+    if (red === 'facebook') return abre('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(enlace) + '&quote=' + encodeURIComponent(titulo));
+    if (red === 'x') return abre('https://twitter.com/intent/tweet?text=' + encodeURIComponent(titulo) + '&url=' + encodeURIComponent(enlace));
+    if (red === 'telegram') return abre('https://t.me/share/url?url=' + encodeURIComponent(enlace) + '&text=' + encodeURIComponent(titulo));
+    if (red === 'linkedin') return abre('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(enlace));
+    if (red === 'pinterest') return abre('https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(enlace) + '&media=' + encodeURIComponent(destacada) + '&description=' + encodeURIComponent(titulo));
+    if (red === 'correo') return (window.location.href = 'mailto:?subject=' + encodeURIComponent(titulo) + '&body=' + encodeURIComponent(texto + '\\n\\n' + enlace));
+    if (red === 'copiar') return copiarTextoAlPortapapeles(enlace, '📋 Enlace copiado. La imagen destacada se adjunta al compartir.');
+    if (red === 'nativo') {
+      if (navigator.share) {
+        navigator.share({ title: titulo, text: texto, url: enlace }).catch(function () { });
+      } else {
+        copiarTextoAlPortapapeles(enlace, '📋 Enlace copiado (su navegador no tiene compartir nativo)');
+      }
+      return;
+    }
+    if (red === 'qr') return mostrarQRSocial(titulo, enlace, 'Escanee para abrir el contenido compartido.');
+    if (red === 'og') return mostrarModalOG(titulo, texto, destacada);
+  }`,
+    `  /* Imagen destacada del contenido que se comparte (con respaldo general). */
+  function imagenDeFicha(d) {
+    return urlDestacada(d) || (portalState.seo && portalState.seo.ogImagen) || '';
+  }
+
+  /* Texto completo para compartir: TÍTULO + ENTRADA + ENLACE (+ imagen). */
+  function textoParaCompartir(d, conImagen) {
+    const t = aTextoPlano((d && d.titulo) || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
+    const sub = aTextoPlano(String((d && (d.sub || d.texto)) || '')).slice(0, 320);
+    const enlace = enlaceFicha(d);
+    const partes = [t, sub, enlace];
+    if (conImagen) {
+      const img = imagenDeFicha(d);
+      if (img) partes.push(img);
+    }
+    return partes.filter(function (x) { return x; }).join('\\n\\n');
+  }
+
+  /* Prepara la imagen como archivo para poder ADJUNTARLA al compartir
+     nativo del teléfono (WhatsApp, Instagram, mensajes...). */
+  async function archivoImagenCompartir(url) {
+    if (!url) return null;
+    try {
+      const resp = await fetch(url, { mode: 'cors', credentials: 'omit' });
+      if (!resp.ok) return null;
+      const blob = await resp.blob();
+      if (!blob || !blob.type || blob.type.indexOf('image/') !== 0) return null;
+      const nombre = 'taberna-' + Date.now() + '.' + (blob.type.split('/')[1] || 'jpg');
+      return new File([blob], nombre, { type: blob.type });
+    } catch (e) { return null; }
+  }
+
+  async function compartirEnRed(red) {
+    const d = fichaActual || {};
+    const enlace = enlaceFicha(d);
+    const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
+    const texto = aTextoPlano(String(d.sub || d.texto || titulo)).slice(0, 320);
+    const destacada = imagenDeFicha(d);
+    const cuerpo = textoParaCompartir(d, true);
+    const abre = function (url) { window.open(url, '_blank', 'noopener,noreferrer,width=820,height=680'); };
+
+    if (red === 'whatsapp') return abre('https://wa.me/?text=' + encodeURIComponent(cuerpo));
+    if (red === 'facebook') return abre('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(enlace) + '&quote=' + encodeURIComponent(cuerpo));
+    if (red === 'x') return abre('https://twitter.com/intent/tweet?text=' + encodeURIComponent(cuerpo) + '&url=' + encodeURIComponent(enlace));
+    if (red === 'telegram') return abre('https://t.me/share/url?url=' + encodeURIComponent(enlace) + '&text=' + encodeURIComponent(cuerpo));
+    if (red === 'linkedin') return abre('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(enlace));
+    if (red === 'pinterest') return abre('https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(enlace) + '&media=' + encodeURIComponent(destacada) + '&description=' + encodeURIComponent(cuerpo));
+    if (red === 'correo') return (window.location.href = 'mailto:?subject=' + encodeURIComponent(titulo) + '&body=' + encodeURIComponent(cuerpo));
+    if (red === 'copiar') return copiarTextoAlPortapapeles(cuerpo, '📋 Título, entrada, enlace e imagen copiados');
+    if (red === 'nativo') {
+      /* En el teléfono se intenta ADJUNTAR la imagen, que es lo que hace
+         que el mensaje salga completo en WhatsApp o Instagram. */
+      if (navigator.share) {
+        if (navigator.canShare && destacada) {
+          try {
+            const archivo = await archivoImagenCompartir(destacada);
+            if (archivo && navigator.canShare({ files: [archivo] })) {
+              await navigator.share({ title: titulo, text: texto, url: enlace, files: [archivo] });
+              return;
+            }
+          } catch (e) { }
+        }
+        try {
+          await navigator.share({ title: titulo, text: cuerpo, url: enlace });
+        } catch (e) { }
+        return;
+      }
+      copiarTextoAlPortapapeles(cuerpo, '📋 Título, entrada y enlace copiados (su navegador no tiene compartir nativo)');
+      return;
+    }
+    if (red === 'qr') return mostrarQRSocial(titulo, enlace, 'Escanee para abrir el contenido compartido.');
+    if (red === 'og') return mostrarModalOG(titulo, texto, destacada);
+  }`,
+    'compartirEnRed()'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */

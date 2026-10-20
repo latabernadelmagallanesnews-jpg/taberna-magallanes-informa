@@ -347,8 +347,14 @@ Memes · Radio y Podcast · Círculo VIP · **El Paredón del Fanático** · Cha
 Fanático · Historias estilo Instagram · Pie de página.
 
 Además: carga multimedia (imagen, audio, video, PDF) en todos los módulos,
-comentarios y reacciones con emojis, compartir en redes, códigos QR, muro de
+comentarios y reacciones con emojis, códigos QR, muro de
 crónicas en carrusel y moderación.
+
+**Compartir sale completo en todas las redes:** título, entrada, enlace con su
+ancla (`#cronica-<id>`) y la imagen destacada. La hoja de compartir muestra el
+enlace exacto que se va a mandar, con botón para copiarlo y otro para
+descargar la imagen. En el teléfono, **Compartir del teléfono** adjunta la
+imagen real al mensaje (WhatsApp, Instagram, mensajes).
 
 ---
 
