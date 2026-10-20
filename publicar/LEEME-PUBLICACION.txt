@@ -19,6 +19,8 @@ QUÉ HAY EN ESTA CARPETA
                             textos con el formato del editor Word).
   · ESPECIFICACIONES-MEDIA.md  formatos, tamaños y medidas de las fotos,
                             banners, videos y audios del portal.
+  · EJEMPLO-LONGFORM.html    referencia comentada del diseño de dos niveles
+                            (tarjeta de portada y nota a ancho completo).
   · robots.txt ............ permiso para buscadores (opcional, recomendado)
   · .nojekyll ............. necesario en GitHub Pages (evita que filtre archivos)
   · README.md ............. instrucciones para GitHub Pages

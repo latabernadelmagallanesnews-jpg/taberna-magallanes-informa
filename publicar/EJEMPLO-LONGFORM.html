@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nivel 1 y Nivel 2 · Teaser y Longform · La Taberna del Magallanes News</title>
+<meta name="description" content="Ejemplo de referencia del flujo editorial de dos niveles: tarjeta/teaser de portada y página de destino a ancho completo en formato longform.">
+
+<!--
+  ===========================================================================
+   LA TABERNA DEL MAGALLANES NEWS · FLUJO EDITORIAL DE DOS NIVELES
+  ===========================================================================
+
+  NIVEL 1 · TARJETA / TEASER DE PORTADA
+    · Cinta de categoría (cintillo superior)
+    · Titular destacado
+    · Subtítulo descriptivo
+    · Párrafo de entrada (lead)
+    · Botón de llamado a la acción «Leer reportaje completo»
+    · Sin cuadros ni bordes recargados: solo aire y tipografía editorial
+
+  NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
+    · Sin barras laterales
+    · Columna de lectura de 780-850 px (lo cómodo para el ojo)
+    · Las imágenes y las infografías pueden salir a ancho completo (full-bleed)
+    · Portada inmersiva con titular, subtítulo, entrada y firma
+    · Citas en bloque, listas y ficha técnica de contacto al final
+
+  Este archivo es la REFERENCIA del diseño: el portal ya lo usa.
+  Copie los bloques que necesite.
+
+  NOTAS DE IMPLEMENTACIÓN
+    · Todo el texto es semántico: <article>, <header>, <figure>, <blockquote>,
+      <time>, <address>. El contorno se lee igual sin estilos.
+    · Las medidas de lectura usan clamp() para escalar con el viewport.
+    · El full-bleed se logra con margin-left:50% + translateX(-50%): el
+      elemento sale de la columna sin tocar el HTML.
+    · Se respeta prefers-reduced-motion y se_visible el foco con
+      :focus-visible para navegación por teclado.
+  ===========================================================================
+-->
+
+<style>
+/* ==========================================================================
+   1 · TOKENS DE DISEÑO
+   Un solo lugar para cambiar la identidad del diario.
+   ========================================================================== */
+:root {
+  /* Color */
+  --tinta:        #11161d;   /* texto principal            */
+  --tinta-media:  #3d4654;   /* texto secundario            */
+  --tinta-tenue:  #6b7686;   /* texto terciario / metadatos */
+  --papel:        #fbfaf7;   /* fondo de la página          */
+  --papel-hondo:  #f3f1ec;   /* fondo alterno               */
+  --regla:        #e2ded6;   /* líneas y separadores        */
+  --acento:       #8c1d2f;   /* rojo de diario              */
+  --oro:          #c59b27;   /* dorado de la casa           */
+  --marino:       #0b2240;   /* azul marino institucional   */
+  --noche:        #0b1118;   /* velo de las portadas        */
+
+  /* Tipografía */
+  --sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif:   'EB Garamond', Georgia, 'Times New Roman', serif;
+  --display: 'Playfair Display', Georgia, serif;
+
+  /* Medidas */
+  --medida:        52rem;   /* 832 px: ancho cómodo de lectura  */
+  --medida-texto:  42rem;   /* 672 px: columna de texto        */
+  --ancho-maximo:  1280px;  /* ancho máximo de la página       */
+  --sangria:       clamp(1.1rem, .35vw + 1rem, 1.3rem); /* ritmo vertical */
+  --gutter:        clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ==========================================================================
+   2 · BASE
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; background: var(--papel); color: var(--tinta); }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  line-height: 1.6;
+  background: var(--papel);
+  -webkit-font-smoothing: antialiased;
+}
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: var(--marino); }
+:focus-visible { outline: 2px solid var(--oro); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ==========================================================================
+   3 · NIVEL 1 · TARJETA / TEASER DE PORTADA
+   ========================================================================== */
+.teaser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* La imagen va a sangre del texto: sin marcos, sin sombras. */
+.teaser-imagen { display: block; margin-bottom: 1.1rem; }
+.teaser-imagen img {
+  width: 100%;
+  aspect-ratio: 16 / 9;      /* reserva el espacio y evita el salto de maquetación */
+  object-fit: cover;
+}
+
+/* Cinta superior: categoría a la izquierda, posición a la derecha. */
+.teaser-cintillo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+  margin: 0 0 .7rem;
+  font-size: .66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+}
+.teaser-categoria { color: var(--acento); }
+.teaser-numero { color: var(--tinta-tenue); font-weight: 600; letter-spacing: .04em; }
+
+/* Titular: la voz más fuerte del nivel 1. */
+.teaser-titular {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -.015em;
+  color: var(--marino);
+  margin: 0 0 .5rem;
+  text-wrap: balance;          /* reparte el titular en líneas equilibradas */
+}
+
+/* Subtítulo: el ángulo de la nota. */
+.teaser-subtitulo {
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: #6b5b2e;
+  margin: 0 0 .75rem;
+}
+
+/* Entrada: el párrafo que engancha. */
+.teaser-lead {
+  font-size: .95rem;
+  line-height: 1.65;
+  color: var(--tinta-media);
+  margin: 0 0 1.15rem;
+}
+
+/* Llamado a la acción: subrayado dorado, sin caja. */
+.teaser-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  align-self: flex-start;
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--marino);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 2px solid var(--oro);
+  transition: gap .18s ease, color .18s ease, border-color .18s ease;
+}
+.teaser-cta:hover { gap: .8rem; color: var(--acento); border-bottom-color: var(--acento); }
+
+/* ==========================================================================
+   4 · NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO
+   ========================================================================== */
+.longform { max-width: var(--ancho-maximo); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* --- 4.1 · Portada inmersiva ------------------------------------------- */
+.longform-portada {
+  position: relative;
+  margin: 0 0 clamp(2rem, 4vw, 3rem);
+  background: var(--noche);
+}
+.longform-portada-foto { width: 100%; max-height: 74vh; overflow: hidden; }
+.longform-portada-foto img { width: 100%; height: 100%; max-height: 74vh; object-fit: cover; }
+/* Velo: garantiza contraste al texto sobre cualquier foto. */
+.longform-portada-velo {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(11,17,24,.12) 0%, rgba(11,17,24,.5) 46%, rgba(11,17,24,.94) 100%);
+}
+.longform-portada-texto { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(1.2rem, 3vw, 2rem); }
+.longform-etiqueta {
+  display: inline-block;
+  font-size: .64rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: #ffcc00; margin-bottom: .75rem;
+}
+.longform-titular {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5.2vw, 3.5rem);
+  line-height: 1.06;
+  font-weight: 900;
+  letter-spacing: -.022em;
+  color: #fff;
+  margin: 0 0 .55rem;
+  max-width: 22ch;
+  text-shadow: 0 2px 20px rgba(0,0,0,.5);
+  text-wrap: balance;
+}
+.longform-subtitulo {
+  font-family: var(--serif);
+  font-size: clamp(1.08rem, 2.2vw, 1.4rem);
+  line-height: 1.4; font-style: italic;
+  color: #fde68a; margin: 0 0 .8rem; max-width: 46ch;
+  text-shadow: 0 1px 10px rgba(0,0,0,.6);
+}
+.longform-entrada {
+  font-family: var(--serif);
+  font-size: 1.18rem; line-height: 1.6;
+  color: #eef0f4; margin: 0 0 .9rem; max-width: 56ch;
+  text-shadow: 0 1px 10px rgba(0,0,0,.6);
+}
+.longform-firma { font-size: .74rem; color: #cbd5e1; letter-spacing: .02em; }
+.longform-firma b { color: #fff; }
+/* Sin foto: la portada se resuelve con un degradado institucional. */
+.longform-sin-foto {
+  background: linear-gradient(140deg, #0b2240 0%, #16233a 60%, #0b1118 100%);
+  padding: clamp(2rem, 5vw, 3rem);
+}
+
+/* --- 4.2 · Columna de lectura (780-850 px) ------------------------------- */
+.longform-texto { max-width: var(--medida); margin: 0 auto; }
+.longform-texto p {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, .3vw + 1.02rem, 1.24rem);
+  line-height: 1.78;
+  color: #232830;
+  margin: 0 0 1.15em;
+}
+/* Capitular: la primera letra de la nota. */
+.longform-texto p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--display);
+  font-size: 4rem; line-height: .82; font-weight: 900;
+  color: var(--marino);
+  padding: .08em .14em 0 0;
+}
+.longform-texto h2, .longform-texto h3, .longform-texto h4 {
+  font-family: var(--display);
+  color: var(--marino);
+  line-height: 1.18;
+  font-weight: 800;
+  letter-spacing: -.012em;
+  margin: 1.8em 0 .6em;
+}
+.longform-texto h2 { font-size: 1.9rem; }
+.longform-texto h3 { font-size: 1.45rem; }
+.longform-texto h4 { font-size: 1.18rem; }
+.longform-texto ul, .longform-texto ol {
+  margin: 0 0 1.3em; padding-left: 1.5rem;
+  font-family: var(--serif); font-size: 1.16rem; line-height: 1.7;
+}
+.longform-texto li { margin-bottom: .5em; }
+.longform-texto li::marker { color: var(--oro); }
+/* Cita en bloque: sin fondo, con filete, como en el papel. */
+.longform-texto blockquote {
+  border-left: 3px solid var(--oro);
+  margin: 1.8em 0;
+  padding: .3em 0 .3em 1.4em;
+  font-family: var(--display);
+  font-size: 1.42rem; line-height: 1.42; font-style: italic;
+  color: var(--marino);
+}
+.longform-texto blockquote p { font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; margin: 0 0 .6em; }
+.longform-texto blockquote footer { font-family: var(--sans); font-size: .72rem; font-style: normal; color: var(--tinta-tenue); letter-spacing: .04em; text-transform: uppercase; }
+.longform-texto a { color: var(--marino); text-decoration: underline; text-underline-offset: 2px; }
+.longform-texto mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
+.longform-texto hr { border: 0; border-top: 2px solid var(--regla); margin: 2.2em auto; width: 6rem; }
+.longform-texto table { border-collapse: collapse; width: 100%; margin: 1.6em 0; font-size: .88rem; }
+.longform-texto td, .longform-texto th { border-bottom: 1px solid var(--regla); padding: 9px 10px; text-align: left; }
+.longform-texto th { font-weight: 800; color: var(--marino); border-bottom: 2px solid var(--marino); }
+
+/* --- 4.3 · Full-bleed ---------------------------------------------------
+   Las imágenes y las infografías salen de la columna y ocupan el ancho de la
+   página. Se logra sin tocar el HTML: se centran respecto a la columna y se
+   ensanchan con translateX(-50%).                                        */
+.longform-texto img,
+.longform-texto figure {
+  width: min(var(--ancho-maximo), calc(100vw - 3rem));
+  max-width: none;
+  margin: 1.8em 0 1.8em 50%;
+  transform: translateX(-50%);
+}
+.longform-texto figure { margin-block: 2em; }
+.longform-texto figure img { margin: 0; width: 100%; }
+.longform-texto figcaption {
+  font-size: .74rem; color: var(--tinta-tenue);
+  padding-top: 9px; margin-top: 9px;
+  border-top: 1px solid var(--regla);
+}
+
+/* --- 4.4 · Ficha técnica de contacto ------------------------------------ */
+.ficha-tecnica {
+  max-width: var(--medida);
+  margin: 3rem auto 0;
+  padding-top: 1.6rem;
+  border-top: 3px double #1a1a1a;
+}
+.ficha-tecnica h2 {
+  font-family: var(--sans);
+  font-size: .66rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--acento);
+  margin: 0 0 1rem;
+}
+.ficha-tecnica dl {
+  display: grid;
+  grid-template-columns: minmax(140px, .4fr) 1fr;
+  gap: .55rem 1.2rem;
+  margin: 0;
+  font-size: .84rem;
+}
+.ficha-tecnica dt { color: var(--tinta-tenue); font-weight: 700; }
+.ficha-tecnica dd { margin: 0; color: var(--tinta); }
+.ficha-tecnica dd a { color: var(--marino); font-weight: 600; }
+
+/* --- 4.5 · Adaptación a móvil ------------------------------------------- */
+@media (max-width: 900px) {
+  .longform-portada-texto { padding: 1.1rem 1rem 1.3rem; }
+  .longform-titular { max-width: none; }
+  .ficha-tecnica dl { grid-template-columns: 1fr; gap: .15rem; }
+  .ficha-tecnica dd { margin-bottom: .7rem; }
+}
+
+/* ==========================================================================
+   5 · PÁGINA DE DEMOSTRACIÓN
+   ========================================================================== */
+.demo { padding: 3rem var(--gutter) 5rem; }
+.demo h1 { font-family: var(--display); font-size: 2rem; color: var(--marino); margin: 0 0 .4rem; }
+.demo > p { color: var(--tinta-media); max-width: 60ch; margin: 0 0 2.5rem; }
+.demo-nivel { margin-bottom: 4rem; }
+.demo-nivel > h2 {
+  font-family: var(--sans);
+  font-size: .68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--acento);
+  margin: 0 0 1rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--regla);
+}
+.demo-rejilla { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+</style>
+</head>
+
+<body>
+<main class="demo">
+
+  <h1>Flujo editorial de dos niveles</h1>
+  <p>
+    Referencia de implementación del <strong>Nivel 1</strong> (tarjeta / teaser de
+    portada) y del <strong>Nivel 2</strong> (página de destino a ancho completo en
+    formato longform). El portal ya usa este diseño.
+  </p>
+
+  <!-- ====================================================================
+       NIVEL 1 · TARJETA / TEASER DE PORTADA
+       ==================================================================== -->
+  <section class="demo-nivel" aria-labelledby="nivel1">
+    <h2 id="nivel1">Nivel 1 · Tarjeta / teaser de portada</h2>
+
+    <div class="demo-rejilla">
+
+      <!-- La tarjeta. Todo el bloque es un <article> y el CTA es un <a>. -->
+      <article class="teaser">
+        <a class="teaser-imagen" href="#nivel2" tabindex="-1" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?w=900&h=506&fit=crop"
+               alt="" loading="lazy" width="900" height="506">
+        </a>
+
+        <!-- Cinta superior: la categoría y la posición en la serie -->
+        <p class="teaser-cintillo">
+          <span class="teaser-categoria">Reportaje inmersivo</span>
+          <span class="teaser-numero">Nota 1 de 4</span>
+        </p>
+
+        <!-- Titular -->
+        <h3 class="teaser-titular">El colapso del pitcheo abridor</h3>
+
+        <!-- Subtítulo -->
+        <p class="teaser-subtitulo">90 mph, 44.8 % de hard-hit y un bullpen que no llega</p>
+
+        <!-- Entrada -->
+        <p class="teaser-lead">
+          La telemetría de la primera quincena cuenta una historia distinta a la
+          que se contaba en el dugout: 92.4 mph de velocidad media de salida y un
+          porcentaje de contacto duro que ningún equipo de la liga sostiene
+          seis Seasons seguidas.
+        </p>
+
+        <!-- Llamado a la acción -->
+        <a class="teaser-cta" href="#nivel2">Leer reportaje completo <span aria-hidden="true">→</span></a>
+
+        <p class="teaser-firma">✍️ Luis Enrique Aponte Guzmán · 20 de octubre</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
+       ==================================================================== -->
+  <section class="demo-nivel" id="nivel2" aria-labelledby="nivel2">
+    <h2 id="nivel2t">Nivel 2 · Página de destino a ancho completo</h2>
+
+    <article class="longform">
+
+      <!-- Volver al nivel 1 -->
+      <p style="margin:0 0 1rem"><a href="#nivel1" style="font-size:.76rem;font-weight:700;text-decoration:none">← Volver al muro</a></p>
+
+      <!-- Portada inmersiva: la foto a sangre con el texto encima -->
+      <header class="longform-portada">
+        <div class="longform-portada-foto">
+          <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?w=1600&h=760&fit=crop"
+               alt="" width="1600" height="760">
+        </div>
+        <div class="longform-portada-velo" aria-hidden="true"></div>
+        <div class="longform-portada-texto">
+          <span class="longform-etiqueta">Reportaje inmersivo</span>
+          <h1 class="longform-titular">El colapso del pitcheo abridor</h1>
+          <p class="longform-subtitulo">90 mph, 44.8 % de hard-hit y un bullpen que no llega</p>
+          <p class="longform-entrada">
+            La telemetría de la primera quincena cuenta una historia distinta a la
+            que se contaba en el dugout.
+          </p>
+          <p class="longform-firma">✍️ <b>Luis Enrique Aponte Guzmán</b> · 20 de octubre de 2026</p>
+        </div>
+      </header>
+
+      <!-- Columna de lectura: 780-850 px -->
+      <div class="longform-texto">
+        <p>
+          El arranque de la campaña invernal ha desnudado un patrón mecánico
+          preocupante en los lanzadores abridores filibusteros. La velocidad de
+          salida promedio conceded en los primeros cuatro innings se elevó a
+          92.4 mph, con un porcentaje de contacto duro de 44.8 %.
+        </p>
+
+        <p>
+          Al profundizar en la tasa de giro de los pitcheos rompientes se observa
+          una caída de 180 rpm en el slider respecto a las sesiones de bullpen
+          previas en el Coso de la Michelena.
+        </p>
+
+        <!-- Subtítulo interno -->
+        <h2>Lo que dice la caja de la dirección</h2>
+
+        <p>
+          El cuerpo técnico evalúa reestructurar el tandem abridor-relayista
+          intermedio para neutralizar el wOBA contrario en conteos favorables.
+        </p>
+
+        <!-- Cita en bloque -->
+        <blockquote>
+          <p>«El astro se durmió en la segunda recta y no nos avisó.»</p>
+          <footer>Analista del club, después del partido</footer>
+        </blockquote>
+
+        <!-- Lista -->
+        <ul>
+          <li>92.4 mph de velocidad de salida promedio.</li>
+          <li>44.8 % de hard-hit en los primeros cuatro innings.</li>
+          <li>Caída de 180 rpm en el giro del slider.</li>
+        </ul>
+
+        <!-- Imagen a ancho completo (full-bleed): sale de la columna sin tocar
+             el HTML, gracias a margin-left:50% + translateX(-50%). -->
+        <figure>
+          <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?w=1600&h=900&fit=crop"
+               alt="Fotografía de la banda de lanzamiento durante la serie." loading="lazy" width="1600" height="900">
+          <figcaption>La banda de lanzamiento, en el José Bernardo Pérez de Valencia.</figcaption>
+        </figure>
+
+        <p>
+          La lectura no cierra en el pitcheo, sino en la profundidad del
+          lineup: con los bases limpios y un strikeout, el margen se sostiene.
+        </p>
+      </div>
+
+      <!-- Ficha técnica de contacto -->
+      <section class="ficha-tecnica" aria-labelledby="ficha">
+        <h2 id="ficha">Ficha técnica</h2>
+        <dl>
+          <dt>Autor</dt>          <dd>Luis Enrique Aponte Guzmán</dd>
+          <dt>Sección</dt>        <dd>Muro de la crónica &amp; scouting</dd>
+          <dt>Categoría</dt>      <dd>Reportaje inmersivo</dd>
+          <dt>Publicado</dt>      <dd><time datetime="2026-10-20">20 de octubre de 2026</time></dd>
+          <dt>Multimedia</dt>     <dd>3 archivos adjuntos</dd>
+          <dt>Contacto</dt>       <dd><address>Dirección General · La Taberna del Magallanes News</address></dd>
+          <dt>Publicación</dt>    <dd><a href="index.html">La Taberna del Magallanes News</a></dd>
+        </dl>
+      </section>
+
+    </article>
+  </section>
+
+</main>
+</body>
+</html>

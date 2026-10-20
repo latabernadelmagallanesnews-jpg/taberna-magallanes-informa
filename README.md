@@ -192,7 +192,25 @@ También puede manejarlas desde el propio CMS, en **Seguridad & Accesos**.
 
 ---
 
-## 3 · Flujo de trabajo del editor
+## 3 · El diseño editorial de dos niveles
+
+El portal usa un flujo de dos niveles, documentado con código comentado en
+**[`publicar/EJEMPLO-LONGFORM.html`](publicar/EJEMPLO-LONGFORM.html)**:
+
+**Nivel 1 · Tarjeta / teaser de portada** — cinta de categoría, titular,
+subtítulo, entrada y el botón **«Leer reportaje completo →»**. Tipografía
+editorial sobria, aire, sin cuadros ni bordes.
+
+**Nivel 2 · Página de destino a ancho completo** — sin barras laterales,
+columna de lectura de **780-850 px**, portada inmersiva con titular, subtítulo,
+entrada y firma, citas en bloque, listas, **imágenes e infografías a ancho
+completo (full-bleed)** y **ficha técnica de contacto** al final.
+
+El script que lo aplica es `scripts/parche-longform.js` (idempotente).
+
+---
+
+## 4 · Flujo de trabajo del editor
 
 1. Copia de trabajo: `editor/index.html`.
 2. Ábrala con doble clic (o `npm run servidor` → `http://localhost:8099/editor/index.html`).
