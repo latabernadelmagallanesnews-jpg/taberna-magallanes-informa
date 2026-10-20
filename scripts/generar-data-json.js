@@ -30,6 +30,10 @@ const CLAVES = [
   'redesMultimedia', 'playlist', 'publicidad'
 ];
 
+/* Módulos cuyo archivo multimedia se publica en data.json, para que la
+   página de la crónica muestre sus fotos, audios y documentos. */
+const MODULOS_MEDIA = ['06-cronica', '05-hero', '07-cabina-statcast', '08-heatmap'];
+
 /* -------------------------------------------------------------------------- */
 
 function clonar(o) { return JSON.parse(JSON.stringify(o)); }
@@ -104,6 +108,15 @@ function main() {
     portal: estado.cabecera || {}
   };
   CLAVES.forEach(function (k) { salida[k] = estado[k]; });
+
+  /* Los archivos multimedia (fotos, audios, videos, PDF) de los módulos que
+     las páginas sueltas necesitan mostrar. */
+  const galerias = estado.galerias || {};
+  const media = {};
+  MODULOS_MEDIA.forEach(function (m) {
+    if (Array.isArray(galerias[m]) && galerias[m].length) media[m] = galerias[m];
+  });
+  if (Object.keys(media).length) salida.galerias = media;
 
   fs.writeFileSync(SALIDA, JSON.stringify(salida, null, 2), 'utf8');
   const peso = fs.statSync(SALIDA).size;

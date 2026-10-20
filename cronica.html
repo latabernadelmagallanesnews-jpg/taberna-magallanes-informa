@@ -72,15 +72,16 @@
   .oculto { display: none; }
 
   /* ===== LECTOR DE NOTA COMPLETA (cronica.html?c=ID) ===== */
-  .nota { max-width: 760px; margin: 0 auto; }
+  .nota-zona { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 360px); gap: 2.2rem; align-items: start; }
+  .nota { max-width: none; }
   .volver { display: inline-block; font-size: 0.76rem; font-weight: 700; color: #0b2240; text-decoration: none; margin-bottom: 1rem; }
   .volver:hover { text-decoration: underline; }
   .nota-etiqueta { display: inline-block; font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 20px; padding: 4px 12px; }
   .nota-titulo { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 4.6vw, 2.9rem); line-height: 1.16; font-weight: 900; color: #0b2240; margin: 0.85rem 0 0.6rem; letter-spacing: -0.015em; }
   .nota-entradilla { font-family: 'EB Garamond', Georgia, serif; font-size: 1.22rem; line-height: 1.55; color: #3f3f46; margin: 0 0 1rem; }
   .nota-firma { font-size: 0.78rem; color: #6b7280; border-top: 1px solid #e2ded9; border-bottom: 1px solid #e2ded9; padding: 9px 0; margin-bottom: 1.1rem; }
-  .nota-foto { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 1.4rem; background: #0b1118; }
-  .nota-foto img { width: 100%; max-height: 520px; object-fit: cover; display: block; }
+  .nota-acciones { display: flex; flex-wrap: wrap; gap: 7px; margin: 1.6rem 0 2rem; padding-top: 1.1rem; border-top: 1px solid #e2ded9; }
+  .nota-pie { font-size: 0.72rem; color: #8a8a8a; margin-top: 1.4rem; line-height: 1.7; }
   .nota-cuerpo { font-family: 'EB Garamond', Georgia, serif; font-size: 1.16rem; line-height: 1.85; color: #1f2937; }
   .nota-cuerpo p { margin: 0 0 1.1em; }
   .nota-cuerpo h2, .nota-cuerpo h3, .nota-cuerpo h4 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; line-height: 1.25; margin: 1.5em 0 0.5em; font-weight: 800; }
@@ -94,9 +95,20 @@
   .nota-cuerpo table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: 0.92rem; }
   .nota-cuerpo td, .nota-cuerpo th { border: 1px solid #cbd5e1; padding: 7px 9px; text-align: left; }
   .nota-cuerpo hr { border: 0; border-top: 1px solid #dcd9d9; margin: 1.6em 0; }
-  .nota-acciones { display: flex; flex-wrap: wrap; gap: 7px; margin: 1.6rem 0 2rem; padding-top: 1.1rem; border-top: 1px solid #e2ded9; }
-  .nota-relacionadas { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin-top: 1.6rem; }
-  .nota-pie { font-size: 0.72rem; color: #8a8a8a; margin-top: 1.4rem; line-height: 1.7; }
+  .nota-foto { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 1.4rem; background: #0b1118; }
+  .nota-foto img { width: 100%; max-height: 520px; object-fit: cover; display: block; }
+  .nota-foto figcaption { font-size: 0.72rem; color: #6b7280; padding: 7px 10px; border-top: 1px solid #e2ded9; }
+  .nota-rail { display: grid; gap: 16px; position: sticky; top: 16px; }
+  .nota-caja { background: #ffffff; border: 1px solid #e2ded9; border-radius: 10px; overflow: hidden; }
+  .nota-caja-tit { display: block; font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #b45309; padding: 10px 12px; background: #fbfaf9; border-bottom: 1px solid #e2ded9; }
+  .nota-caja-cuerpo { padding: 10px 12px; display: grid; gap: 10px; }
+  .nota-caja-cuerpo img, .nota-caja-cuerpo video { width: 100%; border-radius: 8px; display: block; }
+  .nota-caja-cuerpo audio { width: 100%; }
+  .nota-caja-cuerpo iframe { width: 100%; aspect-ratio: 16/9; height: auto; border: 0; border-radius: 8px; }
+  .nota-caja-cuerpo a { font-size: 0.8rem; font-weight: 700; color: #0b2240; }
+  .nota-caja-cuerpo .pie { font-size: 0.7rem; color: #6b7280; margin-top: -4px; }
+  .nota-relacionadas { display: grid; gap: 12px; }
+  @media (max-width: 900px) { .nota-zona { grid-template-columns: 1fr; } .nota-rail { position: static; } }
   /* Párrafos sueltos en las tarjetas del muro */
   .tarjeta .mural-texto p { font-size: 0.9rem; line-height: 1.7; color: #1f2937; margin: 0 0 10px; }
   .tarjeta .mural-texto p:last-child { margin-bottom: 0; }
@@ -197,6 +209,63 @@ function ponerMeta(prop, valor) {
   } catch (e) { }
 }
 
+function esYouTube(v) { return /youtube\.com|youtu\.be/i.test(String(v || '')); }
+function idYouTube(v) { var m = /youtu\.be\/([^?&#]+)|[?&]v=([^?&#]+)|youtube\.com\/embed\/([^?&#]+)/.exec(String(v || '')); return m ? (m[1] || m[2] || m[3]) : ''; }
+function esVimeo(v) { return /vimeo\.com/i.test(String(v || '')); }
+function idVimeo(v) { var m = /vimeo\.com\/(\d+)/.exec(String(v || '')); return m ? m[1] : ''; }
+function esImagen(v) { return /\.(jpe?g|png|webp|gif|avif|bmp)(\?|$)/i.test(String(v || '')) || /^data:image\//i.test(String(v || '')); }
+function esVideo(v) { return /\.(mp4|webm|mov|mkv|m4v)(\?|$)/i.test(String(v || '')) || /^data:video\//i.test(String(v || '')); }
+function esAudio(v) { return /\.(mp3|m4a|wav|ogg|oga|aac|flac|opus)(\?|$)/i.test(String(v || '')) || /^data:audio\//i.test(String(v || '')); }
+function esDocumento(v) { return /\.(pdf|docx?|xlsx?|pptx?|txt|csv|zip)(\?|$)/i.test(String(v || '')); }
+
+/* Una pieza de video: YouTube/Vimeo incrustado o archivo directo. */
+function htmlVideo(v, titulo) {
+  var url = String(v || '');
+  if (!url) return '';
+  if (esYouTube(url)) {
+    var yt = idYouTube(url);
+    if (yt) return '<iframe src="https://www.youtube.com/embed/' + esc(yt) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  }
+  if (esVimeo(url)) {
+    var vm = idVimeo(url);
+    if (vm) return '<iframe src="https://player.vimeo.com/video/' + esc(vm) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  }
+  return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
+}
+
+/* Todos los archivos multimedia de la nota y del módulo de crónicas. */
+function multimediaDeLaNota(d, c) {
+  var partes = [];
+  var propios = [];
+
+  if (c.video) propios.push({ clase: 'video', titulo: c.titulo || 'Video de la nota', html: htmlVideo(c.video, 'Video de la nota') });
+  if (c.audioUrl) propios.push({ clase: 'audio', titulo: c.audioNombre || 'Audio de la nota', html: '<audio controls preload="metadata" src="' + esc(c.audioUrl) + '"></audio>' });
+  if (c.enlace && !esDocumento(c.enlace)) propios.push({ clase: 'enlace', titulo: c.enlaceTxt || 'Enlace relacionado', html: '<a href="' + esc(c.enlace) + '" target="_blank" rel="noopener">' + esc(c.enlaceTxt || 'Abrir el enlace') + ' →</a>' });
+
+  if (propios.length) {
+    partes.push('<div class="nota-caja"><b class="nota-caja-tit">🎬 Material de la nota</b><div class="nota-caja-cuerpo">' +
+      propios.map(function (p) { return '<div>' + p.html + '<div class="pie">' + esc(p.titulo) + '</div></div>'; }).join('') +
+      '</div></div>');
+  }
+
+  /* La galería de archivos del módulo de crónicas (Centro multimedia). */
+  var gal = (d.galerias && d.galerias['06-cronica']) || [];
+  if (gal.length) {
+    var piezas = gal.map(function (item) {
+      var url = String((item && item.url) || '');
+      if (!url) return '';
+      var nombre = item.nombre || item.titulo || 'Archivo';
+      if (esImagen(url)) return '<a href="' + esc(url) + '" target="_blank" rel="noopener"><img src="' + esc(url) + '" alt="' + esc(nombre) + '" loading="lazy"></a><div class="pie">' + esc(item.titulo || nombre) + '</div>';
+      if (esVideo(url)) return htmlVideo(url, nombre) + '<div class="pie">' + esc(nombre) + '</div>';
+      if (esAudio(url)) return '<audio controls preload="metadata" src="' + esc(url) + '"></audio><div class="pie">' + esc(nombre) + '</div>';
+      return '<a href="' + esc(url) + '" target="_blank" rel="noopener">📄 ' + esc(nombre) + ' (abrir)</a>';
+    }).filter(Boolean).join('');
+    if (piezas) partes.push('<div class="nota-caja"><b class="nota-caja-tit">🗂️ Multimedia del módulo</b><div class="nota-caja-cuerpo">' + piezas + '</div></div>');
+  }
+
+  return partes.join('');
+}
+
 function pintarNota(d, id) {
   var lista = d.cronicas || [];
   var c = null;
@@ -215,14 +284,14 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: entrada.slice(0, 200) });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
 
-  var html =
+  var nota =
     '<article class="nota">' +
       '<a class="volver" href="cronica.html">← Volver al muro de crónicas</a>' +
       '<span class="nota-etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
       '<h2 class="nota-titulo">' + ricoHtml(c.titulo) + '</h2>' +
-      '<p class="nota-entradilla">' + ricoHtml(c.entradilla) + '</p>' +
+      '<div class="nota-entradilla">' + ricoHtml(c.entradilla) + '</div>' +
       '<div class="nota-firma">✍️ <b>' + esc(c.autor || 'Redacción') + '</b>' + (c.fecha ? ' · ' + esc(c.fecha) : '') + ' · La Taberna del Magallanes News</div>' +
-      (c.imagen ? '<div class="nota-foto"><img src="' + esc(c.imagen) + '" alt="' + esc(titulo) + '"></div>' : '') +
+      (c.imagen ? '<figure class="nota-foto"><img src="' + esc(c.imagen) + '" alt="' + esc(titulo) + '"></figure>' : '') +
       '<div class="nota-cuerpo">' + parrafos(c.cuerpo || c.entradilla || '') + '</div>' +
       '<div class="nota-acciones">' +
         '<a class="boton" href="https://wa.me/?text=' + encodeURIComponent(titulo + '\n\n' + entrada + '\n\n' + url) + '" target="_blank" rel="noopener">💬 WhatsApp</a>' +
@@ -238,34 +307,38 @@ function pintarNota(d, id) {
       '</div>' +
     '</article>';
 
-  /* Lecturas relacionadas */
+  /* Carril derecho: multimedia de la nota y lecturas relacionadas. */
+  var rail = '<aside class="nota-rail">' + multimediaDeLaNota(d, c);
+
   var otras = lista.filter(function (x) { return x && x.id !== c.id; }).slice(0, 3);
   if (otras.length) {
-    html += '<div style="max-width:760px; margin:2.2rem auto 0; padding-top:1.4rem; border-top:3px double #1a1a1a;">' +
-      '<h3 style="font-family:Playfair Display, Georgia, serif; color:#0b2240; margin:0 0 0.9rem;">📖 Seguir leyendo</h3>' +
-      '<div class="nota-relacionadas">' +
+    rail += '<div class="nota-caja"><b class="nota-caja-tit">📖 Seguir leyendo</b><div class="nota-caja-cuerpo">' +
       otras.map(function (o) {
-        return '<a class="tarjeta" style="text-decoration:none; color:inherit;" href="cronica.html?c=' + encodeURIComponent(o.id) + '">' +
-          (o.imagen ? '<img src="' + esc(o.imagen) + '" alt="" style="width:100%; height:120px; object-fit:cover; border-radius:8px 8px 0 0;">' : '') +
-          '<div style="padding:10px 12px;">' +
-            '<span class="etiqueta">' + esc(o.badge || 'Crónica') + '</span>' +
-            '<h3 style="font-family:Playfair Display, Georgia, serif; font-size:1rem; color:#0b2240; margin:5px 0 0; line-height:1.3;">' + ricoHtml(o.titulo) + '</h3>' +
-          '</div>' +
+        return '<a href="cronica.html?c=' + encodeURIComponent(o.id) + '" style="display:block; text-decoration:none; color:inherit;">' +
+          (o.imagen ? '<img src="' + esc(o.imagen) + '" alt="" loading="lazy" style="width:100%; height:110px; object-fit:cover; border-radius:7px;">' : '') +
+          '<div style="font-family:Playfair Display, Georgia, serif; font-size:0.95rem; color:#0b2240; font-weight:700; line-height:1.3; margin-top:5px;">' + ricoHtml(o.titulo) + '</div>' +
+          '<div class="pie">' + esc(o.badge || 'Crónica') + '</div>' +
         '</a>';
-      }).join('') +
-      '</div></div>';
+      }).join('') + '</div></div>';
   }
+  rail += '</aside>';
 
   var destino = document.getElementById('cronicas');
-  destino.innerHTML = html;
+  destino.innerHTML = '<div class="nota-zona">' + nota + rail + '</div>';
   document.getElementById('cargando').className = 'oculto';
   document.getElementById('lateral').innerHTML = '';
 
-  /* En modo lectura no hace falta el encabezado del índice. */
+  /* En modo lectura la nota ocupa todo el ancho de la página. */
   ['sello', 'titulo', 'intro'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  var lateral = document.getElementById('lateral');
+  if (lateral) lateral.style.display = 'none';
+  var columnas = document.querySelector('.dos-col');
+  if (columnas) columnas.style.gridTemplateColumns = '1fr';
+  var principal = document.querySelector('main');
+  if (principal) principal.style.maxWidth = '1280px';
 
   var botonCopiar = document.getElementById('notaCopiar');
   if (botonCopiar) {
