@@ -25,20 +25,26 @@
     <div style="font-size:2.2rem;">🔐</div>
     <h1>Acceso a la Sala de Redacción</h1>
     <div class="sub">La Taberna del Magallanes News · Director y Periodistas</div>
-    <a class="boton" id="entrar" href="index.html?cms=1#sala-de-redaccion">▶ Entrar al CMS</a>
+    <a class="boton" id="entrar" href="editor/index.html?cms=1#sala-de-redaccion">▶ Entrar al CMS</a>
     <div class="nota">
       <b>Este archivo es solo para usted.</b> Guárdelo en su escritorio junto al
       <code>index.html</code> del periódico.<br><br>
       <b>NO lo suba al hosting</b> ni lo incluya en el ZIP público: es su llave de
       entrada personal.<br><br>
-      Al pulsar el botón se abre el portal y le pide la clave
+      Al pulsar el botón se abre la <b>copia de trabajo</b>
+      (<code>editor\index.html</code>) y le pide la clave
       (Director: <code>luis77magallanes</code> · Periodista: <code>Magallanesbicampeon</code>).
       Después su dispositivo queda autorizado 180 días y ya verá el botón
-      <b>⚙️ Abrir CMS</b> dentro del propio periódico.
+      <b>⚙️ Abrir CMS</b> dentro del propio periódico.<br><br>
+      <b>Para publicar lo que escriba:</b> en el CMS pulse
+      <b>🚀 Descargar HTML publicado</b>, copie ese <code>index.html</code> sobre
+      <code>publicar\index.html</code>, y luego en la terminal ejecute
+      <code>npm.cmd run build</code> y
+      <code>powershell -ExecutionPolicy Bypass -File scripts\subir-a-github.ps1</code>.
     </div>
   </div>
   <script>
-    setTimeout(function () { window.location.replace('index.html?cms=1#sala-de-redaccion'); }, 1200);
+    setTimeout(function () { window.location.replace('editor/index.html?cms=1#sala-de-redaccion'); }, 1200);
   </script>
 </body>
 </html>
