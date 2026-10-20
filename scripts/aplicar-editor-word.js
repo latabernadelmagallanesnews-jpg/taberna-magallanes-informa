@@ -101,7 +101,8 @@ const CSS_WORD = `
     .cms-rico-nota { font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block; line-height: 1.5; }
     /* Enlace que se va a compartir: visible y copiable */
     .compartir-enlace { display: flex; gap: 8px; align-items: center; justify-content: space-between; background: #f6f3f3; border: 1px solid #e5e5e5; border-radius: 9px; padding: 8px 10px; margin: 0 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #0b2240; }
-    .compartir-enlace-txt { min-width: 0; word-break: break-all; line-height: 1.5; }
+    .compartir-enlace-txt { min-width: 0; word-break: break-all; line-height: 1.5; text-decoration: none; color: #0b2240; }
+    .compartir-enlace-txt:hover { text-decoration: underline; }
     .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
     .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
     .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
@@ -690,15 +691,6 @@ function aplicar(archivo) {
 
   h = reemplazar(
     h,
-    `    const titulo = d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News';
-    const texto = String(d.sub || d.texto || titulo).slice(0, 220);`,
-    `    const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
-    const texto = aTextoPlano(d.sub || d.texto || titulo).slice(0, 220);`,
-    'compartirEnRed()'
-  );
-
-  h = reemplazar(
-    h,
     `alt="' + esc(c.titulo) + '" loading="lazy">`,
     `alt="' + escTexto(c.titulo) + '" loading="lazy">`,
     'alt de la foto de la crónica'
@@ -747,12 +739,29 @@ function aplicar(archivo) {
     'botones de la hoja de compartir'
   );
 
+  h = reemplazar(
+    h,
+    `      '<div class="compartir-enlace">' +
+        '<span class="compartir-enlace-txt">🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(fichaActual)) + '</span></span>' +
+        '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
+      '</div>' +`,
+    `      '<div class="compartir-enlace">' +
+        '<a class="compartir-enlace-txt" href="' + esc(enlaceFicha(fichaActual)) + '" target="_blank" rel="noopener" title="Abrir este enlace">' +
+          '🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(fichaActual)) + '</span>' +
+        '</a>' +
+        '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
+      '</div>' +`,
+    'enlace clicable de la hoja de compartir'
+  );
+
   /* --- la hoja de compartir debe MOSTRAR el enlace, no solo el texto ---- */
   h = reemplazar(
     h,
     `      '<p class="compartir-ayuda">Elija su red social o muestre el <b>código QR estilo Instagram</b> para que otro lo escanee con la cámara del teléfono.</p>' +`,
     `      '<div class="compartir-enlace">' +
-        '<span class="compartir-enlace-txt">🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(fichaActual)) + '</span></span>' +
+        '<a class="compartir-enlace-txt" href="' + esc(enlaceFicha(fichaActual)) + '" target="_blank" rel="noopener" title="Abrir este enlace">' +
+          '🔗 <span class="compartir-enlace-url">' + esc(enlaceFicha(fichaActual)) + '</span>' +
+        '</a>' +
         '<button type="button" class="red-btn" onclick="copiarEnlaceFicha()">📋 Copiar</button>' +
       '</div>' +
       '<p class="compartir-ayuda">Elija su red social o muestre el <b>código QR estilo Instagram</b> para que otro lo escanee con la cámara del teléfono.</p>' +`,
