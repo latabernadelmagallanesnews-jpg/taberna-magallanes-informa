@@ -181,13 +181,26 @@ También puede manejarlas desde el propio CMS, en **Seguridad & Accesos**.
 3. Entre al CMS: botón **⚙️ Abrir CMS** (aparece en los equipos ya
    autenticados), o `?cms=1` al final de la dirección, o `Ctrl+Alt+M`, o
    `publicar/redaccion-cms.html`.
-4. Escriba con formato en el editor estilo Word.
-5. Pulse **💾 Guardar** (se guarda en el navegador) y luego
-   **🚀 Descargar HTML publicado**.
-6. Copie el `index.html` descargado sobre `publicar/index.html`.
-7. `npm run build` → regenera `publicar/data.json` y copia `publicar/` a la
-   raíz del repositorio.
-8. `npm run deploy` para publicar en Firebase, o `git push` para GitHub.
+4. Escriba con formato en el editor estilo Word y suba sus fotos, audios y
+   videos.
+5. Pulse **🚀 Descargar HTML publicado**: el navegador baja un `index.html`
+   con TODO su contenido (fotos, notas, textos).
+6. **`npm run instalar`** → ese archivo se copia solo a `publicar/` y se
+   regenera `data.json`. *(También puede copiarlo a mano, pero el comando
+   comprueba que sí traiga su contenido y avisa si no.)*
+7. `npm run deploy` para publicar en Firebase, o `git push` para GitHub.
+
+> **Si algo "desaparece":** casi siempre es que el HTML descargado no se
+> copió a `publicar/`. El contenido se guarda en el navegador del editor, no
+> en el sitio, hasta que se instala. Por eso `npm run instalar` busca la
+> descarga automáticamente y `npm run data` avisa en rojo si el HTML publicado
+> todavía no trae contenido.
+
+```powershell
+npm.cmd run instalar    # instala la descarga del CMS y recompila
+npm.cmd run deploy     # publica en Firebase
+npm.cmd run build      # solo recompila y verifica
+```
 
 ### La URL pública (compartir y códigos QR)
 
@@ -305,6 +318,7 @@ y añada el rol **Firebase Hosting Admin** → cree una clave JSON.
 | Comando | Qué hace |
 | --- | --- |
 | `npm run servidor` | Abre el portal en `http://localhost:8099/` |
+| `npm run instalar` | Copia el HTML descargado del CMS a `publicar/` y recompila |
 | `npm run parche` | Instala (o actualiza) el editor estilo Word en los HTML |
 | `npm run data` | Regenera `publicar/data.json` |
 | `npm run url` | Fija la URL pública (la de los enlaces al compartir y los QR) |

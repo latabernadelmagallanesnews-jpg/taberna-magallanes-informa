@@ -11,6 +11,7 @@
     "parche": "node scripts/aplicar-editor-word.js",
     "paginas": "node scripts/aplicar-rico-paginas.js",
     "sync": "node scripts/sincronizar-raiz.js",
+    "instalar": "node scripts/instalar-html-publicado.js && npm run build",
     "data": "node scripts/generar-data-json.js",
     "url": "node scripts/fijar-url-publica.js",
     "sintaxis": "node scripts/verificar-sintaxis.js editor/index.html publicar/index.html index.html",

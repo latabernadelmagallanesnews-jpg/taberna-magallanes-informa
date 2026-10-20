@@ -109,6 +109,19 @@ function main() {
   const peso = fs.statSync(SALIDA).size;
   console.log('✓ publicar/data.json regenerado (' + peso.toLocaleString('es-VE') + ' bytes, ' + CLAVES.length + ' secciones).');
 
+  /* Aviso: si el HTML publicado no trae contenido incrustado, es que el
+     HTML descargado del CMS no se copió sobre publicar/index.html. Sus fotos
+     y notas seguirían en el navegador del editor, NO en el sitio. */
+  const hayContenido = Object.keys(publicado || {}).length > 1;
+  if (!hayContenido) {
+    console.log('');
+    console.log('  ⚠ ATENCIÓN: publicar/index.html NO tiene contenido incrustado.');
+    console.log('    Sus fotos y notas siguen solo en el navegador del editor.');
+    console.log('    Para publicarlas: pulse «🚀 Descargar HTML publicado» en el CMS y');
+    console.log('    ejecute «npm run instalar» (lo copia solo, sin que usted lo haga).');
+    console.log('');
+  }
+
   /* Aviso: si algún campo quedó con formato, las páginas sueltas lo leen con
      publicar/rico.js (ricoHtml para mostrarlo, ricoTexto para buscarlo). */
   const ricos = (fs.readFileSync(SALIDA, 'utf8').match(/\u241F/g) || []).length;
