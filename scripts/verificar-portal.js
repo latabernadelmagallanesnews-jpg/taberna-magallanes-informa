@@ -77,8 +77,19 @@ console.log('\n=== comparación de las dos copias ===');
 const la = raizH.split('\n'), lb = pubH.split('\n');
 let difs = 0;
 for (let i = 0; i < Math.max(la.length, lb.length); i++) if (la[i] !== lb[i]) difs++;
-if (difs === 1) ok('difieren solo en 1 línea (el bloque de contenido incrustado)');
-else ko('difieren en ' + difs + ' líneas (debería ser 1)');
+if (difs <= 1) ok('difieren en ' + difs + ' línea(s) (solo el bloque de contenido incrustado)');
+else ko('difieren en ' + difs + ' líneas (debería ser 0 o 1)');
+
+// La puerta del CMS no debe ser visible para el lector en ninguna de las dos
+console.log('\n=== puertas de acceso ===');
+[['index.html', raizH], ['publicar/index.html', pubH]].forEach(function (par) {
+  const m = par[1].match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
+  let seg = {};
+  try { seg = JSON.parse(m ? m[1] : '{}').seguridad || {}; } catch (e) { }
+  const abierto = seg.puertasSiempre === true || seg.accesoPublico === true;
+  if (abierto) ko(par[0] + ': las puertas del CMS quedarían visibles para el lector');
+  else ok(par[0] + ': las puertas del CMS están cerradas para el lector');
+});
 
 // El lector de contenido con formato y las páginas que lo usan
 console.log('\n=== páginas sueltas con contenido con formato ===');

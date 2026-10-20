@@ -132,9 +132,15 @@ el HTML publicado es válido y limpio.
 ```
 
 Las dos copias del portal (`index.html` y `publicar/index.html`) son idénticas
-**salvo una línea**: el bloque `estadoEmbebido`. En la copia de trabajo va
-vacío (el contenido vive en el navegador del editor); en la publicada lleva el
-contenido final que ve el lector.
+**salvo el bloque `estadoEmbebido`**: ahí va el contenido final que ve el
+lector. El contenido que usted edita vive en el navegador de la computadora del
+editor (IndexedDB), y solo baja al archivo cuando usted descarga el HTML
+publicado.
+
+En las dos copias las **puertas de acceso del CMS están cerradas** para quien
+no es la redacción: un lector que abra `index.html` directamente no ve ningún
+botón de edición. El botón **⚙️ Abrir CMS** aparece solo en los equipos donde
+usted ya se autenticó.
 
 ---
 
@@ -142,8 +148,9 @@ contenido final que ve el lector.
 
 1. Copia de trabajo: `index.html` de la raíz del repositorio.
 2. Ábrala con doble clic (o `npm run servidor` → `http://localhost:8099/`).
-3. Entre al CMS: botón **⚙️ Abrir CMS**, o `?cms=1` al final de la dirección,
-   o `Ctrl+Alt+M`.
+3. Entre al CMS: botón **⚙️ Abrir CMS** (aparece en los equipos ya
+   autenticados), o `?cms=1` al final de la dirección, o `Ctrl+Alt+M`, o
+   `publicar/redaccion-cms.html`.
 4. Escriba con formato en el editor estilo Word.
 5. Pulse **💾 Guardar** (se guarda en el navegador) y luego
    **🚀 Descargar HTML publicado**.
