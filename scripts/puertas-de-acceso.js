@@ -71,7 +71,10 @@ if (accion === 'abrir' || accion === 'cerrar') {
   estado.seguridad.botonPie = true;
   estado.seguridad.botonFlotante = true;
   estado.seguridad.accesoPublico = false;
-  estado.seguridad.puertasPublicas = !abierto;
+  /* puertasPublicas = si al publicar se respetan estos ajustes.
+     En modo redacción va en false: el HTML publicado SIEMPRE sale con las
+     puertas cerradas para el lector, aunque alguien las activara sin querer. */
+  estado.seguridad.puertasPublicas = abierto;
   fs.writeFileSync(PUBLICAR, escribirEstado(html, estado), 'utf8');
   console.log('\n✓ Puertas de acceso en ' + (abierto ? 'MODO PÚBLICO' : 'MODO REDACCIÓN') + '.');
   console.log('  · Lectores       : ' + (abierto ? 'VEN el botón 🔒' : 'NO ven ningún botón'));
