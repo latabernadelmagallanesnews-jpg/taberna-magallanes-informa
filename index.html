@@ -776,30 +776,6 @@
     .cronicas-nota-cuerpo mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
-
-/*__LONGFORM_INICIO__*/
-    /* ================================================================
-       NIVEL 1 · TARJETA / TEASER DE PORTADA
-       Cinta de categoría, titular, subtítulo, entrada y llamada a la
-       acción. Sin cajas ni bordes: solo aire y tipografía.
-       ================================================================ */
-    .teaser { display: flex; flex-direction: column; height: 100%; }
-    .teaser-imagen { display: block; margin-bottom: 1.1rem; }
-    .teaser-imagen img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-    .teaser-cintillo { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin: 0 0 0.7rem; font-family: 'Inter', sans-serif; font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.11em; }
-    .teaser-categoria { color: #8c1d2f; }
-    .teaser-numero { color: #9aa0a8; font-weight: 600; letter-spacing: 0.04em; }
-    .teaser-titular { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.015em; color: #0b2240; margin: 0 0 0.5rem; }
-    .teaser-subtitulo { font-family: 'EB Garamond', Georgia, serif; font-size: 1.08rem; line-height: 1.4; font-style: italic; color: #6b5b2e; margin: 0 0 0.75rem; }
-    .teaser-lead { font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.65; color: #3f4650; margin: 0 0 1.15rem; }
-    .teaser-cta { display: inline-flex; align-items: center; gap: 0.45rem; align-self: flex-start; font-family: 'Inter', sans-serif; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.02em; color: #0b2240; text-decoration: none; padding-bottom: 3px; border-bottom: 2px solid #c59b27; transition: gap .18s ease, color .18s ease; }
-    .teaser-cta:hover { gap: 0.8rem; color: #8c1d2f; border-bottom-color: #8c1d2f; }
-    .teaser-cta:focus-visible { outline: 2px solid #c59b27; outline-offset: 3px; }
-    .teaser-firma { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: #8b919b; margin: 1.1rem 0 0; }
-    .teaser-acciones { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
-    .teaser-acciones button { background: none; border: 1px solid #d8d4cc; border-radius: 20px; padding: 4px 11px; font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 700; color: #5b6270; cursor: pointer; }
-    .teaser-acciones button:hover { border-color: #0b2240; color: #0b2240; }
-    /*__LONGFORM_FIN__*/
 /*__CSS_FIN__*/
 </style>
 </head>
@@ -2954,6 +2930,10 @@
     const almacenEl = document.getElementById('cmsEstadoAlmacen');
     if (almacenEl) almacenEl.textContent = modo;
     renderizarTodo();
+    /* El panel del CMS se dibujó al abrir la página, antes de que llegara el
+       contenido guardado: hay que redibujarlo para que muestre los textos
+       reales y los contadores de palabras correctos. */
+    refrescarPanelCMS();
     actualizarIndicadorEstado(guardado ? 'Estado restaurado' : 'Plantilla cargada');
   }
   function guardarAhora() {
@@ -5744,6 +5724,9 @@
     });
     cont.innerHTML = construirPanel(g);
     activarZonasDeCarga(cont);
+    /* Al redibujar hay que volver a calcular los contadores de los editores
+       con formato (palabras y caracteres). */
+    activarEditoresRicos(cont);
     abiertos.forEach(function (clave) {
       const el = cont.querySelector('.cms-rep-item[data-item="' + clave + '"]');
       if (el) el.classList.add('abierto');

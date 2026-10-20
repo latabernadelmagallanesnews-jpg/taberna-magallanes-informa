@@ -737,13 +737,6 @@ function aplicar(archivo) {
 
   h = reemplazar(
     h,
-    `alt="' + esc(c.titulo) + '" loading="lazy">`,
-    `alt="' + escTexto(c.titulo) + '" loading="lazy">`,
-    'alt de la foto de la crónica'
-  );
-
-  h = reemplazar(
-    h,
     `alt="' + esc(d.titulo || 'Imagen destacada') + '"`,
     `alt="' + escTexto(d.titulo || 'Imagen destacada') + '"`,
     'alt de la imagen destacada de la ficha'
@@ -1077,12 +1070,7 @@ function aplicar(archivo) {
   );
 
   /* --- "Leer más" lleva a la NOTA COMPLETA en su propia página ---------- */
-  h = reemplazar(
-    h,
-    `          (tieneCuerpo ? '<div class="muro-leer"><button type="button" class="btn-leer-mas" aria-expanded="false" onclick="toggleCronica(\\'' + esc(c.id) + '\\', this)"><span>Leer más ▾</span></button></div>' : '') +`,
-    `          (tieneCuerpo ? '<div class="muro-leer"><a class="btn-leer-mas" href="cronica.html?c=' + encodeURIComponent(c.id) + '" title="Leer la nota completa"><span>Leer la nota completa →</span></a></div>' : '') +`,
-    'botón Leer más de la crónica'
-  );
+
 
   /* --- cada crónica tiene su dirección propia (permalink) ---------------- */
   h = reemplazar(
@@ -1163,12 +1151,34 @@ function aplicar(archivo) {
   );
 
   /* --- el muro muestra también el subtítulo ------------------------------- */
+
+
+  /* --- el panel del CMS debe redibujarse cuando llega el contenido ------- */
   h = reemplazar(
     h,
-    `          '<h4 style="font-family: \\'Playfair Display\\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.5rem;">' + esc(c.titulo) + '</h4>' +`,
-    `          '<h4 style="font-family: \\'Playfair Display\\', serif; font-size: 1.25rem; font-weight: 800; color: #0b2240; line-height: 1.25; margin-bottom: 0.35rem;">' + esc(c.titulo) + '</h4>' +
-          (c.subtitulo ? '<p style="font-family: \\'EB Garamond\\', Georgia, serif; font-size: 1.02rem; line-height: 1.45; color: #6b5b2e; margin: 0 0 0.55rem; font-style: italic;">' + esc(c.subtitulo) + '</p>' : '') +`,
-    'subtítulo en la tarjeta del muro'
+    `    renderizarTodo();
+    actualizarIndicadorEstado(guardado ? 'Estado restaurado' : 'Plantilla cargada');`,
+    `    renderizarTodo();
+    /* El panel del CMS se dibujó al abrir la página, antes de que llegara el
+       contenido guardado: hay que redibujarlo para que muestre los textos
+       reales y los contadores de palabras correctos. */
+    refrescarPanelCMS();
+    actualizarIndicadorEstado(guardado ? 'Estado restaurado' : 'Plantilla cargada');`,
+    'redibujado del panel del CMS tras cargar el contenido'
+  );
+
+  h = reemplazar(
+    h,
+    `    cont.innerHTML = construirPanel(g);
+    activarZonasDeCarga(cont);
+    abiertos.forEach(function (clave) {`,
+    `    cont.innerHTML = construirPanel(g);
+    activarZonasDeCarga(cont);
+    /* Al redibujar hay que volver a calcular los contadores de los editores
+       con formato (palabras y caracteres). */
+    activarEditoresRicos(cont);
+    abiertos.forEach(function (clave) {`,
+    'contadores al refrescar el panel del CMS'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
