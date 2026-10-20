@@ -9,6 +9,9 @@ Pages**, Netlify, Cloudflare o cualquier hosting.
 
 - **Fundador y Director:** Luis Enrique Aponte Guzmán
 - **Proyecto Firebase:** `la-taberna-del-magallanes-news`
+- **Repositorio:** <https://github.com/latabernadelmagallanesnews-jpg/taberna-magallanes-informa>
+- **Sitio publicado (GitHub Pages):**
+  <https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/>
 
 ---
 
