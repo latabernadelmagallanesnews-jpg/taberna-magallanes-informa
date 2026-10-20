@@ -189,6 +189,27 @@ También puede manejarlas desde el propio CMS, en **Seguridad & Accesos**.
    raíz del repositorio.
 8. `npm run deploy` para publicar en Firebase, o `git push` para GitHub.
 
+### La URL pública (compartir y códigos QR)
+
+Los enlaces que se generan al compartir (WhatsApp, X, Facebook, Telegram…) y
+los códigos QR usan siempre esta dirección:
+
+```
+https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/
+```
+
+Está fijada, así que **funciona igual probando en local**: si no lo estuviera,
+al copiar un enlace desde `localhost` apuntaría a su computadora y no le
+serviría a nadie.
+
+Si algún día publica en Firebase o en un dominio propio, cámbiela con:
+
+```bash
+node scripts/fijar-url-publica.js https://su-dominio.com/
+```
+
+o desde el propio CMS, en **SEO → URL canónica**.
+
 ---
 
 ## 4 · Publicar en Firebase Hosting
@@ -286,6 +307,7 @@ y añada el rol **Firebase Hosting Admin** → cree una clave JSON.
 | `npm run servidor` | Abre el portal en `http://localhost:8099/` |
 | `npm run parche` | Instala (o actualiza) el editor estilo Word en los HTML |
 | `npm run data` | Regenera `publicar/data.json` |
+| `npm run url` | Fija la URL pública (la de los enlaces al compartir y los QR) |
 | `npm run sync` | Copia `publicar/` a la raíz del repositorio |
 | `npm run paginas` | Conecta el lector de formato en las páginas sueltas |
 | `node scripts/puertas-de-acceso.js` | Enciende o apaga la puerta «🔒 Acceso Redacción» |

@@ -12,7 +12,7 @@
   <!-- SEO & Metadatos Principales (editables desde el CMS) -->
   <meta id="seoDescripcion" name="description" content="Gaceta sabermétrica, analítica Statcast, scouting y crónicas de investigación sobre los Navegantes del Magallanes y la LVBP. Fundador y Director: Luis Enrique Aponte Guzmán.">
   <meta id="seoAutor" name="author" content="Luis Enrique Aponte Guzmán">
-  <link id="seoCanonica" rel="canonical" href="https://latabernadelmagallanes.news">
+  <link id="seoCanonica" rel="canonical" href="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/">
 
   <!-- Open Graph / WhatsApp / Redes Sociales -->
   <meta id="ogTagSitio" property="og:site_name" content="La Taberna del Magallanes News">
@@ -23,7 +23,7 @@
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta id="ogTagUrl" property="og:url" content="https://latabernadelmagallanes.news">
+  <meta id="ogTagUrl" property="og:url" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/">
   <meta property="og:type" content="article">
 
   <!-- Twitter Cards -->
@@ -2179,7 +2179,7 @@
       titulo: 'La Taberna del Magallanes News | Gaceta Sabermétrica & LVBP',
       descripcion: 'Gaceta sabermétrica, analítica Statcast, scouting y crónicas de investigación sobre los Navegantes del Magallanes y la LVBP. Fundador y Director: Luis Enrique Aponte Guzmán.',
       autor: 'Luis Enrique Aponte Guzmán',
-      url: 'https://latabernadelmagallanes.news',
+      url: 'https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/',
       ogTitulo: 'Opening Day LVBP: El colapso del pitcheo abridor y las señales sabermétricas en el arranque turco',
       ogDesc: 'Investigación especial: Análisis de comando, decrecimiento angular en el slider y telemetría de lanzamientos en Valencia.',
       ogImagen: 'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=1200&h=630&fit=crop',
@@ -2951,8 +2951,13 @@
         if (lugar.indexOf('/') !== lugar.lastIndexOf('/')) lugar = lugar.replace(/\/+$/, '/');
       }
     } catch (e) { }
-    const esEjemplo = !configurada || /latabernadelmagallanes\.news/i.test(configurada) || /localhost|127\.0\.0\.1/i.test(configurada);
-    return (configurada && !esEjemplo) ? configurada : (lugar || configurada || 'https://latabernadelmagallanes.news');
+    /* La URL canónica fijada en el CMS manda SIEMPRE, también probando en
+       local: si no, los enlaces que se comparten y los códigos QR apuntarían
+       a localhost y no servirían para nada. */
+    const esEjemplo = /latabernadelmagallanes\.news/i.test(configurada);
+    const esLocal = /localhost|127\.0\.0\.1/i.test(configurada);
+    if (configurada && !esEjemplo && !esLocal) return configurada;
+    return lugar || configurada || 'https://latabernadelmagallanes.news';
   }
 
   function renderSEO() {

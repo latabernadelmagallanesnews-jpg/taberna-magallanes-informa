@@ -706,6 +706,21 @@ function aplicar(archivo) {
     'alt de la imagen destacada de la ficha'
   );
 
+  /* --- la URL canónica manda, también probando en local ----------------- */
+  h = reemplazar(
+    h,
+    `    const esEjemplo = !configurada || /latabernadelmagallanes\\.news/i.test(configurada) || /localhost|127\\.0\\.0\\.1/i.test(configurada);
+    return (configurada && !esEjemplo) ? configurada : (lugar || configurada || 'https://latabernadelmagallanes.news');`,
+    `    /* La URL canónica fijada en el CMS manda SIEMPRE, también probando en
+       local: si no, los enlaces que se comparten y los códigos QR apuntarían
+       a localhost y no servirían para nada. */
+    const esEjemplo = /latabernadelmagallanes\\.news/i.test(configurada);
+    const esLocal = /localhost|127\\.0\\.0\\.1/i.test(configurada);
+    if (configurada && !esEjemplo && !esLocal) return configurada;
+    return lugar || configurada || 'https://latabernadelmagallanes.news';`,
+    'urlPublicaPortal()'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

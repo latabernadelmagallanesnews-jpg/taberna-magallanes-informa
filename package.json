@@ -12,6 +12,7 @@
     "paginas": "node scripts/aplicar-rico-paginas.js",
     "sync": "node scripts/sincronizar-raiz.js",
     "data": "node scripts/generar-data-json.js",
+    "url": "node scripts/fijar-url-publica.js",
     "sintaxis": "node scripts/verificar-sintaxis.js editor/index.html publicar/index.html index.html",
     "verificar": "node scripts/verificar-portal.js",
     "build": "npm run parche && npm run paginas && npm run data && npm run sync && npm run sintaxis && npm run verificar",
