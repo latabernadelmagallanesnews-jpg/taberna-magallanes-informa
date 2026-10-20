@@ -377,6 +377,26 @@ ya publicado:
 
 ---
 
+## 8 · Multimedia: formatos y medidas
+
+Guía completa de qué formatos acepta el portal y qué medida conviene para cada
+espacio (banners, portada, fotos de crónicas, flyers, historias, roster…):
+
+**[`publicar/ESPECIFICACIONES-MEDIA.md`](publicar/ESPECIFICACIONES-MEDIA.md)**
+
+| Tipo | Formatos |
+| --- | --- |
+| 🖼️ Imagen | JPG · PNG · WebP · GIF · AVIF |
+| 🎵 Audio | MP3 · M4A · WAV · OGG · AAC · FLAC |
+| 🎬 Video | MP4 · WebM · MOV · MKV (o enlace de YouTube / Drive) |
+| 📄 Documento | PDF · Word · Excel · PowerPoint · TXT · CSV · ZIP |
+
+Medidas clave: **banner 1200×260** · **portada 1200×540** · **foto de crónica
+1200×540** · **flyer 1200×400** · **historia 1080×1920** (vertical 9:16) ·
+**logo 400×84**.
+
+---
+
 ## 9 · Límites
 
 - GitHub Pages admite archivos de hasta 100 MB y repositorios de 1 GB.

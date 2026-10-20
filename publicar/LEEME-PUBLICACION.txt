@@ -17,6 +17,8 @@ QUÉ HAY EN ESTA CARPETA
   · rico.js ............... lector de contenido con formato (lo usan el buscador,
                             las crónicas, el roster y el VIP para mostrar los
                             textos con el formato del editor Word).
+  · ESPECIFICACIONES-MEDIA.md  formatos, tamaños y medidas de las fotos,
+                            banners, videos y audios del portal.
   · robots.txt ............ permiso para buscadores (opcional, recomendado)
   · .nojekyll ............. necesario en GitHub Pages (evita que filtre archivos)
   · README.md ............. instrucciones para GitHub Pages
