@@ -42,6 +42,14 @@ const CANONICA_NEW = '<link id="seoCanonica" rel="canonical" href="' + url + '">
 const OG_OLD = '<meta id="ogTagUrl" property="og:url" content="https://latabernadelmagallanes.news">';
 const OG_NEW = '<meta id="ogTagUrl" property="og:url" content="' + url + '">';
 
+/* --- 3 · la imagen QR de ejemplo (se reemplaza al abrir el modal) ------ */
+const QR_OLD = 'data=https://latabernadelmagallanes.news"';
+const QR_NEW = 'data=' + encodeURIComponent(url) + '"';
+
+/* --- 4 · el dominio que se muestra en la vista previa Open Graph -------- */
+const DOM_OLD = '<span id="ogModalDominio" style="font-size: 0.65rem; color: #888888; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">latabernadelmagallanes.news</span>';
+const DOM_NEW = '<span id="ogModalDominio" style="font-size: 0.65rem; color: #888888; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">' + url.replace(/^https?:\/\//, '').replace(/\/+$/, '') + '</span>';
+
 let tocados = 0;
 
 OBJETIVOS.forEach(function (archivo) {
@@ -52,6 +60,12 @@ OBJETIVOS.forEach(function (archivo) {
   if (h.indexOf(SEMILLA_OLD) !== -1) h = h.split(SEMILLA_OLD).join(SEMILLA_NEW);
   if (h.indexOf(CANONICA_OLD) !== -1) h = h.split(CANONICA_OLD).join(CANONICA_NEW);
   if (h.indexOf(OG_OLD) !== -1) h = h.split(OG_OLD).join(OG_NEW);
+  if (h.indexOf(QR_OLD) !== -1) h = h.split(QR_OLD).join(QR_NEW);
+  /* El dominio de la vista previa Open Graph (se reemplaza al abrirla, pero
+     se deja bien desde el principio). */
+  h = h.replace(/(id="ogModalDominio"[^>]*>)[^<]*(<\/span>)/, function (todo, ini, fin) {
+    return ini + url.replace(/^https?:\/\//, '').replace(/\/+$/, '') + fin;
+  });
 
   if (h !== antes) {
     fs.writeFileSync(archivo, h, 'utf8');
