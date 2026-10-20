@@ -55,6 +55,11 @@ con formato:
   la firma, botones para compartir, otras notas para seguir leyendo y sus
   propias etiquetas sociales. El botón «Leer la nota completa» del muro lleva
   a ella, y el enlace que se comparte es esa dirección (un permalink).
+- **Columna derecha del muro de crónicas**: la «Nota de la redacción» es un
+  bloque de verdad, no una línea. Se escribe en el **editor estilo Word** (con
+  formato, títulos, listas, enlaces) y se publica como una caja lateral con
+  tipografía de diario (Garamond), donde la redacción explica el montaje de
+  las crónicas y los artículos. Si se deja vacía, la caja no se muestra.
 - Portada (titular, cita, epígrafe y cuerpo completo)
 - Banner de WhatsApp, publicidad nativa, Cabina VIP y scouting rival
 - Tabla de posiciones, roster y su leyenda

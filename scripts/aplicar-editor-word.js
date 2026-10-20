@@ -140,6 +140,23 @@ const CSS_WORD = `/*__CSS_INICIO__*/
     /* Entrada discreta a la sala de redacción, en el pie del diario */
     footer a[href="redaccion-cms.html"] { opacity: 0.55; transition: opacity .15s ease; }
     footer a[href="redaccion-cms.html"]:hover { opacity: 1; color: #0b2240 !important; text-decoration: underline !important; }
+    /* Columna derecha del muro de crónicas: la nota de la redacción */
+    .cronicas-cabecera { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 34%); gap: 1.6rem; align-items: start; border-bottom: 2px solid #0b2240; padding-bottom: 1.1rem; margin-bottom: 1.4rem; }
+    .cronicas-cabecera-izq { min-width: 0; }
+    .cronicas-nota { background: #fffdf5; border: 1px solid #e8e0cc; border-left: 4px solid #c59b27; border-radius: 0 10px 10px 0; padding: 1rem 1.15rem; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+    .cronicas-nota-tit { display: block; font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #b45309; margin-bottom: 0.55rem; }
+    .cronicas-nota-cuerpo { font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; color: #3f3f46; }
+    .cronicas-nota-cuerpo p { margin: 0 0 0.75em; }
+    .cronicas-nota-cuerpo p:last-child { margin-bottom: 0; }
+    .cronicas-nota-cuerpo h2, .cronicas-nota-cuerpo h3, .cronicas-nota-cuerpo h4 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; font-weight: 800; margin: 0.9em 0 0.35em; line-height: 1.3; }
+    .cronicas-nota-cuerpo h3 { font-size: 1.12rem; } .cronicas-nota-cuerpo h4 { font-size: 1rem; }
+    .cronicas-nota-cuerpo ul, .cronicas-nota-cuerpo ol { margin: 0.45em 0 0.75em; padding-left: 1.25rem; }
+    .cronicas-nota-cuerpo li { margin-bottom: 0.3em; }
+    .cronicas-nota-cuerpo a { color: #0b2240; text-decoration: underline; }
+    .cronicas-nota-cuerpo strong, .cronicas-nota-cuerpo b { color: #0b2240; }
+    .cronicas-nota-cuerpo mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
+    .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
+    @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
 /*__CSS_FIN__*/
 `;
 
@@ -1093,6 +1110,45 @@ function aplicar(archivo) {
     return urlPublicaPortal() + ((d && d.clave) ? '#' + d.clave : '');
   }`,
     'enlaceFicha()'
+  );
+
+  /* --- la NOTA DERECHA del muro: columna de redacción de verdad ---------- */
+  h = reemplazar(
+    h,
+    `        { path: 'cronicasSeccion.nota', label: 'Nota derecha', tipo: 'texto' },`,
+    `        { path: 'cronicasSeccion.nota', label: 'Nota de la redacción (columna derecha del muro)', tipo: 'area', rico: true },`,
+    'nota derecha del muro de crónicas'
+  );
+
+  h = reemplazar(
+    h,
+    `      <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0b2240; padding-bottom: 0.5rem; margin-bottom: 1.25rem; gap: 0.75rem; flex-wrap: wrap;">
+        <div>
+          <span id="cronicasEtiqueta" style="font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #c59b27; letter-spacing: 0.1em;">Investigación de Terreno</span>
+          <h3 id="cronicasTitulo" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.75rem; font-weight: 800; color: #0b2240; line-height: 1.1;">Muro de la Crónica &amp; Scouting Reports</h3>
+        </div>
+        <span id="cronicasNota" style="font-family: 'Inter', sans-serif; font-size: 0.7rem; color: #666666;">Lectura con despiece analítico</span>
+      </div>`,
+    `      <div class="cronicas-cabecera">
+        <div class="cronicas-cabecera-izq">
+          <span id="cronicasEtiqueta" style="font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #c59b27; letter-spacing: 0.1em;">Investigación de Terreno</span>
+          <h3 id="cronicasTitulo" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.75rem; font-weight: 800; color: #0b2240; line-height: 1.1;">Muro de la Crónica &amp; Scouting Reports</h3>
+        </div>
+        <aside class="cronicas-nota" id="cronicasNota">
+          <b class="cronicas-nota-tit">Nota de la redacción</b>
+          <div class="cronicas-nota-cuerpo" id="cronicasNotaCuerpo">Lectura con despiece analítico</div>
+        </aside>
+      </div>`,
+    'cabecera del muro de crónicas'
+  );
+
+  h = reemplazar(
+    h,
+    `    setTxt('cronicasNota', s.nota);`,
+    `    setTxt('cronicasNotaCuerpo', s.nota);
+    const cajaNota = document.getElementById('cronicasNota');
+    if (cajaNota) cajaNota.style.display = String(s.nota || '').trim() ? '' : 'none';`,
+    'render de la nota derecha'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
