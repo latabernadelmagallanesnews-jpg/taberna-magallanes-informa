@@ -924,7 +924,42 @@ function aplicar(archivo) {
     'enlace de la ficha de contenido'
   );
 
-  /* --- los enlaces del Paredón también usan la URL pública ---------------- */
+  /* --- al abrir un enlace de nota, el desplazamiento debe ser fiable ---- */
+  h = reemplazar(
+    h,
+    `      if (btn && cuerpo && !cuerpo.classList.contains('activa')) toggleCronica(id, btn);
+      try { tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); } catch (e) { }`,
+    `      if (btn && cuerpo && !cuerpo.classList.contains('activa')) toggleCronica(id, btn);
+      desplazarHasta(tarjeta);`,
+    'desplazamiento al abrir una nota'
+  );
+
+  h = reemplazar(
+    h,
+    `  function abrirCronicaDesdeHash() {`,
+    `  /* Lleva la nota a la vista de forma fiable: la imagen de la crónica
+     carga después y mueve el diseño, así que se reintenta el desplazamiento. */
+  function desplazarHasta(el) {
+    if (!el) return;
+    const ejecutar = function () {
+      try {
+        const arriba = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+        const destino = Math.max(0, arriba - Math.max(60, (window.innerHeight - el.offsetHeight) / 2));
+        window.scrollTo({ top: destino, behavior: 'smooth' });
+      } catch (e) {
+        try { el.scrollIntoView({ block: 'center' }); } catch (e2) { }
+      }
+    };
+    ejecutar();
+    setTimeout(ejecutar, 400);
+    setTimeout(ejecutar, 1300);
+  }
+
+  function abrirCronicaDesdeHash() {`,
+    'desplazarHasta()'
+  );
+
+  /* --- el enlace del Paredón también usa la URL pública ---------------- */
   h = reemplazar(
     h,
     `    const url = location.href.split('#')[0] + '#modulo-18-paredon-fanatico';`,

@@ -3712,6 +3712,24 @@
 
   /* Abre la nota indicada cuando el lector llega desde un enlace compartido
      (#cronica-ID): si está en el muro la despliega ahí mismo; si no, abre la ficha. */
+  /* Lleva la nota a la vista de forma fiable: la imagen de la crónica
+     carga después y mueve el diseño, así que se reintenta el desplazamiento. */
+  function desplazarHasta(el) {
+    if (!el) return;
+    const ejecutar = function () {
+      try {
+        const arriba = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+        const destino = Math.max(0, arriba - Math.max(60, (window.innerHeight - el.offsetHeight) / 2));
+        window.scrollTo({ top: destino, behavior: 'smooth' });
+      } catch (e) {
+        try { el.scrollIntoView({ block: 'center' }); } catch (e2) { }
+      }
+    };
+    ejecutar();
+    setTimeout(ejecutar, 400);
+    setTimeout(ejecutar, 1300);
+  }
+
   function abrirCronicaDesdeHash() {
     const h = String(window.location.hash || '').replace(/^#/, '');
     if (!/^cronica-/i.test(h)) return;
@@ -3723,7 +3741,7 @@
       const btn = tarjeta.querySelector('.btn-leer-mas');
       const cuerpo = document.getElementById('cronica-expandida-' + id);
       if (btn && cuerpo && !cuerpo.classList.contains('activa')) toggleCronica(id, btn);
-      try { tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); } catch (e) { }
+      desplazarHasta(tarjeta);
     } else {
       abrirFichaCronica(id);
     }
