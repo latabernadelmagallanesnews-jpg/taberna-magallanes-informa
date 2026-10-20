@@ -86,16 +86,24 @@ else {
   else ko('la copia de trabajo difiere en ' + difs + ' líneas');
 }
 
-// La puerta del CMS no debe ser visible para el lector en ninguna de las dos
+// La puerta del CMS: oculta para el lector, visible para la redacción
 console.log('\n=== puertas de acceso ===');
+let logicaEditorial = true;
 [['editor/index.html', ediH], ['publicar/index.html', pubH], ['index.html', raizH]].forEach(function (par) {
   const m = par[1].match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
   let seg = {};
-  try { seg = JSON.parse(m ? m[1] : '{}').seguridad || {}; } catch (e) { }
+  try { seg = JSON.parse(m ? m[2] : '{}').seguridad || {}; } catch (e) { }
   const abierto = seg.puertasSiempre === true || seg.accesoPublico === true;
-  if (abierto) ko(par[0] + ': las puertas del CMS quedarían visibles para el lector');
-  else ok(par[0] + ': las puertas del CMS están cerradas para el lector');
+  if (abierto) ko(par[0] + ': los lectores verían el botón de acceso');
+  else ok(par[0] + ': los lectores NO ven ningún botón de acceso');
+
+  /* La redacción (Director y periodistas con código personal) debe ver la
+     puerta siempre: el código da prioridad a la sesión sobre el interruptor
+     de los lectores. */
+  if (par[1].indexOf('redaccion || (visibleParaLectores') === -1) logicaEditorial = false;
 });
+if (logicaEditorial) ok('la puerta se muestra siempre a quien esté autorizado (Director o periodista con código)');
+else ko('no se encontró la prioridad de la sesión editorial sobre el interruptor de lectores');
 
 // El lector de contenido con formato y las páginas que lo usan
 console.log('\n=== páginas sueltas con contenido con formato ===');

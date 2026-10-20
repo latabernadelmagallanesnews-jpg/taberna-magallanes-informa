@@ -31,14 +31,20 @@ if (!m) {
 let estado;
 try { estado = JSON.parse(m[2] ? m[2] : '{}'); } catch (e) { estado = {}; }
 estado.seguridad = estado.seguridad || {};
-estado.seguridad.puertasSiempre = true;
+/* Modo redacción: los lectores NO ven ningún botón, pero usted y los
+   periodistas con código personal sí los ven siempre (en cuanto su equipo
+   queda autorizado, el botón pasa a decir «⚙️ Abrir CMS»). */
+estado.seguridad.puertasSiempre = false;
 estado.seguridad.botonPie = true;
 estado.seguridad.botonFlotante = true;
 estado.seguridad.accesoPublico = false;
+estado.seguridad.puertasPublicas = false;
 
 fs.writeFileSync(EDITOR, html.replace(RE, function (todo, ini, _c, fin) {
   return ini + JSON.stringify(estado) + fin;
 }), 'utf8');
 
-console.log('✓ editor/index.html: puerta «🔒 Acceso Redacción» visible al abrir el portal.');
-console.log('  Al pulsarla se pide la clave; en equipos autorizados pasa a «⚙️ Abrir CMS».');
+console.log('✓ editor/index.html: puertas de acceso en MODO REDACCIÓN.');
+console.log('  · Los lectores NO ven ningún botón.');
+console.log('  · Usted y sus periodistas con código personal SÍ lo ven:');
+console.log('    tras autenticarse una vez, el botón dice «⚙️ Abrir CMS».');

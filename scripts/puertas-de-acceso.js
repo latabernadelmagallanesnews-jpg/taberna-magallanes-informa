@@ -51,22 +51,31 @@ estado.seguridad = estado.seguridad || {};
 if (!accion || accion === 'estado') {
   const s = estado.seguridad;
   console.log('\n=== PUERTAS DE ACCESO ===');
-  console.log('  Botón flotante «🔒 Acceso Redacción» : ' + (s.botonFlotante !== false ? 'VISIBLE' : 'oculto'));
-  console.log('  Puerta del pie «🔒 Redacción»         : ' + (s.botonPie !== false ? 'VISIBLE' : 'oculto'));
-  console.log('  Visible para los lectores             : ' + (s.puertasSiempre === true ? 'SÍ' : 'NO'));
-  console.log('  Se mantiene al publicar               : ' + (s.puertasPublicas === true ? 'SÍ' : 'NO'));
+  console.log('  Mododo            : ' + (s.puertasSiempre === true ? 'PUBLICO (los lectores ven el boton)' : 'REDACCION (solo la redaccion lo ve)'));
+  console.log('  Lectores          : ' + (s.puertasSiempre === true ? 'VEN el boton «🔒 Acceso Redaccion»' : 'NO ven ningun boton'));
+  console.log('  Usted y su equipo : VEN siempre «⚙️ Abrir CMS» (tras autenticarse una vez)');
+  console.log('  Boton flotante    : ' + (s.botonFlotante !== false ? 'activo' : 'desactivado'));
+  console.log('  Puerta del pie    : ' + (s.botonPie !== false ? 'activa' : 'desactivada'));
   console.log('\n  (los lectores que lo pulsen siguen teniendo que escribir la clave)\n');
   process.exit(0);
 }
 
 if (accion === 'abrir' || accion === 'cerrar') {
   const abierto = accion === 'abrir';
+  /* puertasSiempre = los lectores ven o no el botón.
+     botonPie / botonFlotante = los dos botones de la redacción.
+     Con una sesión autorizada (Director o periodista con código personal) el
+     botón se ve SIEMPRE, porque la redacción tiene prioridad sobre el
+     interruptor de los lectores. */
   estado.seguridad.puertasSiempre = abierto;
-  estado.seguridad.botonPie = abierto;
-  estado.seguridad.botonFlotante = abierto;
-  estado.seguridad.puertasPublicas = abierto;
+  estado.seguridad.botonPie = true;
+  estado.seguridad.botonFlotante = true;
+  estado.seguridad.accesoPublico = false;
+  estado.seguridad.puertasPublicas = !abierto;
   fs.writeFileSync(PUBLICAR, escribirEstado(html, estado), 'utf8');
-  console.log('\n✓ Puertas de acceso ' + (abierto ? 'ABIERTAS' : 'CERRADAS') + ' en publicar/index.html.');
+  console.log('\n✓ Puertas de acceso en ' + (abierto ? 'MODO PÚBLICO' : 'MODO REDACCIÓN') + '.');
+  console.log('  · Lectores       : ' + (abierto ? 'VEN el botón 🔒' : 'NO ven ningún botón'));
+  console.log('  · Usted y sus periodistas : VEN siempre «⚙️ Abrir CMS»');
   console.log('  Ejecute «npm run sync» para llevarlas a la raíz del repositorio.\n');
   process.exit(0);
 }
