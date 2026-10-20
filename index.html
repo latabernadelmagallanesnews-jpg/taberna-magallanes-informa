@@ -9129,8 +9129,8 @@
     const hash = String(window.location.hash || '').toLowerCase().replace(/^#/, '');
     const consulta = String(window.location.search || '').toLowerCase();
     const permitidos = [marca, 'cms', 'redaccion', 'sala-de-redaccion'];
-    if (hash && permitidos.indexOf(hash) !== -1) { solicitarAccesoCMS(); return; }
-    if (consulta.indexOf('cms=1') !== -1 || consulta.indexOf('redaccion=1') !== -1) solicitarAccesoCMS();
+    if (hash && permitidos.indexOf(hash) !== -1) { abrirAccesoEditorial(); return; }
+    if (consulta.indexOf('cms=1') !== -1 || consulta.indexOf('redaccion=1') !== -1) abrirAccesoEditorial();
   }
 
   let toquesSecretos = 0;

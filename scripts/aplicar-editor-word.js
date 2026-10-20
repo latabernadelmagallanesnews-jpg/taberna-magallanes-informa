@@ -706,6 +706,16 @@ function aplicar(archivo) {
     'alt de la imagen destacada de la ficha'
   );
 
+  /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
+  h = reemplazar(
+    h,
+    `    if (hash && permitidos.indexOf(hash) !== -1) { solicitarAccesoCMS(); return; }
+    if (consulta.indexOf('cms=1') !== -1 || consulta.indexOf('redaccion=1') !== -1) solicitarAccesoCMS();`,
+    `    if (hash && permitidos.indexOf(hash) !== -1) { abrirAccesoEditorial(); return; }
+    if (consulta.indexOf('cms=1') !== -1 || consulta.indexOf('redaccion=1') !== -1) abrirAccesoEditorial();`,
+    'abrirAccesoPorURL()'
+  );
+
   /* --- el motor y la interfaz del editor ------------------------------ */
   h = instalarBloque(h, MARCA_EDITOR, MARCA_EDITOR_FIN, EDITOR_JS, '  function construirCMS() {', 'interfaz del editor Word');
 
