@@ -1,20 +1,20 @@
-# ============================================================================
-  PUBLICA EL PORTAL EN GITHUB
-   ----------------------------------------------------------------------------
-  Sube los cambios del portal al repositorio de GitHub. A partir de aquí, cada
-  vez que edite el portal y quiera actualizar el sitio, ejecute:
-
-      powershell -ExecutionPolicy Bypass -File scripts/subir-a-github.ps1
-
-  La primera vez le pedirá usuario y un token de GitHub (Péguelo en el campo
-  "contraseña"). El token queda guardado cifrado en el Administrador de
-  credenciales de Windows, así que no lo tiene que escribir otra vez.
-
-  Qué necesita el token (Settings → Developer settings → Personal access
-  tokens → Fine-grained tokens → Generate):
-      · Repository access: Only select repositories -> taberna-magallanes
-      · Permissions -> Repository permissions -> Contents: Read and write
-   ============================================================================ */
+﻿# ============================================================================
+#  PUBLICA EL PORTAL EN GITHUB
+#  ----------------------------------------------------------------------------
+#  Sube los cambios del portal al repositorio de GitHub. A partir de aqui, cada
+#  vez que edite el portal y quiera actualizar el sitio, ejecute:
+#
+#      powershell -ExecutionPolicy Bypass -File scripts/subir-a-github.ps1
+#
+#  La primera vez le pedira usuario y un token de GitHub (peguelo en el campo
+#  "contrasena"). El token queda guardado cifrado en el Administrador de
+#  credenciales de Windows, asi que no lo tiene que escribir otra vez.
+#
+#  Que necesita el token (Settings -> Developer settings -> Personal access
+#  tokens -> Fine-grained tokens -> Generate):
+#      - Repository access: Only select repositories -> taberna-magallanes
+#      - Permissions -> Repository permissions -> Contents: Read and write
+# ============================================================================ */
 param(
   [string]$Rama = 'main',
   [string]$Mensaje = ''
