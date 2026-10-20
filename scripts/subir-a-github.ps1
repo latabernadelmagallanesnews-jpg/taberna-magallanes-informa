@@ -17,6 +17,7 @@
 # ============================================================================ */
 param(
   [string]$Rama = 'main',
+  [string]$Repositorio = 'taberna-magallanes-informa',
   [string]$Mensaje = ''
 )
 
@@ -58,7 +59,7 @@ if ($LASTEXITCODE -ne 0) { Write-Host "No se pudo crear el commit." -ForegroundC
 $url = (& $git remote get-url origin 2>$null)
 if (-not $url) {
   $cuenta = Read-Host "Usuario de GitHub (sin el @)"
-  $url = "https://$cuenta@github.com/$cuenta/taberna-magallanes.git"
+  $url = "https://$cuenta@github.com/$cuenta/$Repositorio.git"
   & $git remote add origin $url
   Write-Host "Remoto creado: $url" -ForegroundColor Cyan
 }

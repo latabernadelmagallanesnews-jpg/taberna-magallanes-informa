@@ -188,14 +188,28 @@ el código QR toman la URL real del sitio).
 
 ### Subir el repositorio
 
-```bash
-git init
-git add .
-git commit -m "Portal con editor estilo Word y despliegue en Firebase"
-git branch -M main
-git remote add origin https://github.com/USUARIO/REPOSITORIO.git
-git push -u origin main
+El repositorio ya está creado y configurado:
+
 ```
+https://github.com/latabernadelmagallanesnews-jpg/taberna-magallanes-informa
+```
+
+Para subir cambios desde la terminal:
+
+```bash
+git add -A
+git commit -m "Actualización del portal"
+git push origin main
+```
+
+O con el atajo que dejaré listo:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/subir-a-github.ps1
+```
+
+La primera vez le pide usuario y token (el token va en el campo *contraseña*);
+después queda cifrado en el Administrador de credenciales de Windows.
 
 ### GitHub Pages (automático)
 
@@ -204,7 +218,8 @@ que se sube algo a `main`. Para activarlo:
 
 **Settings → Pages → Source → GitHub Actions**.
 
-El portal queda en `https://USUARIO.github.io/REPOSITORIO/`.
+El portal queda en
+`https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/`.
 
 ### Firebase desde GitHub (automático)
 
