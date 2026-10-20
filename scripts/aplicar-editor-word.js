@@ -52,35 +52,49 @@ function reemplazar(texto, viejo, nuevo, etiqueta, opciones) {
   return texto.split(viejo).join(nuevo);
 }
 
-/* El bloque de CSS se reinstala COMPLETO: quita cualquier copia que haya
-   (marcada o de versiones anteriores) y deja exactamente una. Así el script
-   sigue siendo idempotente aunque se modifique el CSS. */
+/* El bloque de CSS del editor se reinstala COMPLETO: se quita cualquier copia
+   que haya (marcada o de versiones anteriores) y deja exactamente una. Pero
+   se CONSERVAN los demás bloques que se hayan insertado dentro (por ejemplo,
+   el del diseño longform), para que el orden en que se ejecuten los parches
+   no importe. */
 function instalarCss(texto, css) {
   const ini = '/*__CSS_INICIO__*/';
   const fin = '/*__CSS_FIN__*/';
-  const inicioLegacy = '    /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */';
+  const iniPropio = '/*__CSS_PROPIO_INICIO__*/';
+  const finPropio = '/*__CSS_PROPIO_FIN__*/';
 
-  let i = texto.indexOf(ini);
+  let h = texto;
+
+  /* 1 · Recoger lo que hay entre las marcas, separando nuestro CSS del resto
+         (por ejemplo, el bloque del diseño longform). */
+  let conservado = '';
+  const i0 = h.indexOf(ini);
+  if (i0 !== -1) {
+    const j0 = h.indexOf(fin, i0);
+    if (j0 !== -1) {
+      let region = h.slice(i0 + ini.length, j0);
+      const p0 = region.indexOf(iniPropio);
+      if (p0 !== -1) {
+        const q0 = region.indexOf(finPropio, p0);
+        if (q0 !== -1) region = region.slice(0, p0) + region.slice(q0 + finPropio.length);
+      }
+      conservado = region;
+    }
+  }
+
+  /* 2 · Quitar cualquier bloque marcado (el nuestro y los de los demás). */
+  let i = h.indexOf(ini);
   while (i !== -1) {
-    const j = texto.indexOf(fin, i);
+    const j = h.indexOf(fin, i);
     if (j === -1) break;
-    /* Se quita también el salto de línea que sigue a la marca, para que el
-       resultado sea idéntico al original. */
-    texto = texto.slice(0, i) + texto.slice(j + fin.length).replace(/^\n/, '');
-    i = texto.indexOf(ini);
+    h = h.slice(0, i) + h.slice(j + fin.length);
+    i = h.indexOf(ini);
   }
 
-  /* Copias antiguas (sin marcas): se quitan TODAS, ya que van antes de </style> */
-  const cierre = texto.indexOf('</style>');
-  if (cierre === -1) throw new Error('No se encontró </style>');
-  let legado = texto.lastIndexOf(inicioLegacy);
-  while (legado !== -1 && legado < cierre) {
-    texto = texto.slice(0, legado) + texto.slice(cierre);
-    legado = texto.lastIndexOf(inicioLegacy);
-  }
-
-  const p = texto.indexOf('</style>');
-  return texto.slice(0, p) + css + texto.slice(p);
+  /* 3 · Reinsertar: nuestro CSS y lo que se conserva. */
+  const p = h.indexOf('</style>');
+  if (p === -1) throw new Error('No se encontró </style>');
+  return h.slice(0, p) + ini + css + conservado + fin + '\n' + h.slice(p);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -96,7 +110,7 @@ const MARCA_EDITOR_FIN = '/*__EDITOR_FIN__*/';
 /* 1 · CSS del editor estilo Word                                             */
 /* -------------------------------------------------------------------------- */
 
-const CSS_WORD = `/*__CSS_INICIO__*/
+const CSS_WORD = `/*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
     .cms-rico-toolbar { display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 6px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); border-bottom: 1px solid #cbd5e1; }
@@ -157,7 +171,7 @@ const CSS_WORD = `/*__CSS_INICIO__*/
     .cronicas-nota-cuerpo mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
-/*__CSS_FIN__*/
+/*__CSS_PROPIO_FIN__*/
 `;
 
 /* -------------------------------------------------------------------------- */

@@ -136,6 +136,20 @@ console.log('\n=== puerta de la redacción ===');
   if (h.indexOf('index.html?cms=1') === -1) ko(par[0] + ': no abre el CMS');
   else ok(par[0] + ': abre el CMS');
 });
+
+/* El diseño de dos niveles (teaser + longform) debe estar completo: el
+   marcado Y su CSS. Si falta el CSS, la maqueta se ve sin formato. */
+console.log('\n=== diseño de dos niveles ===');
+[['editor/index.html', 'copia de trabajo'], ['publicar/index.html', 'publicado'], ['index.html', 'raíz']].forEach((par) => {
+  const f = path.join(RAIZ, par[0]);
+  if (!fs.existsSync(f)) { ko('falta ' + par[0]); return; }
+  const h = fs.readFileSync(f, 'utf8');
+  const marcado = h.indexOf('class="teaser"') > -1;
+  const css = h.indexOf('.teaser-imagen img') > -1 && h.indexOf('.teaser-cta') > -1;
+  if (!marcado) ko(par[0] + ': falta el marcado de la tarjeta');
+  else if (!css) ko(par[0] + ': falta el CSS de la tarjeta (quedaría sin formato)');
+  else ok(par[0] + ': tarjeta con marcado y CSS');
+});
 if (pubH.indexOf('href="redaccion-cms.html"') !== -1) ok('el pie del portal enlaza a la puerta de redacción');
 else ko('el pie del portal no enlaza a la puerta de redacción');
 if (pubH.indexOf('copiarEnlaceItem') !== -1) ok('el CMS permite copiar el enlace de cada elemento');
