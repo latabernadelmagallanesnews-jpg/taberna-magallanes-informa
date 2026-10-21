@@ -39,25 +39,9 @@ const CAMBIOS = [
     `'<div class="oculto" id="cuerpo-' + esc(c.id) + '">' + parrafos(c.cuerpo || c.entradilla || '') + '</div>' +`,
     `'<div class="oculto" id="cuerpo-' + esc(c.id) + '">' + parrafos(c.cuerpo || c.entradilla || '') + '</div>' +`],
 
-  ['cronica.html',
-    `onclick="compartir(\\'' + esc(c.titulo).replace(/'/g, '') + '\\')"`,
-    `onclick="compartir(\\'' + ricoTexto(c.titulo).replace(/'/g, '') + '\\')"`],
+  ,
 
-  ['cronica.html',
-    `function parrafos(t) {
-  var s = String(t || '');
-  /* Si el texto viene con formato (editor Word), se muestra tal cual. */
-  if (ricoEsRico(s)) return ricoHtml(s);
-  return s.split(/\\n\\s*\\n/).filter(function (x) { return x.trim(); })
-    .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
-}`,
-    `function parrafos(t) {
-  var s = String(t || '');
-  /* Si el texto viene con formato (editor Word), se muestra tal cual. */
-  if (ricoEsRico(s)) return ricoHtml(s);
-  return s.split(/\\n\\s*\\n/).filter(function (x) { return x.trim(); })
-    .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
-}`],
+  ,
 
   ['cronica.html',
     `function htmlVideo(v, titulo) {
@@ -152,18 +136,14 @@ const CAMBIOS = [
   } catch (e) { return ''; }
 }`],
 
-  ['cronica.html',
-    `  var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'cronica.html?c=' + encodeURIComponent(c.id);`,
-    `  /* La dirección oficial de la nota es su página propia (notas/c1.html):
-     es la que se comparte y la que ven los buscadores. */
-  var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
 
   ['cronica.html',
-    `  /* La dirección oficial de la nota es su página propia (notas/c1.html):
-     es la que se comparte y la que ven los buscadores. Se arma desde la
-     raíz del diario, no desde la carpeta de la página, para que no se
-     repita el notas/notas. */
-  var url = location.origin + location.pathname.replace(/[^/]*$/, '').replace(/notas\\/$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
+    `var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\w-]+/g, '') + '.html';`,
+    `var url = location.origin + location.pathname.replace(/[^/]*$/, '').replace(/notas\/$/, '') + 'notas/' + String(c.id).replace(/[^\w-]+/g, '') + '.html';`],
+
+  ['cronica.html',
+    `var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`,
+    `var url = location.origin + location.pathname.replace(/[^/]*$/, '').replace(/notas\\/$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
 
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
