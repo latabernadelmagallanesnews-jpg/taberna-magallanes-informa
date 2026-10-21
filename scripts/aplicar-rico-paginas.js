@@ -59,6 +59,34 @@ const CAMBIOS = [
     .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
 }`],
 
+  ['cronica.html',
+    `function htmlVideo(v, titulo) {
+  var url = String(v || '');
+  if (!url) return '';
+  if (esYouTube(url)) {
+    var yt = idYouTube(url);
+    if (yt) return '<iframe src="https://www.youtube.com/embed/' + esc(yt) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  }
+  if (esVimeo(url)) {
+    var vm = idVimeo(url);
+    if (vm) return '<iframe src="https://player.vimeo.com/video/' + esc(vm) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  }
+  return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
+}`,
+    `function htmlVideo(v, titulo) {
+  var url = String(v || '');
+  if (!url) return '';
+  /* YouTube, TikTok y Vimeo se incrustan con su enlace natural: el video
+     vive en su casa y el diario no gasta espacio ni ancho de banda. */
+  var yt = idYouTube(url);
+  if (yt) return '<iframe src="https://www.youtube.com/embed/' + esc(yt) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  var tk = idTikTok(url);
+  if (tk) return '<iframe src="https://www.tiktok.com/embed/v2/' + esc(tk) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  var vm = idVimeo(url);
+  if (vm) return '<iframe src="https://player.vimeo.com/video/' + esc(vm) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
+}`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
@@ -158,3 +186,33 @@ function aplicar(archivo) {
 }
 
 ['cronica.html', 'roster.html', 'buscador.html', 'vip.html'].forEach(aplicar);
+
+/* --------------------------------------------------------------------------
+   rico.js: reconocer el enlace natural de TikTok
+   -------------------------------------------------------------------------- */
+const RICO = path.join(PUBLICAR, 'rico.js');
+if (fs.existsSync(RICO)) {
+  let h = fs.readFileSync(RICO, 'utf8');
+  const original = h;
+  const ancla = '  global.ricoEsRico = esRico;';
+  if (h.indexOf('function idTikTok') === -1 && h.indexOf(ancla) !== -1) {
+    h = h.replace(ancla, [
+      '  /* TikTok: el enlace natural del video, para incrustarlo. */',
+      '  function idTikTok(v) {',
+      "    var s = String(v || '');",
+      '    var m = /tiktok\\.com\\/(?:.*\\/)?video\\/(\\d+)/i.exec(s);',
+      '    if (m) return m[1];',
+      '    m = /tiktok\\.com\\/embed\\/v2\\/(\\d+)/i.exec(s);',
+      "    return m ? m[1] : '';",
+      '  }',
+      '',
+      ancla,
+      '  global.idTikTok = idTikTok;'
+    ].join('\n'));
+  }
+  if (h !== original) {
+    fs.writeFileSync(RICO, h, 'utf8');
+    console.log('✓ rico.js: reconoce los enlaces de TikTok.');
+  }
+}
+

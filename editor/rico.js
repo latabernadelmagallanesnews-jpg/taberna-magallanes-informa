@@ -65,7 +65,17 @@
     return d.innerHTML;
   }
 
+  /* TikTok: el enlace natural del video, para incrustarlo. */
+  function idTikTok(v) {
+    var s = String(v || '');
+    var m = /tiktok\.com\/(?:.*\/)?video\/(\d+)/i.exec(s);
+    if (m) return m[1];
+    m = /tiktok\.com\/embed\/v2\/(\d+)/i.exec(s);
+    return m ? m[1] : '';
+  }
+
   global.ricoEsRico = esRico;
+  global.idTikTok = idTikTok;
   global.ricoTexto = ricoTexto;
   global.ricoHtml = ricoHtml;
 })(window);

@@ -1986,6 +1986,227 @@ function aplicar(archivo) {
     'el epígrafe del hero tiene clase propia'
   );
 
+  /* --- los videos pesados: mejor en YouTube o TikTok ---------------------- */
+  /* Un video de 40 MB en el hosting lo descarga CADA visitante y pesa lo
+     mismo en el diario. Lo natural es subirlo a YouTube o TikTok (gratis,
+     rápido y sin límite) y pegar aquí el enlace: se ve igual, pero el
+     hosting no gasta nada y el sitio carga volando. */
+
+  /* --- TikTok, igual que YouTube y Vimeo --------------------------------- */
+  h = reemplazar(
+    h,
+    `  function esEnlaceYouTube(valor) {
+    return !!(idYouTube(valor) || idVimeo(valor));
+  }`,
+    `  function esEnlaceYouTube(valor) {
+    return !!(idYouTube(valor) || idVimeo(valor));
+  }
+
+  /* TikTok: se reconoce el enlace natural y se incrusta con su iframe. */
+  function idTikTok(valor) {
+    const v = String(valor || '');
+    let m = /tiktok\\.com\\/(?:.*\\/)?video\\/(\\d+)/i.exec(v);
+    if (m) return m[1];
+    m = /tiktok\\.com\\/embed\\/v2\\/(\\d+)/i.exec(v);
+    return m ? m[1] : '';
+  }
+
+  function esEnlaceTikTok(valor) {
+    return !!idTikTok(valor);
+  }
+
+  /* El origen del video: YouTube, TikTok, Vimeo, archivo o enlace. */
+  function origenDeVideo(valor) {
+    const v = String(valor || '');
+    if (v.indexOf('data:') === 0) return 'archivo';
+    if (idYouTube(v)) return 'YouTube';
+    if (idTikTok(v)) return 'TikTok';
+    if (idVimeo(v)) return 'Vimeo';
+    return 'enlace';
+  }
+
+  /* La dirección del reproductor incrustado (si la hay). */
+  function urlReproductorExterno(valor) {
+    const v = String(valor || '');
+    const yt = idYouTube(v);
+    if (yt) return 'https://www.youtube.com/embed/' + yt;
+    const tk = idTikTok(v);
+    if (tk) return 'https://www.tiktok.com/embed/v2/' + tk;
+    const vm = idVimeo(v);
+    if (vm) return 'https://player.vimeo.com/video/' + vm;
+    return '';
+  }`,
+    'reconocer los enlaces de TikTok'
+  );
+
+  /* --- el enlace de TikTok se guarda tal cual ---------------------------- */
+  h = reemplazar(
+    h,
+    `    if (tipo === 'video' && esEnlaceYouTube(v)) return v;`,
+    `    if (tipo === 'video' && (esEnlaceYouTube(v) || esEnlaceTikTok(v))) return v;`,
+    'el enlace de TikTok se guarda natural'
+  );
+
+  /* --- el reproductor del portal incrusta TikTok ------------------------- */
+  h = reemplazar(
+    h,
+    `    const esEnlace = url && !/^data:|^blob:/.test(url) && esEnlaceYouTube(url);`,
+    `    const esEnlace = url && !/^data:|^blob:/.test(url) && (esEnlaceYouTube(url) || esEnlaceTikTok(url));`,
+    'el reproductor acepta TikTok'
+  );
+
+  h = reemplazar(
+    h,
+    `      const yt = idYouTube(url), vm = idVimeo(url);
+      const src = yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm;`,
+    `      const src = urlReproductorExterno(url);
+      if (!src) return;`,
+    'el reproductor incrusta YouTube, TikTok o Vimeo'
+  );
+
+  /* --- la ficha que se comparte también incrusta TikTok ------------------ */
+  h = reemplazar(
+    h,
+    `      if (yt || vm) medio += '<div class="ficha-medio"><iframe src="' + esc(yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm) + '" allowfullscreen title="Video del contenido"></iframe></div>';`,
+    `      const srcVideo = urlReproductorExterno(url);
+      if (srcVideo) medio += '<div class="ficha-medio"><iframe src="' + esc(srcVideo) + '" allowfullscreen title="Video del contenido"></iframe></div>';`,
+    'la ficha comparte incrustando el video'
+  );
+
+  /* --- la previsualización del CMS reconoce TikTok ----------------------- */
+  h = reemplazar(
+    h,
+    `    else if (tipoReal === 'video') {
+      if (esEnlaceYouTube(valor)) {
+        const yt = idYouTube(valor), vm = idVimeo(valor);
+        cuerpo = '<iframe style="width:100%; height:180px; border:0; border-radius:6px;" allowfullscreen src="' + esc(yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm) + '"></iframe>';
+      } else cuerpo = '<video controls preload="metadata" src="' + esc(real) + '"></video>';
+    }`,
+    `    else if (tipoReal === 'video') {
+      const src = urlReproductorExterno(valor);
+      if (src) cuerpo = '<iframe style="width:100%; height:180px; border:0; border-radius:6px;" allowfullscreen src="' + esc(src) + '"></iframe>';
+      else cuerpo = '<video controls preload="metadata" src="' + esc(real) + '"></video>';
+    }`,
+    'la previsualización del CMS incrusta TikTok'
+  );
+
+  /* --- el distintivo del CMS dice de dónde viene el video ---------------- */
+  h = reemplazar(
+    h,
+    `      const esYouTube = (tipo === 'video' || esGenerico) && esEnlaceYouTube(valor);
+      let chipFuente = '';
+      if (valor) {
+        chipFuente = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esDrive ? '🟢 Google Drive / nube' : (esYouTube ? '▶️ YouTube / Vimeo' : '🌐 enlace web'))) +`,
+    `      const esYouTube = (tipo === 'video' || esGenerico) && esEnlaceYouTube(valor);
+      const esTikTok = (tipo === 'video' || esGenerico) && esEnlaceTikTok(valor);
+      let chipFuente = '';
+      if (valor) {
+        chipFuente = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esDrive ? '🟢 Google Drive / nube' : (esTikTok ? '🎵 TikTok' : (esYouTube ? '▶️ YouTube / Vimeo' : '🌐 enlace web')))) +`,
+    'el distintivo del CMS reconoce TikTok'
+  );
+
+  /* --- los videos pesados NO se suben: se enlazan ------------------------ */
+  h = reemplazar(
+    h,
+    `  async function manejarArchivoParaPath(path, clase, archivo) {
+    if (!path || !archivo) return;
+    if (archivo.size > 45 * 1024 * 1024) toast('⚠️ Archivo muy grande (' + formatearPeso(archivo.size) + '): se recomienda menos de 45 MB');`,
+    `  async function manejarArchivoParaPath(path, clase, archivo) {
+    if (!path || !archivo) return;
+    /* Un video en el hosting pesa lo mismo en cada visita y lo descarga
+       todo el mundo. Lo natural es YouTube o TikTok con su enlace. */
+    if (clase === 'video' && archivo.size > 4 * 1024 * 1024) {
+      toast('🎬 Este video pesa ' + formatearPeso(archivo.size) + '. Los videos pesados no van al hosting: súbelo a YouTube o TikTok (gratis, rápido y sin límite) y pegue aquí su enlace. Se ve igual y el diario no gasta espacio.', 14000);
+      return false;
+    }
+    if (archivo.size > 45 * 1024 * 1024) toast('⚠️ Archivo muy grande (' + formatearPeso(archivo.size) + '): se recomienda menos de 45 MB');`,
+    'los videos pesados se enlazan, no se suben'
+  );
+
+  /* --- los videos, con su enlace natural (YouTube o TikTok) --------------- */
+  /* En los campos de video, el enlace es la vía principal: un video de 40 MB
+     en el hosting lo descarga todo el mundo. Se sube a YouTube o TikTok y
+     se pega el enlace. */
+
+  h = reemplazar(
+    h,
+    `            { path: 'video', label: 'Video de la nota (MP4, YouTube o Drive)', tipo: 'video' },`,
+    `            { path: 'video', label: 'Video de la nota (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue aquí el enlace del video (YouTube o TikTok). Se ve en la nota y no gasta espacio del hosting. Solo si es muy corto (menos de 4 MB) puede arrastrar el archivo.' },`,
+    'el campo de video de la nota'
+  );
+
+  h = reemplazar(
+    h,
+    `            { path: 'video', label: 'Video (MP4 o enlace YouTube/Vimeo)', tipo: 'video' },`,
+    `            { path: 'video', label: 'Video (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue el enlace del video (YouTube o TikTok). Los videos pesados no van al hosting.' },`,
+    'el campo de video'
+  );
+
+  h = reemplazar(
+    h,
+    `            { path: 'video', label: 'Video del flyer (MP4, YouTube o Drive)', tipo: 'video' },`,
+    `            { path: 'video', label: 'Video del flyer (enlace de YouTube o TikTok)', tipo: 'video' },`,
+    'el campo de video del flyer'
+  );
+
+  h = reemplazar(
+    h,
+    `            { path: 'video', label: 'Video de la jugada (MP4, YouTube o Drive)', tipo: 'video' },`,
+    `            { path: 'video', label: 'Video de la jugada (enlace de YouTube o TikTok)', tipo: 'video' },`,
+    'el campo de video de la jugada'
+  );
+
+  h = reemplazar(
+    h,
+    `        { path: 'multimedia.videoUrl', label: 'Video principal (MP4 / WebM)', tipo: 'video' },`,
+    `        { path: 'multimedia.videoUrl', label: 'Video principal (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue el enlace del video. YouTube y TikTok son gratis, no tienen límite y el diario no gasta hosting.' },`,
+    'el campo de video principal'
+  );
+
+  /* En el recuadro de carga, para los videos el enlace es lo principal. */
+  h = reemplazar(
+    h,
+    `            '<button type="button" class="cms-boton" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱📁 Subir ' + esc(etiquetaBoton) + '</button>' +
+            '<button type="button" class="cms-boton sec" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace (Drive, YouTube…)</button>' +`,
+    `            (tipo === 'video'
+              ? '<button type="button" class="cms-boton oro" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace de YouTube o TikTok</button>' +
+                '<button type="button" class="cms-boton sec" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱 Subir archivo (menos de 4 MB)</button>'
+              : '<button type="button" class="cms-boton" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱📁 Subir ' + esc(etiquetaBoton) + '</button>' +
+                '<button type="button" class="cms-boton sec" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace (Drive, YouTube…)</button>') +`,
+    'en el recuadro de video, el enlace es lo principal'
+  );
+
+  h = reemplazar(
+    h,
+    `          '<span class="cms-drop-txt">Arrastre el archivo hasta este recuadro o pegue un enlace directo, de <b>Google Drive</b>, Dropbox, YouTube, Vimeo o cualquier web.</span>' +`,
+    `          '<span class="cms-drop-txt">' + (tipo === 'video'
+            ? 'Los videos van con su <b>enlace natural</b>: súbelo a <b>YouTube</b> o <b>TikTok</b> (gratis, sin límite) y péguelo aquí. Se ve igual y el hosting no gasta nada. Un archivo solo si pesa menos de 4 MB.'
+            : 'Arrastre el archivo hasta este recuadro o pegue un enlace directo, de <b>Google Drive</b>, Dropbox, YouTube, Vimeo o cualquier web.') + '</span>' +`,
+    'la ayuda del recuadro de video'
+  );
+
+  /* --- TikTok: cualquier enlace suyo es suyo ---------------------------- */
+  h = reemplazar(
+    h,
+    `  function esEnlaceTikTok(valor) {
+    return !!idTikTok(valor);
+  }`,
+    `  function esEnlaceTikTok(valor) {
+    /* Cualquier dirección de TikTok es de TikTok, included el enlace corto
+       (tiktok.com/t/XXXX), que no tiene número para incrustar pero sí
+       sirve para abrir el video. */
+    return /tiktok\\.com/i.test(String(valor || ''));
+  }`,
+    'cualquier enlace de TikTok se reconoce'
+  );
+
+  h = reemplazar(
+    h,
+    `    const chip = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esEnlaceDrive(valor) ? '🟢 nube (Drive / Dropbox / OneDrive)' : '🌐 URL externa')) + '</span>';`,
+    `    const chip = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esEnlaceDrive(valor) ? '🟢 nube (Drive / Dropbox / OneDrive)' : (esEnlaceTikTok(valor) ? '🎵 TikTok' : (esEnlaceYouTube(valor) ? '▶️ YouTube / Vimeo' : '🌐 URL externa')))) + '</span>';`,
+    'el distintivo de la previsualización reconoce TikTok'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

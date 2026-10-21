@@ -759,6 +759,8 @@
 
 
 
+
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -2366,11 +2368,11 @@
   function aplicarVideoInteligente(caja, elVideo, elSource, url) {
     if (!elVideo || !elSource) return;
     const cajaReal = caja || elVideo.parentElement;
-    const esEnlace = url && !/^data:|^blob:/.test(url) && esEnlaceYouTube(url);
+    const esEnlace = url && !/^data:|^blob:/.test(url) && (esEnlaceYouTube(url) || esEnlaceTikTok(url));
     let marco = cajaReal ? cajaReal.querySelector('iframe.marco-video-externo') : null;
     if (esEnlace) {
-      const yt = idYouTube(url), vm = idVimeo(url);
-      const src = yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm;
+      const src = urlReproductorExterno(url);
+      if (!src) return;
       if (!marco) {
         marco = document.createElement('iframe');
         marco.className = 'marco-video-externo';
@@ -4578,7 +4580,7 @@
             { path: 'entradilla', label: 'Entrada (el párrafo que engancha)', tipo: 'area', rico: true },
             { path: 'autor', label: 'Autor', tipo: 'texto' },
             { path: 'imagen', label: 'Foto de la nota (la de la tarjeta del muro y la que se comparte)', tipo: 'imagen' },
-            { path: 'video', label: 'Video de la nota (MP4, YouTube o Drive)', tipo: 'video' },
+            { path: 'video', label: 'Video de la nota (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue aquí el enlace del video (YouTube o TikTok). Se ve en la nota y no gasta espacio del hosting. Solo si es muy corto (menos de 4 MB) puede arrastrar el archivo.' },
             { path: 'enlace', label: 'Enlace externo de la nota (opcional)', tipo: 'texto' },
             { path: 'cuerpo', label: 'Texto completo', tipo: 'area', rico: true, filas: true },
             { path: 'audioUrl', label: 'MP3 de la crónica (multimodal)', tipo: 'audio' },
@@ -4775,7 +4777,7 @@
             { path: 'titulo', label: 'Título', tipo: 'texto' },
             { path: 'pie', label: 'Pie de foto / descripción', tipo: 'area', rico: true },
             { path: 'imagen', label: 'Imagen (fotografía o flyer)', tipo: 'imagen' },
-            { path: 'video', label: 'Video (MP4 o enlace YouTube/Vimeo)', tipo: 'video' },
+            { path: 'video', label: 'Video (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue el enlace del video (YouTube o TikTok). Los videos pesados no van al hosting.' },
             { path: 'audio', label: 'Audio (MP3 de narración)', tipo: 'audio' },
             { path: 'enlace', label: 'PDF o enlace externo', tipo: 'documento' },
             { path: 'autor', label: 'Crédito', tipo: 'texto' },
@@ -4897,7 +4899,7 @@
             { path: 'sub', label: 'Subtítulo / oferta', tipo: 'area', rico: true },
             { path: 'tag', label: 'Etiqueta del flyer', tipo: 'texto' },
             { path: 'img', label: 'Imagen destacada del flyer (se ve al compartir)', tipo: 'imagen' },
-            { path: 'video', label: 'Video del flyer (MP4, YouTube o Drive)', tipo: 'video' },
+            { path: 'video', label: 'Video del flyer (enlace de YouTube o TikTok)', tipo: 'video' },
             { path: 'audio', label: 'Cuña / MP3 del flyer', tipo: 'audio' },
             { path: 'enlace', label: 'Enlace del patrocinante', tipo: 'texto' },
             { path: 'enlaceTxt', label: 'Texto del botón del enlace', tipo: 'texto' },
@@ -4951,7 +4953,7 @@
             { path: 'texto', label: 'Descripción de la jugada', tipo: 'area', rico: true, filas: true },
             { path: 'autor', label: 'Firma', tipo: 'texto' },
             { path: 'img', label: 'Imagen de la jugada (se ve al compartir)', tipo: 'imagen' },
-            { path: 'video', label: 'Video de la jugada (MP4, YouTube o Drive)', tipo: 'video' },
+            { path: 'video', label: 'Video de la jugada (enlace de YouTube o TikTok)', tipo: 'video' },
             { path: 'audio', label: 'Audio / MP3 de la jugada', tipo: 'audio' },
             { path: 'doc', label: 'Documento PDF de la jugada', tipo: 'documento' },
             { path: 'enlace', label: 'Enlace externo de la jugada', tipo: 'texto' }
@@ -5100,7 +5102,7 @@
         { path: 'multimedia.meta', label: 'Metadatos (duración / bitrate)', tipo: 'texto' },
         { path: 'multimedia.titulo', label: 'Título del episodio', tipo: 'texto' },
         { path: 'multimedia.desc', label: 'Descripción', tipo: 'area', rico: true },
-        { path: 'multimedia.videoUrl', label: 'Video principal (MP4 / WebM)', tipo: 'video' },
+        { path: 'multimedia.videoUrl', label: 'Video principal (enlace de YouTube o TikTok)', tipo: 'video', ayuda: 'Pegue el enlace del video. YouTube y TikTok son gratis, no tienen límite y el diario no gasta hosting.' },
         { path: 'multimedia.audioUrl', label: 'Audio principal (MP3 / OGG / WAV)', tipo: 'audio' },
         { path: 'multimedia.poster', label: 'Póster del video (imagen)', tipo: 'imagen' }
       ],
@@ -5413,6 +5415,79 @@
     return !!(idYouTube(valor) || idVimeo(valor));
   }
 
+  /* TikTok: se reconoce el enlace natural y se incrusta con su iframe. */
+  function idTikTok(valor) {
+    const v = String(valor || '');
+    let m = /tiktok\.com\/(?:.*\/)?video\/(\d+)/i.exec(v);
+    if (m) return m[1];
+    m = /tiktok\.com\/embed\/v2\/(\d+)/i.exec(v);
+    return m ? m[1] : '';
+  }
+
+  function esEnlaceTikTok(valor) {
+    return !!idTikTok(valor);
+  }
+
+  /* El origen del video: YouTube, TikTok, Vimeo, archivo o enlace. */
+  function origenDeVideo(valor) {
+    const v = String(valor || '');
+    if (v.indexOf('data:') === 0) return 'archivo';
+    if (idYouTube(v)) return 'YouTube';
+    if (idTikTok(v)) return 'TikTok';
+    if (idVimeo(v)) return 'Vimeo';
+    return 'enlace';
+  }
+
+  /* La dirección del reproductor incrustado (si la hay). */
+  function urlReproductorExterno(valor) {
+    const v = String(valor || '');
+    const yt = idYouTube(v);
+    if (yt) return 'https://www.youtube.com/embed/' + yt;
+    const tk = idTikTok(v);
+    if (tk) return 'https://www.tiktok.com/embed/v2/' + tk;
+    const vm = idVimeo(v);
+    if (vm) return 'https://player.vimeo.com/video/' + vm;
+    return '';
+  }
+
+  /* TikTok: se reconoce el enlace natural y se incrusta con su iframe. */
+  function idTikTok(valor) {
+    const v = String(valor || '');
+    let m = /tiktok\.com\/(?:.*\/)?video\/(\d+)/i.exec(v);
+    if (m) return m[1];
+    m = /tiktok\.com\/embed\/v2\/(\d+)/i.exec(v);
+    return m ? m[1] : '';
+  }
+
+  function esEnlaceTikTok(valor) {
+    /* Cualquier dirección de TikTok es de TikTok, included el enlace corto
+       (tiktok.com/t/XXXX), que no tiene número para incrustar pero sí
+       sirve para abrir el video. */
+    return /tiktok\.com/i.test(String(valor || ''));
+  }
+
+  /* El origen del video: YouTube, TikTok, Vimeo, archivo o enlace. */
+  function origenDeVideo(valor) {
+    const v = String(valor || '');
+    if (v.indexOf('data:') === 0) return 'archivo';
+    if (idYouTube(v)) return 'YouTube';
+    if (idTikTok(v)) return 'TikTok';
+    if (idVimeo(v)) return 'Vimeo';
+    return 'enlace';
+  }
+
+  /* La dirección del reproductor incrustado (si la hay). */
+  function urlReproductorExterno(valor) {
+    const v = String(valor || '');
+    const yt = idYouTube(v);
+    if (yt) return 'https://www.youtube.com/embed/' + yt;
+    const tk = idTikTok(v);
+    if (tk) return 'https://www.tiktok.com/embed/v2/' + tk;
+    const vm = idVimeo(v);
+    if (vm) return 'https://player.vimeo.com/video/' + vm;
+    return '';
+  }
+
   function idDrive(valor) {
     const v = String(valor || '');
     let m = /drive\.google\.com\/file\/d\/([A-Za-z0-9_-]{10,})/.exec(v);
@@ -5443,7 +5518,7 @@
       return v + (/[?]/.test(v) ? '&raw=1' : '?raw=1');
     }
     // YouTube / Vimeo (solo para video: se deja tal cual y se reproduce con iframe)
-    if (tipo === 'video' && esEnlaceYouTube(v)) return v;
+    if (tipo === 'video' && (esEnlaceYouTube(v) || esEnlaceTikTok(v))) return v;
     return v;
   }
 
@@ -5456,17 +5531,16 @@
   function vistaPreviaMedia(tipo, valor) {
     if (!valor) return '<div class="cms-preview"><span class="cms-vacio">Sin archivo ni URL asignada. Puede subir un archivo o pegar un enlace.</span></div>';
     const esArchivo = String(valor).indexOf('data:') === 0;
-    const chip = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esEnlaceDrive(valor) ? '🟢 nube (Drive / Dropbox / OneDrive)' : '🌐 URL externa')) + '</span>';
+    const chip = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esEnlaceDrive(valor) ? '🟢 nube (Drive / Dropbox / OneDrive)' : (esEnlaceTikTok(valor) ? '🎵 TikTok' : (esEnlaceYouTube(valor) ? '▶️ YouTube / Vimeo' : '🌐 URL externa')))) + '</span>';
     const tipoReal = (tipo === 'archivo') ? tipoDeArchivoMultimedia(valor) : tipo;
     const real = urlMultimediaReal(tipoReal, valor);
     let cuerpo = '';
     if (tipoReal === 'imagen') cuerpo = '<img src="' + esc(real) + '" alt="Previsualización">';
     else if (tipoReal === 'audio') cuerpo = '<audio controls preload="metadata" src="' + esc(real) + '"></audio>';
     else if (tipoReal === 'video') {
-      if (esEnlaceYouTube(valor)) {
-        const yt = idYouTube(valor), vm = idVimeo(valor);
-        cuerpo = '<iframe style="width:100%; height:180px; border:0; border-radius:6px;" allowfullscreen src="' + esc(yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm) + '"></iframe>';
-      } else cuerpo = '<video controls preload="metadata" src="' + esc(real) + '"></video>';
+      const src = urlReproductorExterno(valor);
+      if (src) cuerpo = '<iframe style="width:100%; height:180px; border:0; border-radius:6px;" allowfullscreen src="' + esc(src) + '"></iframe>';
+      else cuerpo = '<video controls preload="metadata" src="' + esc(real) + '"></video>';
     }
     else cuerpo = '<a href="' + esc(real) + '" target="_blank" rel="noopener" style="font-size:0.72rem; font-weight:700; color:#0b2240;">📄 Abrir documento en una pestaña nueva</a>';
     const descarga = '<a href="' + esc(real) + '" download="' + esc(nombreArchivoMultimedia(valor)) + '" style="display:inline-block; margin-left:8px; font-size:0.7rem; font-weight:800; color:#0b2240; text-decoration:none; background:#f6f3f3; border:1px solid #dcd9d9; padding:3px 8px; border-radius:6px;">⬇️ Descargar</a>';
@@ -5499,9 +5573,10 @@
       const esArchivo = String(valor || '').indexOf('data:') === 0;
       const esDrive = esEnlaceDrive(valor);
       const esYouTube = (tipo === 'video' || esGenerico) && esEnlaceYouTube(valor);
+      const esTikTok = (tipo === 'video' || esGenerico) && esEnlaceTikTok(valor);
       let chipFuente = '';
       if (valor) {
-        chipFuente = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esDrive ? '🟢 Google Drive / nube' : (esYouTube ? '▶️ YouTube / Vimeo' : '🌐 enlace web'))) +
+        chipFuente = '<span class="cms-chip">' + (esArchivo ? '📁 archivo del dispositivo' : (esDrive ? '🟢 Google Drive / nube' : (esTikTok ? '🎵 TikTok' : (esYouTube ? '▶️ YouTube / Vimeo' : '🌐 enlace web')))) +
           (esGenerico ? ' · ' + esc(ETIQUETA_KIND[tipoDeArchivoMultimedia(valor)]) : '') + '</span>';
       }
       return '<div class="cms-campo">' + etiqueta +
@@ -5509,11 +5584,16 @@
           '<div class="cms-drop-tit">ORIGEN MULTIMODAL · elija una opción</div>' +
           '<input type="file" class="entrada-archivo-oculta" tabindex="-1" aria-hidden="true" data-path="' + esc(path) + '" data-tipo="archivo" data-clase="' + esc(tipo) + '" accept="' + acepta + '">' +
           '<div style="display: flex; gap: 6px; flex-wrap: wrap;">' +
-            '<button type="button" class="cms-boton" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱📁 Subir ' + esc(etiquetaBoton) + '</button>' +
-            '<button type="button" class="cms-boton sec" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace (Drive, YouTube…)</button>' +
+            (tipo === 'video'
+              ? '<button type="button" class="cms-boton oro" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace de YouTube o TikTok</button>' +
+                '<button type="button" class="cms-boton sec" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱 Subir archivo (menos de 4 MB)</button>'
+              : '<button type="button" class="cms-boton" data-accion="abrirArchivo" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">📱📁 Subir ' + esc(etiquetaBoton) + '</button>' +
+                '<button type="button" class="cms-boton sec" data-accion="pegarEnlace" data-path="' + esc(path) + '" data-clase="' + esc(tipo) + '" style="flex: 1; min-width: 165px; text-align: center; justify-content: center;">🔗 Pegar enlace (Drive, YouTube…)</button>') +
             (valor ? '<button type="button" class="cms-boton rojo mini" data-accion="limpiar" data-path="' + esc(path) + '">✕ Quitar</button>' : '') +
           '</div>' +
-          '<span class="cms-drop-txt">Arrastre el archivo hasta este recuadro o pegue un enlace directo, de <b>Google Drive</b>, Dropbox, YouTube, Vimeo o cualquier web.</span>' +
+          '<span class="cms-drop-txt">' + (tipo === 'video'
+            ? 'Los videos van con su <b>enlace natural</b>: súbelo a <b>YouTube</b> o <b>TikTok</b> (gratis, sin límite) y péguelo aquí. Se ve igual y el hosting no gasta nada. Un archivo solo si pesa menos de 4 MB.'
+            : 'Arrastre el archivo hasta este recuadro o pegue un enlace directo, de <b>Google Drive</b>, Dropbox, YouTube, Vimeo o cualquier web.') + '</span>' +
           '<input type="text" class="cms-input-enlace" data-path="' + esc(path) + '" data-tipo="texto" value="' + esc(valor && !esArchivo ? valor : '') + '" placeholder="https://drive.google.com/file/d/… o https://…/pista.mp3"' + (esArchivo ? ' readonly' : '') + '>' +
         '</div>' + chipFuente + ayuda + vistaPreviaMedia(tipo, valor) + '</div>';
     }
@@ -6245,6 +6325,12 @@
   /* Carga un archivo del dispositivo en cualquier campo multimedia (PC o teléfono). */
   async function manejarArchivoParaPath(path, clase, archivo) {
     if (!path || !archivo) return;
+    /* Un video en el hosting pesa lo mismo en cada visita y lo descarga
+       todo el mundo. Lo natural es YouTube o TikTok con su enlace. */
+    if (clase === 'video' && archivo.size > 4 * 1024 * 1024) {
+      toast('🎬 Este video pesa ' + formatearPeso(archivo.size) + '. Los videos pesados no van al hosting: súbelo a YouTube o TikTok (gratis, rápido y sin límite) y pegue aquí su enlace. Se ve igual y el diario no gasta espacio.', 14000);
+      return false;
+    }
     if (archivo.size > 45 * 1024 * 1024) toast('⚠️ Archivo muy grande (' + formatearPeso(archivo.size) + '): se recomienda menos de 45 MB');
     try {
       let dataUrl = await leerArchivoComoDataURL(archivo);
@@ -7832,7 +7918,8 @@
     let medio = '';
     if (video) {
       const yt = idYouTube(video), vm = idVimeo(video);
-      if (yt || vm) medio += '<div class="ficha-medio"><iframe src="' + esc(yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + vm) + '" allowfullscreen title="Video del contenido"></iframe></div>';
+      const srcVideo = urlReproductorExterno(url);
+      if (srcVideo) medio += '<div class="ficha-medio"><iframe src="' + esc(srcVideo) + '" allowfullscreen title="Video del contenido"></iframe></div>';
       else medio += '<div class="ficha-medio"><video controls preload="metadata" src="' + esc(video) + '"></video></div>';
     }
     if (audio) medio += '<div class="ficha-medio"><audio controls preload="metadata" src="' + esc(audio) + '" style="width:100%;"></audio></div>';

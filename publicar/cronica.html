@@ -169,6 +169,10 @@
 
 
 
+
+
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -476,14 +480,14 @@ function esDocumento(v) { return /\.(pdf|docx?|xlsx?|pptx?|txt|csv|zip)(\?|$)/i.
 function htmlVideo(v, titulo) {
   var url = String(v || '');
   if (!url) return '';
-  if (esYouTube(url)) {
-    var yt = idYouTube(url);
-    if (yt) return '<iframe src="https://www.youtube.com/embed/' + esc(yt) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
-  }
-  if (esVimeo(url)) {
-    var vm = idVimeo(url);
-    if (vm) return '<iframe src="https://player.vimeo.com/video/' + esc(vm) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
-  }
+  /* YouTube, TikTok y Vimeo se incrustan con su enlace natural: el video
+     vive en su casa y el diario no gasta espacio ni ancho de banda. */
+  var yt = idYouTube(url);
+  if (yt) return '<iframe src="https://www.youtube.com/embed/' + esc(yt) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  var tk = idTikTok(url);
+  if (tk) return '<iframe src="https://www.tiktok.com/embed/v2/' + esc(tk) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
+  var vm = idVimeo(url);
+  if (vm) return '<iframe src="https://player.vimeo.com/video/' + esc(vm) + '" title="' + esc(titulo || 'Video') + '" allowfullscreen loading="lazy"></iframe>';
   return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
 }
 
