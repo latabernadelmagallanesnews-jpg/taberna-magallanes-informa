@@ -15,6 +15,7 @@
     "instalar": "node scripts/instalar-html-publicado.js && npm run build",
     "data": "node scripts/generar-data-json.js",
     "url": "node scripts/fijar-url-publica.js",
+    "mirror": "node scripts/publicar-mirror.js",
     "sintaxis": "node scripts/verificar-sintaxis.js editor/index.html publicar/index.html index.html",
     "verificar": "node scripts/verificar-portal.js",
     "build": "npm run parche && npm run longform && npm run paginas && npm run data && npm run sync && npm run sintaxis && npm run verificar",

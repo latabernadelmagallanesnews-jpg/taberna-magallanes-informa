@@ -349,6 +349,54 @@ y añada el rol **Firebase Hosting Admin** → cree una clave JSON.
 
 ---
 
+## 5 · Dónde está publicado y dónde conviene publicarlo
+
+```bash
+npm run mirror estado      # ver la tabla de destinos
+```
+
+| Plataforma | Dirección | ¿Se ve desde China? |
+| --- | --- | --- |
+| **GitHub Pages** (actual) | `latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/` | **No** — `github.io` está bloqueado |
+| **Firebase Hosting** | `la-taberna-del-magallanes-news.web.app` | **No** — la red de Google está bloqueada |
+| **Netlify** (listo: `netlify.toml`) | `<sitio>.netlify.app` | **Sí** |
+| **Vercel** (listo: `vercel.json`) | `<sitio>.vercel.app` | **Sí** |
+
+Todos publican la **misma carpeta `publicar/`**. Si quiere que su diario se lea
+también desde China continental, lo más rápido es **conectar Netlify o Vercel
+con el repositorio de GitHub** (sin terminal: en la web de Netlify o Vercel,
+«Import an existing project» → elija el repositorio → listo). Cada `push`
+publica solo.
+
+**Lo más importante a largo plazo: un dominio propio.** Con
+`latabernadelmagallanes.news` apuntando al hosting que elija, puede cambiar
+de plataforma sin cambiar la dirección que recuerda la gente, y esquivar
+cualquier bloqueo de una plataforma concreta.
+
+### ¿Hace falta asociar Firebase?
+
+**No, para publicar el diario no.** Lo que ya está publicado es permanente y
+se actualiza con cada `push`. Firebase aporta cosas que este portal **no
+usa** (correo, autenticación, base de datos en tiempo real). Lo que sí aporta
+es una **segunda dirección**, con analítica de tráfico y rollback instantáneo
+si algo sale mal.
+
+Si lo quiere, el proyecto ya está configurado (`firebase.json` y `.firebaserc`).
+Solo falta:
+
+```bash
+npm install -g firebase-tools
+firebase login
+firebase use la-taberna-del-magallanes-news
+firebase deploy --only hosting
+```
+
+Y para que se publique solo en cada `push`, añada en **Settings → Secrets and
+variables → Actions** los secretos `FIREBASE_SERVICE_ACCOUNT` (el JSON de una
+cuenta de servicio con rol *Firebase Hosting Admin*) y `FIREBASE_PROJECT_ID`.
+
+---
+
 ## 6 · Comandos
 
 | Comando | Qué hace |

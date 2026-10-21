@@ -1,0 +1,47 @@
+# Netlify · una de las plataformas que SÍ se ve desde China
+#
+# Publicar el portal en Netlify:
+#   Opción A (sin terminal): en app.netlify.com -> "Add new site" ->
+#       "Import an existing project" -> elija este repositorio de GitHub.
+#       Netlify detecta el netlify.toml y se publica solo en cada push.
+#
+#   Opción B (desde la terminal):
+#       npm install -g netlify-cli
+#       netlify login
+#       netlify deploy --prod --dir=publicar
+#
+# Lo que se publica es la carpeta publicar/, que es el portal completo.
+
+[build]
+  command = "npm run build"
+  publish = "publicar"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# 404 propia del diario
+[[redirects]]
+  from = "/404.html"
+  to = "/404.html"
+  status = 200
+
+# Reglas de caché: el HTML siempre fresco, los multimedia cacheados
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
