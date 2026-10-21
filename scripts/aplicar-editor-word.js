@@ -1759,11 +1759,17 @@ function aplicar(archivo) {
   /* --- al cargar, las imágenes locales (file://) se limpian ---------------- */
   /* Una imagen pegada desde el escritorio (file:///C:/...) solo existe en esa
      computadora: se ve rota y no se puede publicar. Se quita al abrir. */
+  /* --- al cargar: ni se pierde el contenido ni las imágenes locales ----- */
+  /* Dos cosas en el mismo sitio (por eso van en un solo parche):
+       · si el navegador guardó un estado a medias, las listas vacías no
+         borran las que ya están publicadas (una publicación de prueba con
+         el navegador en blanco había dejado el diario sin notas);
+       · las imágenes locales (file:///C:/...) no se pueden publicar. */
   h = reemplazar(
     h,
     `    portalState = fusionar(base, guardado);
     const contador = document.getElementById('cmsContadorModulos');`,
-    `    portalState = fusionar(base, guardado);
+    `    portalState = fusionar(base, guardarSinPerderContenido(base, guardado));
     const locales = quitarImagenesLocales(portalState);
     if (locales) {
       toast('⚠️ Se quitaron ' + locales + ' imagen(es) locales (file://): no se pueden publicar. Súbalas con el botón de multimedia del módulo.', 9000);
@@ -1772,6 +1778,7 @@ function aplicar(archivo) {
     const contador = document.getElementById('cmsContadorModulos');`,
     'limpieza de imágenes locales al cargar'
   );
+
 
   /* --- la política de seguridad deja hablar con el servidor local ------- */
   /* Sin esto, el navegador bloquea la petición de «Publicar ahora» cuando el
@@ -2296,6 +2303,35 @@ function aplicar(archivo) {
     `</head>`,
     'el bloque de datos estructurados del medio'
   );
+
+  /* --- el estado guardado en el navegador no puede vaciar el diario ----- */
+  /* Si el navegador guardó un estado a medias (por ejemplo, antes de que
+     llegara el contenido del archivo), al abrir el CMS se fusionaba ese
+     estado vacío encima del publicado y las notas desaparecían. Ahora las
+     listas vacías no borran las que sí tienen contenido. */
+  h = reemplazar(
+    h,
+    `  function fusionar(base, datos) {`,
+    `  /* Si una lista quedó guardada vacía pero la que está publicada tiene
+     contenido, se conserva la publicada. Evita que un estado a medias
+     borrara las notas del diario. */
+  function guardarSinPerderContenido(base, guardado) {
+    if (!guardado || typeof guardado !== 'object') return guardado;
+    const copia = clonar(guardado);
+    ['cronicas', 'hilos', 'infografias', 'memes', 'historias', 'redesMultimedia', 'episodios'].forEach(function (k) {
+      const guardados = copia[k];
+      const originales = base[k];
+      if (Array.isArray(guardados) && !guardados.length && Array.isArray(originales) && originales.length) {
+        copia[k] = clonar(originales);
+      }
+    });
+    return copia;
+  }
+
+  function fusionar(base, datos) {`,
+    'guardarSinPerderContenido'
+  );
+
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(

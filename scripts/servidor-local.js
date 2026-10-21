@@ -43,6 +43,15 @@ const RE_ESTADO = /(<script type="application\/json" id="estadoEmbebido">)([\s\S
 const CARPETA_MEDIA = 'multimedia';
 const UMBRAL_MEDIA = 1.5 * 1024 * 1024;
 
+/* El estado que hay ahora mismo publicado en el diario. */
+function leerEstadoPublicado() {
+  try {
+    const h = fs.readFileSync(path.join(PUBLICAR, 'index.html'), 'utf8');
+    const m = h.match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
+    return m ? JSON.parse(m[1]) : null;
+  } catch (e) { return null; }
+}
+
 function extraerMultimediaPesada(html, estado) {
   const crypto = require('crypto');
   const carpeta = path.join(PUBLICAR, CARPETA_MEDIA);
@@ -83,6 +92,18 @@ function extraerMultimediaPesada(html, estado) {
 function publicarContenido(estado, opciones) {
   const opc = opciones || {};
   const destino = path.join(PUBLICAR, 'index.html');
+
+  /* --- candado: un estado vacío no borra el diario --------------------- */
+  /* Si llega un estado SIN notas y el diario publicado SÍ las tiene, no se
+     publica así: se conservan las notas. (Una publicación de prueba con el
+     navegador en blanco había dejado el diario sin contenido.) */
+  const publicado = leerEstadoPublicado();
+  if (publicado && (publicado.cronicas || []).length && !(estado.cronicas || []).length) {
+    estado.cronicas = publicado.cronicas;
+    estado.cronicasSeccion = estado.cronicasSeccion || publicado.cronicasSeccion;
+    console.log('  ! el estado que llegó iba SIN notas: se conservan las ' +
+      publicado.cronicas.length + ' notas que ya estaban publicadas');
+  }
 
   /* El estado con el contenido tal cual lo escribió la redacción. */
   const extraer = extraerMultimediaPesada('', estado);
