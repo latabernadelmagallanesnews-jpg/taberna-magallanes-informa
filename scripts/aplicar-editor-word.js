@@ -1897,6 +1897,16 @@ function aplicar(archivo) {
     const cuerpo = textoParaCompartir(d, red === 'copiar');`,
     'el mensaje a las redes lleva texto y enlace (la foto va en la vista previa)'
   );
+  /* --- la imagen de Twitter tiene que ser una dirección web ---------------- */
+  /* Si la imagen del diario está incrustada (data:) no se puede leer desde
+     fuera, así que se usa la de Open Graph, que sí es una dirección web. */
+  h = reemplazar(
+    h,
+    `    metaContenido('twTagImagen', s.twImagen);`,
+    `    metaContenido('twTagImagen', /^https?:\\/\\//i.test(String(s.twImagen || '')) ? s.twImagen : s.ogImagen);`,
+    'la imagen de Twitter es una dirección web'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

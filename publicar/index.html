@@ -740,6 +740,7 @@
 
 
 
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -3128,7 +3129,7 @@
     metaContenido('ogTagUrl', urlCanonica);
     metaContenido('twTagTitulo', aTextoPlano(s.twTitulo));
     metaContenido('twTagDesc', aTextoPlano(s.twDesc));
-    metaContenido('twTagImagen', s.twImagen);
+    metaContenido('twTagImagen', /^https?:\/\//i.test(String(s.twImagen || '')) ? s.twImagen : s.ogImagen);
     // Compartir del hero depende de SEO
     const url = urlCanonica;
     /* El titular puede venir con formato (editor Word): para compartir va
