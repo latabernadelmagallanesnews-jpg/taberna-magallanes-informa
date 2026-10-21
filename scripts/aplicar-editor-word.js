@@ -1462,6 +1462,51 @@ function aplicar(archivo) {
     'etiqueta de la foto de la crónica'
   );
 
+  /* --- qué es privado y qué no ------------------------------------------- */
+  /* Solo el material EXCLUSIVO es para suscriptores: el scouting, el roster
+     y las fichas de la Cabina Statcast (pestaña 1). Las infografías, el
+     Rincón Filibustero, la radio, el podcast y la playlist son parte del
+     diario y los ve todo el mundo. */
+  h = reemplazar(
+    h,
+    `    for (let i = 1; i <= 3; i++) {
+      const panel = document.getElementById('panelVipPestana' + i);
+      if (!panel) continue;
+      panel.classList.toggle('vip-bloqueado', bloqueado && ocultar);
+      panel.classList.toggle('vip-difuso', bloqueado && !ocultar);
+      panel.style.filter = '';
+      panel.style.pointerEvents = '';
+      panel.style.userSelect = '';
+    }`,
+    `    for (let i = 1; i <= 3; i++) {
+      const panel = document.getElementById('panelVipPestana' + i);
+      if (!panel) continue;
+      /* Solo la pestaña 1 (Scouting & Roster) es material exclusivo. */
+      const esPrivado = (i === 1);
+      panel.classList.toggle('vip-bloqueado', bloqueado && ocultar && esPrivado);
+      panel.classList.toggle('vip-difuso', bloqueado && !ocultar && esPrivado);
+      panel.style.filter = '';
+      panel.style.pointerEvents = '';
+      panel.style.userSelect = '';
+    }`,
+    'puertas de acceso por pestaña'
+  );
+
+  h = reemplazar(
+    h,
+    `  const MODULOS_VIP = ['07-cabina-statcast', '08-heatmap', '16-playlist'];`,
+    `  /* La playlist es pública: es parte del diario, no material exclusivo. */
+  const MODULOS_VIP = ['07-cabina-statcast', '08-heatmap'];`,
+    'módulos con material exclusivo'
+  );
+
+  h = reemplazar(
+    h,
+    `? 'Solo los suscriptores VIP registrados ven la Cabina Statcast, las fichas de scouting, los mapas de calor y la radio.'`,
+    `? 'Solo los suscriptores VIP registrados ven el scouting, el roster y las fichas de la Cabina Statcast. Las infografías, la radio y la playlist son públicas.'`,
+    'aviso del paywall'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

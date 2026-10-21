@@ -796,7 +796,6 @@
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
 /*__CSS_PROPIO_FIN__*/
-
 /*__LONGFORM_INICIO__*/
     /* ================================================================
        NIVEL 1 · TARJETA / TEASER DE PORTADA
@@ -3824,7 +3823,8 @@
   function esSocioVIP() {
     try { return localStorage.getItem('taberna_socio_vip_activo') === 'true'; } catch (e) { return false; }
   }
-  const MODULOS_VIP = ['07-cabina-statcast', '08-heatmap', '16-playlist'];
+  /* La playlist es pública: es parte del diario, no material exclusivo. */
+  const MODULOS_VIP = ['07-cabina-statcast', '08-heatmap'];
 
   function listaSociosVIPRegistrados() {
     try { return JSON.parse(localStorage.getItem('taberna_lista_socios_vip')) || []; } catch (e) { return []; }
@@ -3871,8 +3871,10 @@
     for (let i = 1; i <= 3; i++) {
       const panel = document.getElementById('panelVipPestana' + i);
       if (!panel) continue;
-      panel.classList.toggle('vip-bloqueado', bloqueado && ocultar);
-      panel.classList.toggle('vip-difuso', bloqueado && !ocultar);
+      /* Solo la pestaña 1 (Scouting & Roster) es material exclusivo. */
+      const esPrivado = (i === 1);
+      panel.classList.toggle('vip-bloqueado', bloqueado && ocultar && esPrivado);
+      panel.classList.toggle('vip-difuso', bloqueado && !ocultar && esPrivado);
       panel.style.filter = '';
       panel.style.pointerEvents = '';
       panel.style.userSelect = '';
@@ -3883,7 +3885,7 @@
     });
     const aviso = document.getElementById('paywallAviso');
     if (aviso) aviso.textContent = bloqueado
-      ? 'Solo los suscriptores VIP registrados ven la Cabina Statcast, las fichas de scouting, los mapas de calor y la radio.'
+      ? 'Solo los suscriptores VIP registrados ven el scouting, el roster y las fichas de la Cabina Statcast. Las infografías, la radio y la playlist son públicas.'
       : '';
     const cta = document.getElementById('paywallBotonSuscribir');
     if (cta) cta.textContent = paywall.cta || '👑 Inscribirme en el Círculo VIP';
