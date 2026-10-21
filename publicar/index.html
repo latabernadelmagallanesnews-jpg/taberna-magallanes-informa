@@ -765,6 +765,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -1011,7 +1021,8 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-</head>
+  <meta name="taberna-version" content="2026-10-21T19:42:24.970Z">
+<script type="application/ld+json" id="datosMedio">{}</script></head>
 
 <body>
 
@@ -2165,6 +2176,24 @@
      ===================================================================== */
   const MARCA_RICO = '\u241F';
 
+  /* --- versión del diario: recarga automática si hay una más nueva ------- */
+  (function () {
+    try {
+      const meta = document.querySelector('meta[name="taberna-version"]');
+      if (!meta) return;
+      const version = meta.getAttribute('content') || '';
+      if (!version) return;
+      const guardada = localStorage.getItem('taberna_version');
+      localStorage.setItem('taberna_version', version);
+      /* Si ya recargamos con esta versión, no se vuelve a recargar. */
+      if (sessionStorage.getItem('taberna_recarga') === version) return;
+      if (guardada && guardada !== version) {
+        sessionStorage.setItem('taberna_recarga', version);
+        location.reload();
+      }
+    } catch (e) { }
+  })();
+
   function esValorRico(v) {
     return typeof v === 'string' && v.charAt(0) === MARCA_RICO;
   }
@@ -3284,6 +3313,21 @@
     metaContenido('twTagTitulo', aTextoPlano(s.twTitulo));
     metaContenido('twTagDesc', aTextoPlano(s.twDesc));
     metaContenido('twTagImagen', /^https?:\/\//i.test(String(s.twImagen || '')) ? s.twImagen : s.ogImagen);
+    /* Los buscadores leen este bloque para saber qué es este diario. */
+    var bloqueMedio = document.getElementById('datosMedio');
+    if (bloqueMedio) {
+      bloqueMedio.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'NewsMediaOrganization',
+        name: 'La Taberna del Magallanes News',
+        url: urlCanonica,
+        description: aTextoPlano(s.descripcion || ''),
+        foundingDate: '2026',
+        inLanguage: 'es-VE',
+        logo: s.ogImagen || '',
+        image: s.ogImagen || ''
+      });
+    }
     // Compartir del hero depende de SEO
     const url = urlCanonica;
     /* El titular puede venir con formato (editor Word): para compartir va

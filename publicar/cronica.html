@@ -181,6 +181,26 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -379,6 +399,15 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
+  <meta name="taberna-version" content="2026-10-21T19:42:24.970Z">
+
+
+
+
+
+
+
+<script type="application/ld+json" id="datosNota">{}</script>
 </head>
 <body>
 <header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html" style="background:#0b2240;color:#ffffff;">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
@@ -551,6 +580,121 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: resumen });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
 
   var nota =
     '<a class="volver" href="cronica.html">← Volver al muro de crónicas</a>' +

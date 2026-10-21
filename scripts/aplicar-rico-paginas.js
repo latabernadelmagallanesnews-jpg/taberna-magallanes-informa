@@ -87,6 +87,38 @@ const CAMBIOS = [
   return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
 }`],
 
+  ['cronica.html',
+    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });`,
+    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);`],
+
+  ['cronica.html',
+    `</head>`,
+    `<script type="application/ld+json" id="datosNota">{}</script>
+</head>`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
@@ -157,8 +189,12 @@ function aplicar(archivo) {
     if (cambio[0] !== archivo) return;
     const viejo = cambio[1];
     const nuevo = cambio[2];
+    /* Idempotencia: si el texto nuevo ya está, el parche ya se aplicó.
+       Se mira también con saltos de línea de Windows (CRLF): si no, el
+       parche entraba dos veces y duplicaba el bloque. */
+    if (h.indexOf(nuevo) !== -1) return;
+    if (h.indexOf(nuevo.replace(/\n/g, '\r\n')) !== -1) return;
     if (h.indexOf(viejo) === -1) {
-      if (h.indexOf(nuevo) !== -1) return;   // ya aplicado
       console.warn('  ⚠ No se encontró en ' + archivo + ': ' + viejo.slice(0, 60) + '…');
       return;
     }

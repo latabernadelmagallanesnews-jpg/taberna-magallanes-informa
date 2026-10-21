@@ -40,8 +40,12 @@ function instalarBloque(texto, marcaInicio, marcaFin, contenido, ancla, etiqueta
 
 function reemplazar(texto, viejo, nuevo, etiqueta, opciones) {
   const opc = opciones || {};
-  /* Idempotencia: si el texto nuevo ya está, el parche ya se aplicó. */
+  /* Idempotencia: si el texto nuevo ya está, el parche ya se aplicó.
+     Se mira también con saltos de línea de Windows (CRLF), que es como
+     están guardados algunos archivos: si no, el parche se aplicaba dos
+     veces y dejaba el bloque duplicado. */
   if (texto.indexOf(nuevo) !== -1) return texto;
+  if (texto.indexOf(nuevo.replace(/\n/g, '\r\n')) !== -1) return texto;
   const veces = texto.split(viejo).length - 1;
   if (veces === 0) {
     throw new Error('No se encontró el fragmento «' + etiqueta + '»');
@@ -1902,10 +1906,28 @@ function aplicar(archivo) {
      fuera, así que se usa la de Open Graph, que sí es una dirección web. */
   h = reemplazar(
     h,
-    `    metaContenido('twTagImagen', s.twImagen);`,
     `    metaContenido('twTagImagen', /^https?:\\/\\//i.test(String(s.twImagen || '')) ? s.twImagen : s.ogImagen);`,
+    `    metaContenido('twTagImagen', /^https?:\\/\\//i.test(String(s.twImagen || '')) ? s.twImagen : s.ogImagen);
+    /* Los buscadores leen este bloque para saber qué es este diario. */
+    var bloqueMedio = document.getElementById('datosMedio');
+    if (bloqueMedio) {
+      bloqueMedio.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'NewsMediaOrganization',
+        name: 'La Taberna del Magallanes News',
+        url: urlCanonica,
+        description: aTextoPlano(s.descripcion || ''),
+        foundingDate: '2026',
+        inLanguage: 'es-VE',
+        logo: s.ogImagen || '',
+        image: s.ogImagen || ''
+      });
+    }`,
     'la imagen de Twitter es una dirección web'
   );
+
+
+
 
   /* --- publicar: que nunca se quede a medias ---------------------------- */
   /* Si la sesión no está activa, se pide la clave y se publica en cuanto
@@ -2234,6 +2256,45 @@ function aplicar(archivo) {
         toast('⚠️ El servidor local no respondió, así que he bajado el HTML publicado. En cuanto termine de bajar, el diario se instala y se publica solo. Si no ocurre, doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio).', 16000);
       }, 2600);`,
     'el aviso del respaldo va después del de la descarga'
+  );
+
+  /* --- recargar solo si hay una versión más nueva ------------------------ */
+  /* El teléfono (y el navegador de la computadora) guardan una copia del
+     diario. Con esta marca, el portal ve que el servidor trae algo más
+     nuevo y se recarga solo: nadie se queda viendo la versión vieja. */
+  h = reemplazar(
+    h,
+    `  const MARCA_RICO = '\\u241F';`,
+    `  const MARCA_RICO = '\\u241F';
+
+  /* --- versión del diario: recarga automática si hay una más nueva ------- */
+  (function () {
+    try {
+      const meta = document.querySelector('meta[name="taberna-version"]');
+      if (!meta) return;
+      const version = meta.getAttribute('content') || '';
+      if (!version) return;
+      const guardada = localStorage.getItem('taberna_version');
+      localStorage.setItem('taberna_version', version);
+      /* Si ya recargamos con esta versión, no se vuelve a recargar. */
+      if (sessionStorage.getItem('taberna_recarga') === version) return;
+      if (guardada && guardada !== version) {
+        sessionStorage.setItem('taberna_recarga', version);
+        location.reload();
+      }
+    } catch (e) { }
+  })();`,
+    'recarga automática cuando hay una versión más nueva'
+  );
+
+  /* --- datos estructurados del medio para los buscadores --------------- */
+
+  h = reemplazar(
+    h,
+    `</head>`,
+    `<script type="application/ld+json" id="datosMedio">{}</script>` +
+    `</head>`,
+    'el bloque de datos estructurados del medio'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */

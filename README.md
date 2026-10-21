@@ -285,6 +285,26 @@ instala **en la portada y en la nota larga**, para que se vean igual.
 > descarga automáticamente y `npm run data` avisa en rojo si el HTML publicado
 > todavía no trae contenido.
 
+### El teléfono y la caché
+
+Cada publicación lleva una **marca de versión** (`<meta name="taberna-version">`).
+El portal la compara con la que tiene guardada: si el servidor trae una
+versión más nueva que la que el navegador tenía cacheada, **la página se
+recarga sola**. Así el teléfono ve el diario al día sin recargar a mano
+(que es lo que pasaba: en la computadora se veía el cambio y en el móvil
+seguía la versión vieja).
+
+### Los buscadores
+
+- `publicar/sitemap.xml` se genera en cada compilación con las direcciones
+  reales de las notas publicadas (las vacías no se indexan).
+- `publicar/robots.txt` permite el diario y apunta al mapa; la sala de
+  redacción queda fuera.
+- Cada nota lleva **datos estructurados** (JSON-LD de tipo `NewsArticle`):
+  titular, autor, fecha, sección y foto. La portada lleva los del medio
+  (`NewsMediaOrganization`). Con eso Google muestra la nota con su imagen
+  al buscarla.
+
 ```powershell
 npm.cmd run instalar    # instala la descarga del CMS y recompila
 npm.cmd run deploy     # publica en Firebase
