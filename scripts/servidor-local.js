@@ -124,8 +124,30 @@ function publicarContenido(estado, opciones) {
 
 /* -------------------------------------------------------------------------- */
 
+/* -------------------------------------------------------------------------- */
+/* Conexión desde el sitio publicado                                           */
+/* -------------------------------------------------------------------------- */
+/* El CMS abierto en https://... le pide a este servidor que publique. Como
+   son orígenes distintos, el navegador exige permisos CORS y un examen previo
+   (OPTIONS) antes de dejarle pasar la peticion. Sin esto dice "No se pudo
+   publicar". Aqui se concede solo lo justo: publicar. */
+const CABECERAS_CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Opciones',
+  'Access-Control-Max-Age': '600'
+};
+
+/* -------------------------------------------------------------------------- */
+
 const servidor = http.createServer((req, res) => {
   const url = decodeURIComponent((req.url || '/').split('?')[0]);
+
+  /* --- examen previo del navegador -------------------------------------- */
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, CABECERAS_CORS);
+    return res.end();
+  }
 
   /* --- el CMS publica por aquí --- */
   if (req.method === 'POST' && (url === '/publicar' || url === '/publicar/')) {
@@ -135,7 +157,7 @@ const servidor = http.createServer((req, res) => {
       let estado = null;
       try { estado = JSON.parse(cuerpo); } catch (e) { }
       if (!estado || typeof estado !== 'object') {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.writeHead(400, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
         return res.end(JSON.stringify({ ok: false, error: 'Contenido no válido' }));
       }
       const opciones = {};
@@ -143,7 +165,7 @@ const servidor = http.createServer((req, res) => {
       let resultado;
       try { resultado = publicarContenido(estado, opciones); }
       catch (e) { resultado = { ok: false, error: String(e.message || e).slice(0, 300) }; }
-      res.writeHead(resultado.ok ? 200 : 500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.writeHead(resultado.ok ? 200 : 500, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
       res.end(JSON.stringify(resultado));
     });
     return;

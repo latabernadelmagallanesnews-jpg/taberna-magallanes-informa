@@ -1654,7 +1654,7 @@ function aplicar(archivo) {
       toast('✅ Publicado. GitHub lo sube en 1-4 minutos.');
       if (j.extraidos) toast('🗂 ' + j.extraidos + ' archivo(s) de audio/video sacados a la carpeta multimedia/');
     } catch (e) {
-      toast('⚠️ No se pudo publicar directamente. Si abrió el portal con doble clic, abra http://localhost:' + (location.port || 8099) + '/editor/index.html y use «Publicar ahora».');
+      toast('⚠️ No se pudo publicar desde aquí. Si está en el teléfono o en otro equipo, baje el archivo con «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd. Si está en esta computadora, abra ese mismo PUBLICAR-EL-DIARIO.cmd para encender el servidor y vuelva a pulsar.', 12000);
     }
   }
 
@@ -1744,6 +1744,17 @@ function aplicar(archivo) {
     }
     const contador = document.getElementById('cmsContadorModulos');`,
     'limpieza de imágenes locales al cargar'
+  );
+
+  /* --- la política de seguridad deja hablar con el servidor local ------- */
+  /* Sin esto, el navegador bloquea la petición de «Publicar ahora» cuando el
+     CMS se abre desde el sitio publicado (HTTPS) y dice que no se puede
+     publicar. Solo se abre la conexión al servidor de esta computadora. */
+  h = reemplazar(
+    h,
+    `connect-src 'self' https: data: blob:;`,
+    `connect-src 'self' https: data: blob: http://localhost:8099 http://127.0.0.1:8099;`,
+    'política de seguridad: conexión al servidor local'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
