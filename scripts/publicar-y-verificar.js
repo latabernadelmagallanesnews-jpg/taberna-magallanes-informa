@@ -67,7 +67,8 @@ function firma(html) {
   /* --- 2 · compilar y verificar ---------------------------------------- */
   titulo('2 de 4 · Compilando y verificando');
   try {
-    execFileSync(process.execPath, [path.join(RAIZ, 'scripts', 'verificar-portal.js')], { stdio: 'inherit' });
+    /* npm en Windows es un .cmd: se ejecuta a través de cmd.exe */
+    execFileSync('C:\\Windows\\System32\\cmd.exe', ['/c', 'npm.cmd', 'run', 'build'], { cwd: RAIZ, stdio: 'inherit' });
   } catch (e) {
     console.log('\n  ✗ La verificación falló. No se publica nada.');
     process.exit(1);

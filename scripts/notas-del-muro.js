@@ -15,11 +15,18 @@ if (!m) { console.error('✗ no se encontró el bloque de estado'); process.exit
 const estado = JSON.parse(m[2]);
 const antes = (estado.cronicasSeccion || {}).maximoMuro;
 estado.cronicasSeccion = estado.cronicasSeccion || {};
-estado.cronicasSeccion.maximoMuro = String(CUANTAS);
 
-const nuevo = html.replace(RE, (todo, ini, _c, fin) => ini + JSON.stringify(estado) + fin);
-fs.writeFileSync(PUBLICAR, nuevo, 'utf8');
-
-console.log('✓ notas en el carrusel del muro: ' + antes + ' → ' + CUANTAS);
+/* Con una sola nota el carrusel parece que no carga: va rotando cada 5
+   segundos y las fotos tardan. Se deja un mínimo de 4 notas a la vez. */
+const actual = parseInt(antes, 10) || 0;
+const nuevas = actual < CUANTAS ? CUANTAS : actual;
+if (nuevas === actual) {
+  console.log('✓ notas en el carrusel del muro: ' + actual + ' (sin cambios)');
+} else {
+  estado.cronicasSeccion.maximoMuro = String(nuevas);
+  const nuevo = html.replace(RE, (todo, ini, _c, fin) => ini + JSON.stringify(estado) + fin);
+  fs.writeFileSync(PUBLICAR, nuevo, 'utf8');
+  console.log('✓ notas en el carrusel del muro: ' + antes + ' → ' + nuevas);
+}
 const total = (estado.cronicas || []).length;
-console.log('  (el muro tiene ' + total + ' notas; se muestran ' + CUANTAS + ' a la vez)');
+console.log('  (el muro tiene ' + total + ' notas; se muestran ' + nuevas + ' a la vez)');
