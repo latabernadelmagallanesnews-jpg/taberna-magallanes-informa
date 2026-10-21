@@ -263,6 +263,17 @@ instala **en la portada y en la nota larga**, para que se vean igual.
 > comprobar que el sitio ya muestra el contenido** antes de darle luz verde.
 > Así nadie se queda con la duda de si salió o no.
 
+> **El servidor local arranca solo con Windows.** El botón **🚀 Publicar
+> ahora** del CMS habla con el servidor de esta computadora
+> (`http://localhost:8099`). Para que nunca esté apagado, hay un acceso en la
+> carpeta *Inicio* de Windows que lo enciende con el sistema. Si alguna vez
+> lo apaga, doble clic en `PUBLICAR-EL-DIARIO.cmd` (lo vuelve a encender) y
+> después pulse **🚀 Publicar ahora**.
+
+> **Si pulsa «Publicar ahora» sin haber entrado con la clave**, el CMS se la
+> pide y **publica solo en cuanto la escriba**: no se queda a medias con el
+> aviso.
+
 > **Audios y videos pesados:** no se incrustan en el HTML (un MP3 repetido en
 > cinco campos pasaba el diario de 1,9 MB a 37 MB). Al instalar, los archivos
 > grandes se sacan a `publicar/multimedia/` y el HTML guarda solo su nombre:
