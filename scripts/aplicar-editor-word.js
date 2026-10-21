@@ -1561,6 +1561,49 @@ function aplicar(archivo) {
     'aviso al pegar un enlace de red social'
   );
 
+  /* --- 1 · el listado del CMS no debe MAQUETAR el título ------------------ */
+  h = reemplazar(
+    h,
+    `      try { if (rep.etiquetaItem) etiquetaItem = String(rep.etiquetaItem(item, i) || etiquetaItem); } catch (e) { }`,
+    `      try { if (rep.etiquetaItem) etiquetaItem = aTextoPlano(String(rep.etiquetaItem(item, i) || etiquetaItem)); } catch (e) { }`,
+    'etiqueta de los elementos en el listado del CMS'
+  );
+
+  /* --- 2 · al pegar, las imágenes locales (file://) no se pueden publicar --- */
+  h = reemplazar(
+    h,
+    `  function activarEditoresRicos(contenedor) {`,
+    `  /* Al pegar desde Word o desde el explorador de archivos, las imágenes
+     llegan como file:///C:/... y SOLO existen en esa computadora: no se
+     pueden publicar. Se quitan y se avisa de que hay que subirlas. */
+  function limpiarPegado(contenedor) {
+    var imagenes = contenedor.querySelectorAll('img[src^="file:"], img[src^="blob:"], img[data-src^="file:"]');
+    if (!imagenes.length) return;
+    Array.prototype.slice.call(imagenes).forEach(function (im) {
+      if (im.parentNode) im.parentNode.removeChild(im);
+    });
+    toast('⚠️ Se quitaron ' + imagenes.length + ' imagen(es) locales del portapapeles. Para que se publiquen, súbalas con el botón de multimedia del módulo.', 7000);
+  }
+
+  function activarEditoresRicos(contenedor) {`,
+    'limpieza al pegar'
+  );
+
+  h = reemplazar(
+    h,
+    `    contenedor.addEventListener('change', function (e) {
+      const sel = e.target;`,
+    `    contenedor.addEventListener('paste', function (e) {
+      const ed = e.target && e.target.closest ? e.target.closest('.cms-rico-editor') : null;
+      if (!ed) return;
+      setTimeout(function () { limpiarPegado(ed); }, 0);
+    });
+
+    contenedor.addEventListener('change', function (e) {
+      const sel = e.target;`,
+    'escucha del pegado en los editores'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

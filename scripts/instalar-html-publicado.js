@@ -19,6 +19,7 @@
 'use strict';
 
 const fs = require('fs');
+const crypto = require('crypto');
 const path = require('path');
 const os = require('os');
 
@@ -47,6 +48,7 @@ function carpetasDeDescargas() {
 }
 
 /* Extrae el estado incrustado de un HTML del portal. */
+const RE_ESTADO = /(<script type="application\/json" id="estadoEmbebido">)([\s\S]*?)(<\/script>)/;
 function leerEstado(html) {
   const m = html.match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
   if (!m) return null;
@@ -109,6 +111,68 @@ function buscarReciente() {
 
 /* -------------------------------------------------------------------------- */
 
+/* -------------------------------------------------------------------------- */
+/* MULTIMEDIA PESADO A ARCHIVOS SUELTOS                                        */
+/* -------------------------------------------------------------------------- */
+/* Un MP3 incrustado como base64 pesa lo mismo en el HTML y lo descarga CADA
+   visitante: un audio de 35 MB convierte el diario en una pagina de 37 MB.
+   Por eso los audios y videos grandes se sacan a archivos sueltos en
+   multimedia/ y el HTML solo guarda su nombre. El portal los reproduce igual. */
+const CARPETA_MEDIA = 'multimedia';
+const UMBRAL_MEDIA = 1.5 * 1024 * 1024;
+
+function extraerMultimediaPesada(html) {
+  const m = html.match(RE_ESTADO);
+  if (!m) return { archivo: null, extraidos: 0, ahorro: 0 };
+
+  let estado;
+  try { estado = JSON.parse(m[2]); } catch (e) { return { archivo: null, extraidos: 0, ahorro: 0 }; }
+
+  const carpeta = path.join(path.dirname(DESTINO), CARPETA_MEDIA);
+  let extraidos = 0, ahorro = 0;
+  const usados = {};
+
+  const visitar = function (valor) {
+    if (typeof valor === 'string') {
+      if (valor.indexOf('data:') !== 0) return valor;
+      const mm = /^data:(audio|video)\/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=]+)$/i.exec(valor);
+      if (!mm) return valor;
+      const tipo = mm[1], ext = mm[2], b64 = mm[3];
+      if (b64.length < UMBRAL_MEDIA) return valor;
+      const clave = tipo + ext + '-' + crypto.createHash('sha1').update(b64.slice(0, 4096)).digest('hex').slice(0, 12);
+      let nombre = usados[clave];
+      if (!nombre) {
+        const hash = crypto.createHash('sha1').update(b64.slice(0, 4096)).digest('hex').slice(0, 12);
+        nombre = tipo + '-' + hash + '.' + (ext === 'mpeg' ? 'mp3' : ext);
+        usados[clave] = nombre;
+        try {
+          if (!fs.existsSync(carpeta)) fs.mkdirSync(carpeta, { recursive: true });
+          fs.writeFileSync(path.join(carpeta, nombre), Buffer.from(b64, 'base64'));
+        } catch (e) { return valor; }
+        extraidos++;
+        ahorro += valor.length;
+      }
+      return CARPETA_MEDIA + '/' + nombre;
+    }
+    if (Array.isArray(valor)) {
+      for (let i = 0; i < valor.length; i++) valor[i] = visitar(valor[i]);
+      return valor;
+    }
+    if (valor && typeof valor === 'object') {
+      Object.keys(valor).forEach(function (k) { valor[k] = visitar(valor[k]); });
+    }
+    return valor;
+  };
+
+  visitar(estado);
+  if (!extraidos) return { archivo: null, extraidos: 0, ahorro: 0 };
+
+  const nuevo = html.replace(RE_ESTADO, function (todo, ini, _c, fin) {
+    return ini + JSON.stringify(estado) + fin;
+  });
+  return { archivo: nuevo, extraidos: extraidos, ahorro: ahorro };
+}
+
 function instalar(origen) {
   const html = fs.readFileSync(origen, 'utf8');
   const estado = leerEstado(html);
@@ -128,9 +192,18 @@ function instalar(origen) {
   const contenidoAnterior = cuantoContenido(estAnterior);
 
   fs.copyFileSync(origen, DESTINO);
+
+  /* Los audios y videos grandes salen a archivos sueltos. */
+  const pesado = extraerMultimediaPesada(fs.readFileSync(DESTINO, 'utf8'));
+  if (pesado.archivo) {
+    fs.writeFileSync(DESTINO, pesado.archivo, 'utf8');
+    console.log('  🗂 ' + pesado.extraidos + ' archivo(s) de audio/video sacados a publicar/' + CARPETA_MEDIA + '/');
+    console.log('     el diario pasa de ' + Math.round(pesado.ahorro / 1024) + ' KB de más a ' + Math.round(fs.statSync(DESTINO).size / 1024) + ' KB en total');
+  }
   console.log('✓ HTML publicado instalado en publicar/index.html');
   console.log('  · desde : ' + origen);
-  console.log('  · ' + (contenido - contenidoAnterior >= 0 ? 'contenido: ' : 'contenido: ') + (contenido - contenidoAnterior) + ' bloques con datos');
+  console.log('  · contenido: ' + contenido + ' bloques con datos' + (contenido === contenidoAnterior ? ' (sin cambios)' : ' (' + (contenido - contenidoAnterior >= 0 ? '+' : '') + (contenido - contenidoAnterior) + ' respecto a lo publicado)'));
+  console.log('  · peso: ' + Math.round(fs.statSync(DESTINO).size / 1024) + ' KB');
   console.log('');
   console.log('  Ahora ejecute:  npm run build   (y luego  npm run deploy)');
 }

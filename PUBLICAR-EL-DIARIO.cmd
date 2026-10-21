@@ -2,11 +2,12 @@
 rem ===========================================================================
 rem  PUBLICAR LA TABERNA DEL MAGALLANES NEWS  -  un solo clic
 rem ===========================================================================
-rem  Que hace esto:
-rem    1. Busca el index.html que usted descargo del CMS (el boton
-rem       "Descargar HTML publicado") y lo instala en la carpeta publicar/.
-rem    2. Compila y verifica que todo este bien.
-rem    3. Sube el cambio a GitHub, que publica el portal en 2-4 minutos.
+rem  1. Busca el index.html que usted descargo del CMS (boton
+rem     "Descargar HTML publicado") y lo instala en la carpeta publicar/.
+rem  2. Compila y verifica que todo este bien.
+rem  3. Sube el cambio a GitHub.
+rem  4. ESPERA y COMPRUEBA que el contenido ya este en el sitio publico
+rem     (asi no se queda con la duda de si salio o no).
 rem
 rem  NO tiene que subir ningun archivo a ningun sitio a mano.
 rem ===========================================================================
@@ -14,29 +15,12 @@ rem ===========================================================================
 setlocal
 cd /d "C:\Users\F4NT45M4\Documents\Proyecto predeterminado"
 
-echo.
-echo  ==============================================================
-echo    PUBLICAR LA TABERNA DEL MAGALLANES NEWS
-echo  ==============================================================
-echo.
-
-echo  [1 de 3] Buscando el HTML que descargaste del CMS...
-echo.
-call npm.cmd run instalar
+call "C:\Program Files\nodejs\node.exe" scripts\publicar-y-verificar.js
 if errorlevel 1 goto error
 
 echo.
-echo  [2 de 3] Subiendo a GitHub...
-echo.
-"C:\Program Files\Git\cmd\git.exe" push origin main
-if errorlevel 1 goto error
-
-echo.
-echo  [3 de 3] Listo. GitHub publica en 2-4 minutos.
-echo.
-echo     https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/
-echo.
-echo     (tambien en la puerta de redaccion: /redaccion-cms.html)
+echo  Si todo salio bien, el sitio ya esta en internet y se puede ver
+echo  desde cualquier telefono o computadora.
 echo.
 start "" "https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/"
 echo.
