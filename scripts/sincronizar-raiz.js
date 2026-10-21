@@ -64,8 +64,9 @@ ARCHIVOS.forEach(function (nombre) {
 
 console.log('✓ raíz y copia de trabajo sincronizadas con publicar/ (' + copiados + ' copiados, ' + sinCambio + ' sin cambios).');
 
-/* La carpeta multimedia/ (audios y videos sueltos) también debe estar en la
-   raíz, porque es lo que sirve GitHub Pages en modo "Deploy from a branch". */
+/* La carpeta multimedia/ (fotos, audios y videos sueltos) también debe
+   estar en la raíz, porque es lo que sirve GitHub Pages en modo
+   "Deploy from a branch". */
 const CARPETA_MEDIA = path.join(PUBLICAR, 'multimedia');
 if (fs.existsSync(CARPETA_MEDIA)) {
   const destino = path.join(RAIZ, 'multimedia');
@@ -80,4 +81,22 @@ if (fs.existsSync(CARPETA_MEDIA)) {
     n++;
   });
   if (n) console.log('✓ ' + n + ' archivo(s) de multimedia copiados a la raíz (multimedia/).');
+}
+
+/* Y la carpeta notas/ con la página propia de cada nota: es la que se
+   comparte y la que leen los buscadores. */
+const CARPETA_NOTAS = path.join(PUBLICAR, 'notas');
+if (fs.existsSync(CARPETA_NOTAS)) {
+  const destino = path.join(RAIZ, 'notas');
+  let n = 0;
+  fs.readdirSync(CARPETA_NOTAS).forEach(function (nombre) {
+    const origen = path.join(CARPETA_NOTAS, nombre);
+    const destinoArchivo = path.join(destino, nombre);
+    if (!fs.statSync(origen).isFile()) return;
+    if (fs.existsSync(destinoArchivo) && fs.readFileSync(destinoArchivo).equals(fs.readFileSync(origen))) return;
+    if (!fs.existsSync(destino)) fs.mkdirSync(destino, { recursive: true });
+    fs.copyFileSync(origen, destinoArchivo);
+    n++;
+  });
+  if (n) console.log('✓ ' + n + ' página(s) de nota copiadas a la raíz (notas/).');
 }
