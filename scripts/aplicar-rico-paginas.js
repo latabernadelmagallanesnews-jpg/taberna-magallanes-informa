@@ -152,6 +152,12 @@ const CAMBIOS = [
   } catch (e) { return ''; }
 }`],
 
+  ['cronica.html',
+    `  var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'cronica.html?c=' + encodeURIComponent(c.id);`,
+    `  /* La dirección oficial de la nota es su página propia (notas/c1.html):
+     es la que se comparte y la que ven los buscadores. */
+  var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
