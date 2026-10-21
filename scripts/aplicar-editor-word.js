@@ -1617,6 +1617,20 @@ function aplicar(archivo) {
     'tiempo de vida del enlace de descarga'
   );
 
+  /* --- el enlace se guarda hasta que la descarga arranca ---------------- */
+  /* Chrome cancela la descarga ("No se pudo descargar el archivo") si el
+     <a> se quita del documento justo después del clic, sobre todo con
+     archivos grandes. Se deja un buen rato antes de retirarlo. */
+  h = reemplazar(
+    h,
+    `    document.body.appendChild(a); a.click(); a.remove();`,
+    `    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); }, 120000);`,
+    'el enlace de descarga se conserva en el documento'
+  );
+
   /* --- publicar desde el CMS, sin descargar archivos de 30 MB ------------- */
   if (h.indexOf('async function publicarAhora(') === -1) {
   h = reemplazar(
@@ -1696,6 +1710,23 @@ function aplicar(archivo) {
     if (locales) toast('⚠️ Se quitaron ' + locales + ' imagen(es) locales (file://) del contenido: no se pueden publicar. Súbalas con el botón de multimedia del módulo.', 9000);
     const seg = copia.seguridad || (copia.seguridad = {});`,
     'aviso de imágenes locales al publicar'
+  );
+
+  /* --- si el archivo es muy grande, se avisa de la otra vía --------------- */
+  h = reemplazar(
+    h,
+    `      if (html.length > 26214400) toast('⚠️ El archivo es muy pesado: suba los audios y videos como enlaces (Drive, YouTube) para aligerarlo');`,
+    `      if (html.length > 5242880) toast('⚠️ El archivo pesa más de 5 MB: algunos navegadores rechazan esas descargas. Pulse «🚀 Publicar ahora» (un clic, sin límite de tamaño).', 9000);
+      if (html.length > 26214400) toast('⚠️ El archivo es muy pesado: suba los audios y videos como enlaces (Drive, YouTube) para aligerarlo');`,
+    'aviso de archivo pesado en la descarga'
+  );
+
+  /* --- la ayuda del CMS explica el botón nuevo -------------------------- */
+  h = reemplazar(
+    h,
+    `<b>Para publicarlos en internet:</b> pulse <b>🚀 Descargar HTML publicado</b>, obtendrá un archivo <b>index.html</b> con todo el contenido dentro; súbalo a su hosting (reemplazando el anterior) y sus visitantes verán los cambios.`,
+    `<b>Para publicarlos en internet:</b> pulse <b>🚀 Publicar ahora</b>. En un solo clic su contenido se guarda en esta computadora, se sube a GitHub y queda publicado (sin descargar archivos de 30 MB, sin subir nada a mano).<br>Si prefiere el archivo, pulse <b>⬇️ Descargar HTML publicado</b>: obtendrá un <b>index.html</b> con todo su contenido dentro, listo para subirlo a su hosting.`,
+    'ayuda de publicación del CMS'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
