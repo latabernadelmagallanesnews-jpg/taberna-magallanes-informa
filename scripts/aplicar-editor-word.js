@@ -2216,6 +2216,20 @@ function aplicar(archivo) {
     'si el servidor no responde, el HTML baja y se publica solo'
   );
 
+  /* --- el aviso del respaldo va después del de la descarga ---------------- */
+  h = reemplazar(
+    h,
+    `      try { descargarPaginaPublicada(); } catch (e2) { }
+      toast('⚠️ El servidor local no respondió, así que he bajado el HTML publicado. En cuanto termine de bajar, el diario se instala y se publica solo. Si no ocurre, doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio).', 16000);`,
+    `      try { descargarPaginaPublicada(); } catch (e2) { }
+      /* El aviso va un momento después, para que no lo tape el de la
+         descarga. */
+      setTimeout(function () {
+        toast('⚠️ El servidor local no respondió, así que he bajado el HTML publicado. En cuanto termine de bajar, el diario se instala y se publica solo. Si no ocurre, doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio).', 16000);
+      }, 2600);`,
+    'el aviso del respaldo va después del de la descarga'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,
