@@ -144,9 +144,12 @@ let hechas = 0;
   html = html.replace(/<script type="application\/ld\+json" id="datosNota">[\s\S]*?<\/script>/,
     '<script type="application/ld+json" id="datosNota">' + json + '</script>');
 
-  /* --- el identificador de la nota, para que la página sepa cuál es ----- */
+  /* --- el identificador de la nota y las rutas de sus recursos --------- */
+  /* La página vive en notas/, una carpeta más abajo: el archivo de datos y
+     el de las funciones se piden en la carpeta de arriba. */
   html = html.replace(/<script src="rico\.js"><\/script>/,
-    '<script src="rico.js"></script>\n  <script>window.__NOTA_ID__=' + JSON.stringify(c.id) + ';</script>');
+    '<script src="../rico.js"></script>\n  <script>window.__NOTA_ID__=' + JSON.stringify(c.id) + ';</script>');
+  html = html.replace(/fetch\('data\.json'/g, "fetch('../data.json'");
 
   fs.writeFileSync(path.join(CARPETA, nombreArchivo + '.html'), html, 'utf8');
   hechas++;

@@ -219,6 +219,8 @@
 
 
 
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -417,7 +419,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-21T21:48:21.608Z">
+  <meta name="taberna-version" content="2026-10-21T21:49:38.589Z">
 
 
 
@@ -605,6 +607,33 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: resumen });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
   /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
      cronica.html a secas como si fuera lo mismo que cada nota. */
   var canonico = document.getElementById('canonicoNota');

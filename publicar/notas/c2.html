@@ -219,6 +219,8 @@
 
 
 
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -417,7 +419,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-21T21:49:38.589Z">
+  <meta name="taberna-version" content="2026-10-21T21:53:33.950Z">
 
 
 
@@ -442,7 +444,7 @@
 </div>
 </main>
 <footer class="pie"><div class="pie-in"><b>La Taberna del Magallanes News</b> · Gaceta sabermétrica, analítica Statcast y scouting de los Navegantes del Magallanes (LVBP).<br>Fundador &amp; Director: Luis Enrique Aponte Guzmán.<br><span style="font-size:0.72rem;">Páginas: <a href="index.html">Portada</a> · <a href="cronica.html">Crónicas</a> · <a href="roster.html">Roster</a> · <a href="buscador.html">Buscador</a> · <a href="vip.html">Círculo VIP</a></span></div></footer>
-<script src="rico.js"></script>
+<script src="../rico.js"></script>
   <script>window.__NOTA_ID__="c2";</script>
   <script>
 
@@ -606,6 +608,33 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: resumen });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
   /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
      cronica.html a secas como si fuera lo mismo que cada nota. */
   var canonico = document.getElementById('canonicoNota');
@@ -972,7 +1001,7 @@ function pintar(d) {
   mostrarIndice(d);
 }
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {
+  fetch('../data.json').then(function (r) { return r.json(); }).then(function (d) {
     DATOS = d;
     document.getElementById('cargando').className = 'oculto';
     pintar(d);
@@ -1006,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
   try {
-    fetch('data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
+    fetch('../data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
   } catch (e) { }
 })();
 </script></body>
