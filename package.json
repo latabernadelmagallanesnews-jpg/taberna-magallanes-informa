@@ -13,6 +13,7 @@
     "paginas": "node scripts/aplicar-rico-paginas.js",
     "sync": "node scripts/sincronizar-raiz.js",
     "instalar": "node scripts/instalar-html-publicado.js && npm run build",
+    "publicar": "npm run instalar && git push origin main",
     "data": "node scripts/generar-data-json.js",
     "url": "node scripts/fijar-url-publica.js",
     "mirror": "node scripts/publicar-mirror.js",

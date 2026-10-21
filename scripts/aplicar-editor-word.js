@@ -1454,6 +1454,14 @@ function aplicar(archivo) {
     'optimización al publicar'
   );
 
+  /* --- el campo de la foto de la crónica debe decir para qué sirve ------- */
+  h = reemplazar(
+    h,
+    `            { path: 'imagen', label: 'Imagen destacada (la que se ve al compartir)', tipo: 'imagen' },`,
+    `            { path: 'imagen', label: 'Foto de la nota (la de la tarjeta del muro y la que se comparte)', tipo: 'imagen' },`,
+    'etiqueta de la foto de la crónica'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,
