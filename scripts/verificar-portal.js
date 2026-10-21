@@ -153,6 +153,19 @@ console.log('\n=== diseño de dos niveles ===');
 
 /* Los campos con formato deben maquetarse, no escaparse: si se escapan, la
    nota escrita en el editor Word sale con las etiquetas a la vista. */
+  console.log('\n=== la tipografía la manda el diseño ===');
+  const OBJETIVOS_TIPOGRAFIA = ['editor/index.html', 'publicar/index.html', 'index.html'];
+  OBJETIVOS_TIPOGRAFIA.forEach(function (f) {
+    const ruta = path.join(RAIZ, f);
+    if (!fs.existsSync(ruta)) return;
+    const html = fs.readFileSync(ruta, 'utf8');
+    const bien = html.indexOf('EL DISEÑO MANDA EN LOS TITULARES Y LAS ENTRADILLAS') !== -1 &&
+      html.indexOf('#heroTitulo h1') !== -1 && html.indexOf('.longform-titular h1') !== -1;
+    if (!bien) ko(f + ': el texto pegado puede romper la tipografía del titular');
+    else ok(f + ': el diseño manda en los titulares (el texto pegado no los rompe)');
+
+  });
+
 console.log('\n=== contenido con formato ===');
 [['editor/index.html', 'copia de trabajo'], ['publicar/index.html', 'publicado'], ['index.html', 'raíz']].forEach((par) => {
   const f = path.join(RAIZ, par[0]);

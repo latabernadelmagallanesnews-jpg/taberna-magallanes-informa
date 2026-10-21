@@ -32,6 +32,111 @@ const OBJETIVOS = [
 /* CSS                                                                         */
 /* -------------------------------------------------------------------------- */
 
+/* Reglas que van en el portal Y en la página de la nota: la tipografía
+   la manda el diseño y la nota cabe en un teléfono. */
+const CSS_COMUN_LONGFORM = `
+    /* ================================================================
+       EL DISEÑO MANDA EN LOS TITULARES Y LAS ENTRADILLAS
+       ----------------------------------------------------------------
+       El texto que llega pegado de Word trae su propio tamaño de
+       letra, su interlineado y sus márgenes. Si se respetan, el
+       titular se ve diminuto en una computadora (letra de 13 px) y
+       enorme en un teléfono (57 px), y la entradilla se sale de la
+       columna. Aquí manda el diario: el contenido conserva la
+       cursiva, la negrita, el centrado y los colores, pero el tamaño,
+       el interlineado, los márgenes y la tipografía los pone la
+       maqueta, que es responsive.
+       ================================================================ */
+    #heroTitulo h1, #heroTitulo h2, #heroTitulo h3, #heroTitulo h4, #heroTitulo h5, #heroTitulo h6,
+    #heroTitulo p, #heroTitulo span, #heroTitulo strong, #heroTitulo em, #heroTitulo b, #heroTitulo i, #heroTitulo div,
+    #heroCita p, #heroCita span, #heroCita strong, #heroCita em, #heroCita i, #heroCita b,
+    #heroEpigrafe p, #heroEpigrafe span, #heroEpigrafe h1, #heroEpigrafe h2, #heroEpigrafe h3, #heroEpigrafe h4,
+    #heroEpigrafe strong, #heroEpigrafe em, #heroEpigrafe i, #heroEpigrafe b,
+    .teaser-titular h1, .teaser-titular h2, .teaser-titular h3, .teaser-titular h4, .teaser-titular h5, .teaser-titular h6,
+    .teaser-titular p, .teaser-titular span, .teaser-titular strong, .teaser-titular em, .teaser-titular b, .teaser-titular i,
+    .teaser-subtitulo p, .teaser-subtitulo span, .teaser-subtitulo strong, .teaser-subtitulo em, .teaser-subtitulo i,
+    .teaser-lead p, .teaser-lead span, .teaser-lead strong, .teaser-lead em, .teaser-lead i,
+    .cronicas-nota-cuerpo p, .cronicas-nota-cuerpo span, .cronicas-nota-cuerpo strong, .cronicas-nota-cuerpo em,
+    .cronicas-nota-cuerpo h1, .cronicas-nota-cuerpo h2, .cronicas-nota-cuerpo h3, .cronicas-nota-cuerpo h4,
+    .ficha-titulo p, .ficha-titulo span, .ficha-titulo strong, .ficha-titulo em,
+    .longform-titular h1, .longform-titular h2, .longform-titular h3, .longform-titular p,
+    .longform-titular span, .longform-titular strong, .longform-titular em, .longform-titular i,
+    .longform-subtitulo p, .longform-subtitulo span, .longform-subtitulo strong, .longform-subtitulo em,
+    .longform-entrada p, .longform-entrada span, .longform-entrada strong, .longform-entrada em,
+    .longform-texto p, .longform-texto span, .longform-texto strong, .longform-texto em, .longform-texto i,
+    .longform-texto h1, .longform-texto h2, .longform-texto h3, .longform-texto h4, .longform-texto h5, .longform-texto h6 {
+      font-size: inherit !important;
+      line-height: inherit !important;
+      font-family: inherit !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: none !important;
+      text-indent: 0 !important;
+    }
+    /* Los títulos dentro del cuerpo de la nota sí llevan su propio tamaño
+       (pero el del diario, no el de un h1 pegado de Word). */
+    .longform-texto h1 { font-size: 1.5rem !important; line-height: 1.25 !important; font-weight: 800 !important; }
+    .longform-texto h2 { font-size: 1.28rem !important; line-height: 1.28 !important; font-weight: 800 !important; }
+    .longform-texto h3 { font-size: 1.12rem !important; line-height: 1.3 !important; font-weight: 800 !important; }
+    .longform-texto h4, .longform-texto h5, .longform-texto h6 { font-size: 1rem !important; line-height: 1.35 !important; font-weight: 800 !important; }
+    /* El texto pegado no debe dejar cajas ni sombras de Word. */
+    #heroTitulo span[style*="background"], .teaser-titular span[style*="background"],
+    .longform-texto span[style*="background-color"], .longform-texto p[style*="background-color"] {
+      background-color: transparent !important;
+    }
+    /* El epígrafe sobre la foto: legible también en un teléfono pequeño. */
+    #heroEpigrafe { font-size: clamp(0.8rem, 2.6vw, 0.95rem) !important; line-height: 1.45; }
+    /* El titular de portada, con medida corta y sin aire de más. */
+    #heroTitulo { font-size: clamp(1.55rem, 5.6vw, 2.9rem) !important; line-height: 1.14; letter-spacing: -0.015em; }
+    @media (max-width: 560px) {
+      #heroTitulo { font-size: clamp(1.35rem, 7.4vw, 1.9rem) !important; line-height: 1.2; }
+      #heroEpigrafe { font-size: 0.82rem !important; }
+    }
+    /* ================================================================
+       QUE LA NOTA LARGA QUEPA EN UN TELÉFONO
+       ----------------------------------------------------------------
+       La rejilla de la nota calculaba la columna con el tamaño del
+       contenido (auto), así que la foto de 1280 px ensanchaba toda la
+       página y en un teléfono había que arrastrar la pantalla de lado.
+       Con minmax(0, 1fr) la columna se ajusta al ancho disponible.
+       ================================================================ */
+    #cronicas { grid-template-columns: minmax(0, 1fr) !important; }
+    .nota-zona, .longform-columnas, .longform-texto, .longform-portada,
+    .longform-portada-foto, .longform-portada-texto { min-width: 0; max-width: 100%; }
+    .longform-texto img, .longform-texto figure { width: min(1280px, 100vw); }
+    .longform-columnas { display: block; }
+    .ficha-tecnica, .nota-acciones, .nota-pie { max-width: min(52rem, 100%); }
+    @media (max-width: 900px) {
+      .longform-texto { padding: 0 .9rem; }
+      .longform-texto img, .longform-texto figure { width: 100vw; margin-left: calc(50% - 50vw); transform: none; }
+      .longform-texto p:first-of-type::first-letter { font-size: 3.2rem; }
+      .longform-texto p { font-size: clamp(1.04rem, .3vw + .98rem, 1.16rem); line-height: 1.7; }
+      .longform-texto h2 { font-size: 1.55rem; }
+      .longform-texto h3 { font-size: 1.28rem; }
+      .longform-texto blockquote { font-size: 1.2rem; }
+      .ficha-tecnica dl { grid-template-columns: 1fr; gap: .15rem; }
+      .ficha-tecnica dd { margin-bottom: .7rem; }
+      .longform-entrada { font-size: 1.06rem; }
+    }
+    /* ================================================================
+       PALABRAS MUY LARGAS NO ROMPEN LA MAQUETA
+       ----------------------------------------------------------------
+       Un enlace pegado en el titular, o una palabra sin espacios,
+       empuja la página de lado y obliga a arrastrar la pantalla en
+       un teléfono. Aquí se parten donde haga falta.
+       ================================================================ */
+    #heroTitulo, .teaser-titular, .teaser-subtitulo, .teaser-lead,
+    .longform-titular, .longform-subtitulo, .longform-entrada,
+    .longform-texto, .cronicas-nota-cuerpo, .ficha-titulo,
+    .hero-article, .nota-zona, .cp-titulo, .cp-desc {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+    /* Y ningún bloque se sale nunca de la pantalla. */
+    body, .nota-zona, .longform-columnas, .longform-texto { overflow-x: hidden; }
+`;
+
 const CSS = `/*__LONGFORM_INICIO__*/
     /* ================================================================
        NIVEL 1 · TARJETA / TEASER DE PORTADA
@@ -54,6 +159,35 @@ const CSS = `/*__LONGFORM_INICIO__*/
     .teaser-acciones { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
     .teaser-acciones button { background: none; border: 1px solid #d8d4cc; border-radius: 20px; padding: 4px 11px; font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 700; color: #5b6270; cursor: pointer; }
     .teaser-acciones button:hover { border-color: #0b2240; color: #0b2240; }
+    ${CSS_COMUN_LONGFORM}
+    /* ================================================================
+       LA PIZARRA NO SE CORTA EN UN TELÉFONO
+       ----------------------------------------------------------------
+       En una pantalla pequeña, la barra de resultados y sus botones
+       (que solo ve la redacción) quedaban cortados de golpe. Aquí se
+       acomodan en varias líneas y se pueden deslizar.
+       ================================================================ */
+    @media (max-width: 760px) {
+      .ticker-bar { white-space: normal; flex-wrap: wrap; overflow-x: hidden; gap: 0.45rem 0.9rem; padding: 0.5rem 0.7rem; align-items: flex-start; }
+      .ticker-bar > div { flex-wrap: wrap; min-width: 0; }
+      .ticker-bar #tickerPartidos, .ticker-bar #tickerStatcast { flex-wrap: wrap; gap: 0.5rem; min-width: 0; }
+      .pizarra-acciones { flex-wrap: wrap; max-width: 100%; }
+      .pizarra-acciones span { flex: 1 1 100%; line-height: 1.4; }
+      .pizarra-btn { white-space: nowrap; }
+    }
+    /* ================================================================
+       EL EPÍGRAFE DE LA PORTADA, SIEMPRE LEGIBLE
+       ----------------------------------------------------------------
+       El texto blanco encima de la foto se mezclaba con el gráfico de
+       la imagen. En pantallas pequeñas pasa debajo de la foto, con su
+       propio fondo y su filete dorado.
+       ================================================================ */
+    .hero-epigrafe { max-width: 64ch; }
+    @media (max-width: 760px) {
+      .hero-epigrafe { position: static !important; background: #0d141c !important;
+        border-left: 3px solid #c59b27; padding: 0.75rem 0.9rem !important;
+        max-width: none; }
+    }
     /*__LONGFORM_FIN__*/
 `;
 
@@ -215,6 +349,7 @@ const CSS_PAGINA = `/*__CSS_LONGFORM_INICIO__*/
     .ficha-tecnica dl { grid-template-columns: 1fr; gap: .15rem; }
     .ficha-tecnica dd { margin-bottom: .7rem; }
   }
+${CSS_COMUN_LONGFORM}
 /*__CSS_LONGFORM_FIN__*/
 `;
 
