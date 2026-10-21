@@ -1507,6 +1507,60 @@ function aplicar(archivo) {
     'aviso del paywall'
   );
 
+  /* --- incrustados de redes sociales --------------------------------------- */
+  /* Facebook solo se puede incrustar con la dirección de una publicación
+     concreta: con el dominio suelto el plugin sale roto. */
+  h = reemplazar(
+    h,
+    `    if (/facebook\\.com|fb\\.watch/i.test(url)) return { tipo: 'social', iframe: true, src: 'https://www.facebook.com/plugins/post.php?href=' + encodeURIComponent(url) + '&show_text=true&width=520' };`,
+    `    const fb = url.match(/facebook\\.com\\/(?:[^/]+\\/)?(posts|photos|videos|permalink|media|share|reel)\\//i) || url.match(/fb\\.watch\\//i);
+    if (fb) return { tipo: 'social', iframe: true, src: 'https://www.facebook.com/plugins/post.php?href=' + encodeURIComponent(url) + '&show_text=true&width=520' };`,
+    'incrustado de Facebook'
+  );
+
+  /* El CMS explica cómo se va a mostrar cada enlace al pegarlo. */
+  h = reemplazar(
+    h,
+    `  function urlHttp(valor) {`,
+    `  /* Cómo se va a mostrar una publicación pegada en el CMS. */
+  function redDeUnaUrl(url) {
+    const u = String(url || '').trim();
+    if (!u) return { nombre: 'enlace', incrusta: false };
+    if (/youtube\\.com|youtu\\.be/i.test(u)) return { nombre: 'YouTube', incrusta: true };
+    if (/vimeo\\.com/i.test(u)) return { nombre: 'Vimeo', incrusta: true };
+    if (/instagram\\.com\\/(p|reel|reels|tv)\\//i.test(u)) return { nombre: 'Instagram', incrusta: true };
+    if (/tiktok\\.com\\/(?:.*\\/)?video\\//i.test(u)) return { nombre: 'TikTok', incrusta: true };
+    if (/facebook\\.com\\/(?:[^/]+\\/)?(posts|photos|videos|permalink|media|share|reel)\\//i.test(u) || /fb\\.watch\\//i.test(u)) return { nombre: 'Facebook', incrusta: true };
+    if (/open\\.spotify\\.com\\//i.test(u)) return { nombre: 'Spotify', incrusta: true };
+    if (/(?:twitter|x)\\.com\\/[^/]+\\/status\\//i.test(u)) return { nombre: 'X', incrusta: true };
+    if (/\\.(mp4|webm|mov|mkv)(\\?|$)/i.test(u)) return { nombre: 'video', incrusta: true };
+    if (/\\.(mp3|m4a|wav|ogg)(\\?|$)/i.test(u)) return { nombre: 'audio', incrusta: true };
+    if (/\\.(jpe?g|png|webp|gif|avif)(\\?|$)/i.test(u)) return { nombre: 'imagen', incrusta: true };
+    return { nombre: 'enlace', incrusta: false };
+  }
+
+  function urlHttp(valor) {`,
+    'detección de red al pegar un enlace'
+  );
+
+  /* Al pegar un enlace, el CMS avisa de cómo se va a ver. */
+  h = reemplazar(
+    h,
+    `    renderizarTodo();
+    refrescarPanelCMS();
+    toast('📡 Publicación de ' + redPorId(red).nombre + ' incrustada en el Módulo 13');
+  }`,
+    `    renderizarTodo();
+    refrescarPanelCMS();
+    /* Se avisa de cómo se va a ver: incrustada o como enlace. */
+    const como = redDeUnaUrl(url);
+    toast(como.incrusta
+      ? ('📡 Publicación de ' + redPorId(red).nombre + ' incrustada en el Módulo 13')
+      : ('🔗 Se guardó como enlace a ' + como.nombre + '. Para incrustarla, pegue la dirección de la publicación concreta (por ejemplo .../posts/123).'), 6000);
+  }`,
+    'aviso al pegar un enlace de red social'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,
