@@ -1907,6 +1907,74 @@ function aplicar(archivo) {
     'la imagen de Twitter es una dirección web'
   );
 
+  /* --- publicar: que nunca se quede a medias ---------------------------- */
+  /* Si la sesión no está activa, se pide la clave y se publica en cuanto
+     entre. Y si el servidor local está apagado, el aviso dice exactamente
+     qué hacer. */
+  h = reemplazar(
+    h,
+    `  async function publicarAhora() {
+    if (!rolSesion) { toast('🔐 Identifíquese para publicar'); solicitarAccesoCMS(); return; }
+    toast('🚀 Publicando…');`,
+    `  let intencionPublicar = false;
+
+  async function publicarAhora() {
+    /* Sin sesión: se pide la clave y, en cuanto entre, se publica solo.
+       Antes se quedaba con el aviso y había que volver a pulsar. */
+    if (!rolSesion) {
+      intencionPublicar = true;
+      toast('🔐 Identifíquese para publicar');
+      solicitarAccesoCMS();
+      return;
+    }
+    toast('🚀 Publicando… (tarda menos de un minuto)');`,
+    'publicar no se queda a medias esperando la clave'
+  );
+
+  h = reemplazar(
+    h,
+    `    } catch (e) {
+      toast('⚠️ No se pudo publicar desde aquí. Si está en el teléfono o en otro equipo, baje el archivo con «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd. Si está en esta computadora, abra ese mismo PUBLICAR-EL-DIARIO.cmd para encender el servidor y vuelva a pulsar.', 12000);
+    }`,
+    `    } catch (e) {
+      /* El servidor local está apagado o no se alcanza. El aviso dice qué
+         hacer en cada caso, sin dejar a nadie sin salida. */
+      toast('⚠️ No se pudo conectar con la computadora. Si el servidor local está apagado: doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio) y después pulse «Publicar ahora» otra vez. Si está en el teléfono: pulse «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd.', 16000);
+    }`,
+    'aviso claro cuando el servidor local no responde'
+  );
+
+  h = reemplazar(
+    h,
+    `      if (intencionSubirPista) {
+        intencionSubirPista = false;`,
+    `      if (intencionPublicar) {
+        /* Quería publicar: se publica ahora que ya entró la clave. */
+        intencionPublicar = false;
+        setTimeout(function () { publicarAhora(); }, 400);
+        return;
+      }
+      if (intencionSubirPista) {
+        intencionSubirPista = false;`,
+    'publicar en cuanto entra la clave'
+  );
+
+  /* --- si el servidor avisa de un problema, se muestra tal cual ---------- */
+  h = reemplazar(
+    h,
+    `      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'Error desconocido');`,
+    `      const j = await r.json();
+      if (!j.ok) {
+        /* El servidor avisó del problema real (por ejemplo, que la
+           compilación falló o que no se pudo subir a GitHub). Se enseña
+           ese aviso, no un mensaje genérico. */
+        toast('❌ ' + (j.error || 'No se pudo publicar') + ' · Revise la carpeta del proyecto y vuelva a intentar.', 15000);
+        return;
+      }`,
+    'el CMS enseña el error real del servidor'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

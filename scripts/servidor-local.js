@@ -106,7 +106,7 @@ function publicarContenido(estado, opciones) {
 
   if (opc.publicar) {
     try {
-      execFileSync('C:\\Windows\\System32\\cmd.exe', ['/c', 'npm.cmd', 'run', 'build'], { cwd: RAIZ, stdio: 'pipe' });
+      execFileSync('C:\\Windows\\System32\\cmd.exe', ['/c', 'npm.cmd', 'run', 'build'], { cwd: RAIZ, stdio: 'pipe', timeout: 300000 });
       execFileSync(GIT, ['add', '-A'], { cwd: RAIZ, stdio: 'pipe' });
       const est = execFileSync(GIT, ['status', '--porcelain'], { cwd: RAIZ, encoding: 'utf8' });
       if (est.trim()) {
@@ -115,8 +115,13 @@ function publicarContenido(estado, opciones) {
       execFileSync(GIT, ['push', 'origin', 'main'], { cwd: RAIZ, stdio: 'pipe', timeout: 180000 });
       resultado.publicado = true;
     } catch (e) {
+      /* Si la compilación o el envío fallan, NO se puede decir que está
+         publicado: hay que avisar del problema real. */
       resultado.publicado = false;
-      resultado.error = String(e.message || e).slice(0, 300);
+      resultado.ok = false;
+      const salida = String((e && e.stdout) || '') + String((e && e.stderr) || '') + String(e && e.message ? e.message : e);
+      const linea = salida.split('\n').map(function (x) { return x.trim(); }).filter(function (x) { return x.indexOf('✗') === 0 || x.indexOf('ERROR') !== -1; })[0];
+      resultado.error = 'No se pudo publicar: ' + (linea || String(e && e.message ? e.message : e)).slice(0, 300);
     }
   }
   return resultado;
@@ -165,7 +170,8 @@ const servidor = http.createServer((req, res) => {
       let resultado;
       try { resultado = publicarContenido(estado, opciones); }
       catch (e) { resultado = { ok: false, error: String(e.message || e).slice(0, 300) }; }
-      res.writeHead(resultado.ok ? 200 : 500, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
+      const codigo = resultado.ok ? 200 : 500;
+      res.writeHead(codigo, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
       res.end(JSON.stringify(resultado));
     });
     return;

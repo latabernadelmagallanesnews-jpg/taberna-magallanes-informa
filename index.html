@@ -742,6 +742,7 @@
 
 
 
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -4056,9 +4057,18 @@
      proyecto. Evita descargar un archivo de 30 MB (y que el navegador lo
      cancele). Si el portal está abierto con doble clic (file://), no hay
      servidor: se avisa y se cae al método de siempre. */
+  let intencionPublicar = false;
+
   async function publicarAhora() {
-    if (!rolSesion) { toast('🔐 Identifíquese para publicar'); solicitarAccesoCMS(); return; }
-    toast('🚀 Publicando…');
+    /* Sin sesión: se pide la clave y, en cuanto entre, se publica solo.
+       Antes se quedaba con el aviso y había que volver a pulsar. */
+    if (!rolSesion) {
+      intencionPublicar = true;
+      toast('🔐 Identifíquese para publicar');
+      solicitarAccesoCMS();
+      return;
+    }
+    toast('🚀 Publicando… (tarda menos de un minuto)');
     try {
       const r = await fetch('http://localhost:' + (location.port || 8099) + '/publicar', {
         method: 'POST',
@@ -4066,11 +4076,19 @@
         body: JSON.stringify(estadoParaPublicar())
       });
       const j = await r.json();
-      if (!j.ok) throw new Error(j.error || 'Error desconocido');
+      if (!j.ok) {
+        /* El servidor avisó del problema real (por ejemplo, que la
+           compilación falló o que no se pudo subir a GitHub). Se enseña
+           ese aviso, no un mensaje genérico. */
+        toast('❌ ' + (j.error || 'No se pudo publicar') + ' · Revise la carpeta del proyecto y vuelva a intentar.', 15000);
+        return;
+      }
       toast('✅ Publicado. GitHub lo sube en 1-4 minutos.');
       if (j.extraidos) toast('🗂 ' + j.extraidos + ' archivo(s) de audio/video sacados a la carpeta multimedia/');
     } catch (e) {
-      toast('⚠️ No se pudo publicar desde aquí. Si está en el teléfono o en otro equipo, baje el archivo con «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd. Si está en esta computadora, abra ese mismo PUBLICAR-EL-DIARIO.cmd para encender el servidor y vuelva a pulsar.', 12000);
+      /* El servidor local está apagado o no se alcanza. El aviso dice qué
+         hacer en cada caso, sin dejar a nadie sin salida. */
+      toast('⚠️ No se pudo conectar con la computadora. Si el servidor local está apagado: doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio) y después pulse «Publicar ahora» otra vez. Si está en el teléfono: pulse «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd.', 16000);
     }
   }
 
@@ -9874,6 +9892,12 @@
       try { sessionStorage.setItem('taberna_rol_sesion', rol); } catch (err) { }
       aplicarAccesoEditorial();
       cerrarModalAuthCMS();
+      if (intencionPublicar) {
+        /* Quería publicar: se publica ahora que ya entró la clave. */
+        intencionPublicar = false;
+        setTimeout(function () { publicarAhora(); }, 400);
+        return;
+      }
       if (intencionSubirPista) {
         intencionSubirPista = false;
         toast(rol === 'director' ? '👑 Director autorizado · elija las pistas de audio' : '✍️ Periodista autorizado · elija las pistas de audio');
