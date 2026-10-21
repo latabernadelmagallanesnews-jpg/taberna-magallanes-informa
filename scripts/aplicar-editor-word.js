@@ -1022,109 +1022,6 @@ function aplicar(archivo) {
   );
 
   /* --- compartir: imagen + entrada + enlace en TODAS las plataformas ------ */
-  h = reemplazar(
-    h,
-    `  function compartirEnRed(red) {
-    const d = fichaActual || {};
-    const enlace = enlaceFicha(d);
-    const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
-    const texto = aTextoPlano(d.sub || d.texto || titulo).slice(0, 220);
-    const destacada = urlDestacada(d);
-    const abre = function (url) { window.open(url, '_blank', 'noopener,noreferrer,width=820,height=680'); };
-    if (red === 'whatsapp') return abre('https://wa.me/?text=' + encodeURIComponent(titulo + '\\n' + texto + '\\n' + enlace));
-    if (red === 'facebook') return abre('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(enlace) + '&quote=' + encodeURIComponent(titulo));
-    if (red === 'x') return abre('https://twitter.com/intent/tweet?text=' + encodeURIComponent(titulo) + '&url=' + encodeURIComponent(enlace));
-    if (red === 'telegram') return abre('https://t.me/share/url?url=' + encodeURIComponent(enlace) + '&text=' + encodeURIComponent(titulo));
-    if (red === 'linkedin') return abre('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(enlace));
-    if (red === 'pinterest') return abre('https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(enlace) + '&media=' + encodeURIComponent(destacada) + '&description=' + encodeURIComponent(titulo));
-    if (red === 'correo') return (window.location.href = 'mailto:?subject=' + encodeURIComponent(titulo) + '&body=' + encodeURIComponent(texto + '\\n\\n' + enlace));
-    if (red === 'copiar') return copiarTextoAlPortapapeles(enlace, '📋 Enlace copiado. La imagen destacada se adjunta al compartir.');
-    if (red === 'nativo') {
-      if (navigator.share) {
-        navigator.share({ title: titulo, text: texto, url: enlace }).catch(function () { });
-      } else {
-        copiarTextoAlPortapapeles(enlace, '📋 Enlace copiado (su navegador no tiene compartir nativo)');
-      }
-      return;
-    }
-    if (red === 'qr') return mostrarQRSocial(titulo, enlace, 'Escanee para abrir el contenido compartido.');
-    if (red === 'og') return mostrarModalOG(titulo, texto, destacada);
-  }`,
-    `  /* Imagen destacada del contenido que se comparte (con respaldo general). */
-  function imagenDeFicha(d) {
-    return urlDestacada(d) || (portalState.seo && portalState.seo.ogImagen) || '';
-  }
-
-  /* Texto completo para compartir: TÍTULO + ENTRADA + ENLACE (+ imagen). */
-  function textoParaCompartir(d, conImagen) {
-    const t = aTextoPlano((d && d.titulo) || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
-    const sub = aTextoPlano(String((d && (d.sub || d.texto)) || '')).slice(0, 320);
-    const enlace = enlaceFicha(d);
-    const partes = [t, sub, enlace];
-    if (conImagen) {
-      const img = imagenDeFicha(d);
-      if (img) partes.push(img);
-    }
-    return partes.filter(function (x) { return x; }).join('\\n\\n');
-  }
-
-  /* Prepara la imagen como archivo para poder ADJUNTARLA al compartir
-     nativo del teléfono (WhatsApp, Instagram, mensajes...). */
-  async function archivoImagenCompartir(url) {
-    if (!url) return null;
-    try {
-      const resp = await fetch(url, { mode: 'cors', credentials: 'omit' });
-      if (!resp.ok) return null;
-      const blob = await resp.blob();
-      if (!blob || !blob.type || blob.type.indexOf('image/') !== 0) return null;
-      const nombre = 'taberna-' + Date.now() + '.' + (blob.type.split('/')[1] || 'jpg');
-      return new File([blob], nombre, { type: blob.type });
-    } catch (e) { return null; }
-  }
-
-  async function compartirEnRed(red) {
-    const d = fichaActual || {};
-    const enlace = enlaceFicha(d);
-    const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
-    const texto = aTextoPlano(String(d.sub || d.texto || titulo)).slice(0, 320);
-    const destacada = imagenDeFicha(d);
-    const cuerpo = textoParaCompartir(d, true);
-    const abre = function (url) { window.open(url, '_blank', 'noopener,noreferrer,width=820,height=680'); };
-
-    if (red === 'whatsapp') return abre('https://wa.me/?text=' + encodeURIComponent(cuerpo));
-    if (red === 'facebook') return abre('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(enlace) + '&quote=' + encodeURIComponent(cuerpo));
-    if (red === 'x') return abre('https://twitter.com/intent/tweet?text=' + encodeURIComponent(cuerpo) + '&url=' + encodeURIComponent(enlace));
-    if (red === 'telegram') return abre('https://t.me/share/url?url=' + encodeURIComponent(enlace) + '&text=' + encodeURIComponent(cuerpo));
-    if (red === 'linkedin') return abre('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(enlace));
-    if (red === 'pinterest') return abre('https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(enlace) + '&media=' + encodeURIComponent(destacada) + '&description=' + encodeURIComponent(cuerpo));
-    if (red === 'correo') return (window.location.href = 'mailto:?subject=' + encodeURIComponent(titulo) + '&body=' + encodeURIComponent(cuerpo));
-    if (red === 'copiar') return copiarTextoAlPortapapeles(cuerpo, '📋 Título, entrada, enlace e imagen copiados');
-    if (red === 'nativo') {
-      /* En el teléfono se intenta ADJUNTAR la imagen, que es lo que hace
-         que el mensaje salga completo en WhatsApp o Instagram. */
-      if (navigator.share) {
-        if (navigator.canShare && destacada) {
-          try {
-            const archivo = await archivoImagenCompartir(destacada);
-            if (archivo && navigator.canShare({ files: [archivo] })) {
-              await navigator.share({ title: titulo, text: texto, url: enlace, files: [archivo] });
-              return;
-            }
-          } catch (e) { }
-        }
-        try {
-          await navigator.share({ title: titulo, text: cuerpo, url: enlace });
-        } catch (e) { }
-        return;
-      }
-      copiarTextoAlPortapapeles(cuerpo, '📋 Título, entrada y enlace copiados (su navegador no tiene compartir nativo)');
-      return;
-    }
-    if (red === 'qr') return mostrarQRSocial(titulo, enlace, 'Escanee para abrir el contenido compartido.');
-    if (red === 'og') return mostrarModalOG(titulo, texto, destacada);
-  }`,
-    'compartirEnRed()'
-  );
 
   /* --- la ficha también muestra el enlace (no solo el texto) ------------- */
   h = reemplazar(
@@ -1884,6 +1781,122 @@ function aplicar(archivo) {
   );
 
 
+  /* --- compartir: texto limpio, foto y enlace -------------------------- */
+  /* Al compartir, el titular puede venir con formato (editor Word): se
+     manda el texto limpio, nunca las etiquetas. Y las etiquetas Open Graph
+     se escriben en las que existen, para que la vista previa del enlace
+     (WhatsApp, X, Facebook) muestre la foto, el título y el enlace. */
+  h = reemplazar(
+    h,
+    `    const titulo = (portalState.hero && portalState.hero.titulo) || s.ogTitulo || '';`,
+    `    /* El titular puede venir con formato (editor Word): para compartir va
+       el texto limpio, nunca las etiquetas. */
+    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '');`,
+    'el titular del hero se comparte en texto plano'
+  );
+
+  h = reemplazar(
+    h,
+    `    metaContenido('ogTagTitulo', s.ogTitulo);
+    metaContenido('ogTagDesc', s.ogDesc);`,
+    `    metaContenido('ogTagTitulo', aTextoPlano(s.ogTitulo));
+    metaContenido('ogTagDesc', aTextoPlano(s.ogDesc));`,
+    'las etiquetas og:title y og:description en texto plano'
+  );
+
+  h = reemplazar(
+    h,
+    `    metaContenido('twTagTitulo', s.twTitulo);
+    metaContenido('twTagDesc', s.twDesc);`,
+    `    metaContenido('twTagTitulo', aTextoPlano(s.twTitulo));
+    metaContenido('twTagDesc', aTextoPlano(s.twDesc));`,
+    'las etiquetas twitter:* en texto plano'
+  );
+
+  h = reemplazar(
+    h,
+    `    if (titulo) { metaContenido('ogTagTitle', titulo); metaContenido('twitterTagTitle', titulo); }
+    if (desc) { metaContenido('ogTagDesc', desc); metaContenido('twitterTagDesc', desc); }
+    if (img) { metaContenido('ogTagImagen', img); metaContenido('twitterTagImagen', img); }`,
+    `    /* OJO: los nombres de las etiquetas. Antes se escribía en
+       'ogTagTitle' y 'twitterTagTitle', que no existen, y por eso la vista
+       previa del enlace nunca se actualizaba. */
+    if (titulo) { metaContenido('ogTagTitulo', titulo); metaContenido('twTagTitulo', titulo); }
+    if (desc) { metaContenido('ogTagDesc', desc); metaContenido('twTagDesc', desc); }
+    if (img) { metaContenido('ogTagImagen', img); metaContenido('ogTagImagenSegura', img); metaContenido('twTagImagen', img); }`,
+    'las etiquetas Open Graph se escriben en las que existen'
+  );
+
+  h = reemplazar(
+    h,
+    `    const img = urlDestacada(d);
+    const titulo = aTextoPlano((d && d.titulo) || (portalState.seo && portalState.seo.ogTitulo) || '');`,
+    `    const img = imagenParaVistaPrevia(d);
+    const titulo = aTextoPlano((d && d.titulo) || (portalState.seo && portalState.seo.ogTitulo) || '');`,
+    'la foto de la vista previa es una dirección web'
+  );
+
+  h = reemplazar(
+    h,
+    `  /* Imagen destacada del contenido que se comparte (con respaldo general). */
+  function imagenDeFicha(d) {
+    return urlDestacada(d) || (portalState.seo && portalState.seo.ogImagen) || '';
+  }`,
+    `  /* Imagen destacada del contenido que se comparte (con respaldo general). */
+  function imagenDeFicha(d) {
+    return urlDestacada(d) || (portalState.seo && portalState.seo.ogImagen) || '';
+  }
+
+  /* Foto para la vista previa del enlace (WhatsApp, X, Facebook, Telegram).
+     Esos sitios solo enseñan la foto si la dirección es una dirección web
+     (https://...); una imagen incrustada (data:) no se ve. Si la nota no
+     tiene una foto publicada, se usa la del diario. */
+  function imagenParaVistaPrevia(d) {
+    const propia = urlDestacada(d);
+    if (propia && /^https?:\\/\\//i.test(propia)) return propia;
+    const general = String((portalState.seo && portalState.seo.ogImagen) || '');
+    return /^https?:\\/\\//i.test(general) ? general : '';
+  }`,
+    'imagenParaVistaPrevia (foto web para la vista previa)'
+  );
+
+
+  h = reemplazar(
+    h,
+    `          '<b class="cp-titulo">' + esc(titulo) + '</b>' +`,
+    `          '<b class="cp-titulo">' + esc(aTextoPlano(titulo)) + '</b>' +`,
+    'la hoja de compartir muestra el título limpio'
+  );
+
+  h = reemplazar(
+    h,
+    `          '<span class="cp-desc">' + esc(String(fichaActual.sub || fichaActual.texto || '').slice(0, 160)) + '</span>' +`,
+    `          '<span class="cp-desc">' + esc(aTextoPlano(String(fichaActual.sub || fichaActual.texto || '')).slice(0, 160)) + '</span>' +`,
+    'la hoja de compartir muestra la entrada limpia'
+  );
+
+  h = reemplazar(
+    h,
+    `    setTxt('qrModalSubtitulo', 'Escanea para leer: ' + (tema || portalState.hero.titulo));`,
+    `    setTxt('qrModalSubtitulo', 'Escanea para leer: ' + aTextoPlano(tema || portalState.hero.titulo));`,
+    'el subtítulo del QR en texto plano'
+  );
+
+  h = reemplazar(
+    h,
+    `    const texto = '«' + m.texto + '» — ' + (m.autor || 'Fanático') + ' en El Paredón del Fanático · La Taberna del Magallanes News';`,
+    `    const texto = '«' + aTextoPlano(m.texto) + '» — ' + (m.autor || 'Fanático') + ' en El Paredón del Fanático · La Taberna del Magallanes News';`,
+    'el mensaje del Paredón en texto plano'
+  );
+
+  h = reemplazar(
+    h,
+    `    const cuerpo = textoParaCompartir(d, true);`,
+    `    /* En las redes solo van el texto y el enlace: la foto sale en la vista
+       previa del enlace, no como una línea larguísima con su dirección. */
+    const cuerpo = textoParaCompartir(d, red === 'copiar');`,
+    'el mensaje a las redes lleva texto y enlace (la foto va en la vista previa)'
+  );
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

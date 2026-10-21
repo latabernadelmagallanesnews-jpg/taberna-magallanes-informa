@@ -739,6 +739,7 @@
 
 
 
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -3120,17 +3121,19 @@
     metaContenido('seoAutor', s.autor);
     const urlCanonica = urlPublicaPortal();
     setHref('seoCanonica', urlCanonica);
-    metaContenido('ogTagTitulo', s.ogTitulo);
-    metaContenido('ogTagDesc', s.ogDesc);
+    metaContenido('ogTagTitulo', aTextoPlano(s.ogTitulo));
+    metaContenido('ogTagDesc', aTextoPlano(s.ogDesc));
     metaContenido('ogTagImagen', s.ogImagen);
     metaContenido('ogTagImagenSegura', s.ogImagen);
     metaContenido('ogTagUrl', urlCanonica);
-    metaContenido('twTagTitulo', s.twTitulo);
-    metaContenido('twTagDesc', s.twDesc);
+    metaContenido('twTagTitulo', aTextoPlano(s.twTitulo));
+    metaContenido('twTagDesc', aTextoPlano(s.twDesc));
     metaContenido('twTagImagen', s.twImagen);
     // Compartir del hero depende de SEO
     const url = urlCanonica;
-    const titulo = (portalState.hero && portalState.hero.titulo) || s.ogTitulo || '';
+    /* El titular puede venir con formato (editor Word): para compartir va
+       el texto limpio, nunca las etiquetas. */
+    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '');
     setHref('heroShareWa', 'https://api.whatsapp.com/send?text=' + encodeURIComponent(titulo + ' ' + url));
     setHref('heroShareX', 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(titulo) + '&url=' + encodeURIComponent(url));
   }
@@ -3856,7 +3859,7 @@
     mostrarModalOG(h.titulo, h.epigrafe, h.imagen);
   }
   function abrirModalQR(tema) {
-    setTxt('qrModalSubtitulo', 'Escanea para leer: ' + (tema || portalState.hero.titulo));
+    setTxt('qrModalSubtitulo', 'Escanea para leer: ' + aTextoPlano(tema || portalState.hero.titulo));
     const url = urlPublicaPortal();
     const img = document.getElementById('qrGeneradoImg');
     if (img) img.setAttribute('src', 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(url));
@@ -7798,17 +7801,31 @@
 
   /* Actualiza las etiquetas Open Graph con el contenido que se está compartiendo */
   function aplicarMetaCompartida(d) {
-    const img = urlDestacada(d);
+    const img = imagenParaVistaPrevia(d);
     const titulo = aTextoPlano((d && d.titulo) || (portalState.seo && portalState.seo.ogTitulo) || '');
     const desc = aTextoPlano(((d && (d.sub || d.texto)) || (portalState.seo && portalState.seo.ogDesc) || '')).slice(0, 200);
-    if (titulo) { metaContenido('ogTagTitle', titulo); metaContenido('twitterTagTitle', titulo); }
-    if (desc) { metaContenido('ogTagDesc', desc); metaContenido('twitterTagDesc', desc); }
-    if (img) { metaContenido('ogTagImagen', img); metaContenido('twitterTagImagen', img); }
+    /* OJO: los nombres de las etiquetas. Antes se escribía en
+       'ogTagTitle' y 'twitterTagTitle', que no existen, y por eso la vista
+       previa del enlace nunca se actualizaba. */
+    if (titulo) { metaContenido('ogTagTitulo', titulo); metaContenido('twTagTitulo', titulo); }
+    if (desc) { metaContenido('ogTagDesc', desc); metaContenido('twTagDesc', desc); }
+    if (img) { metaContenido('ogTagImagen', img); metaContenido('ogTagImagenSegura', img); metaContenido('twTagImagen', img); }
   }
 
   /* Imagen destacada del contenido que se comparte (con respaldo general). */
   function imagenDeFicha(d) {
     return urlDestacada(d) || (portalState.seo && portalState.seo.ogImagen) || '';
+  }
+
+  /* Foto para la vista previa del enlace (WhatsApp, X, Facebook, Telegram).
+     Esos sitios solo enseñan la foto si la dirección es una dirección web
+     (https://...); una imagen incrustada (data:) no se ve. Si la nota no
+     tiene una foto publicada, se usa la del diario. */
+  function imagenParaVistaPrevia(d) {
+    const propia = urlDestacada(d);
+    if (propia && /^https?:\/\//i.test(propia)) return propia;
+    const general = String((portalState.seo && portalState.seo.ogImagen) || '');
+    return /^https?:\/\//i.test(general) ? general : '';
   }
 
   /* Texto completo para compartir: TÍTULO + ENTRADA + ENLACE (+ imagen). */
@@ -7844,7 +7861,9 @@
     const titulo = aTextoPlano(d.titulo || (portalState.seo && portalState.seo.ogTitulo) || 'La Taberna del Magallanes News');
     const texto = aTextoPlano(String(d.sub || d.texto || titulo)).slice(0, 320);
     const destacada = imagenDeFicha(d);
-    const cuerpo = textoParaCompartir(d, true);
+    /* En las redes solo van el texto y el enlace: la foto sale en la vista
+       previa del enlace, no como una línea larguísima con su dirección. */
+    const cuerpo = textoParaCompartir(d, red === 'copiar');
     const abre = function (url) { window.open(url, '_blank', 'noopener,noreferrer,width=820,height=680'); };
 
     if (red === 'whatsapp') return abre('https://wa.me/?text=' + encodeURIComponent(cuerpo));
@@ -10324,7 +10343,7 @@
     const m = mensajeParedonPorId(id);
     if (!m) return;
     const url = urlPublicaPortal() + '#modulo-18-paredon-fanatico';
-    const texto = '«' + m.texto + '» — ' + (m.autor || 'Fanático') + ' en El Paredón del Fanático · La Taberna del Magallanes News';
+    const texto = '«' + aTextoPlano(m.texto) + '» — ' + (m.autor || 'Fanático') + ' en El Paredón del Fanático · La Taberna del Magallanes News';
     try {
       if (navigator.share) { navigator.share({ title: 'El Paredón del Fanático', text: texto, url: url }); return; }
     } catch (e) { }
@@ -10397,8 +10416,8 @@
         (img ? '<img src="' + esc(img) + '" alt="Imagen destacada">' : '') +
         '<div class="cp-txt">' +
           '<span class="cp-dominio">' + esc(dominioDePortal()) + '</span>' +
-          '<b class="cp-titulo">' + esc(titulo) + '</b>' +
-          '<span class="cp-desc">' + esc(String(fichaActual.sub || fichaActual.texto || '').slice(0, 160)) + '</span>' +
+          '<b class="cp-titulo">' + esc(aTextoPlano(titulo)) + '</b>' +
+          '<span class="cp-desc">' + esc(aTextoPlano(String(fichaActual.sub || fichaActual.texto || '')).slice(0, 160)) + '</span>' +
         '</div>' +
       '</div>' +
       '<div class="compartir-enlace">' +
