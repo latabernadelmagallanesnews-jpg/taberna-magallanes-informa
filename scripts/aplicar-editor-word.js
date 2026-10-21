@@ -1155,15 +1155,6 @@ function aplicar(archivo) {
 
 
   /* --- cada crónica tiene su dirección propia (permalink) ---------------- */
-  h = reemplazar(
-    h,
-    `      clave: 'cronica-' + c.id,
-      modulo: '06-cronica',`,
-    `      clave: 'cronica-' + c.id,
-      url: urlPublicaPortal() + 'cronica.html?c=' + encodeURIComponent(c.id),
-      modulo: '06-cronica',`,
-    'enlace propio de cada crónica'
-  );
 
   h = reemplazar(
     h,
@@ -2332,6 +2323,88 @@ function aplicar(archivo) {
     'guardarSinPerderContenido'
   );
 
+
+  /* --- la foto de la vista previa, con dirección web completa ----------- */
+  /* Una foto del diario (multimedia/imagen-xxx.webp) necesita la dirección
+     completa: los buscadores y las redes sociales no la pueden leer si es
+     una ruta relativa. */
+  h = reemplazar(
+    h,
+    `  function imagenParaVistaPrevia(d) {
+    const propia = urlDestacada(d);
+    if (propia && /^https?:\\/\\//i.test(propia)) return propia;
+    const general = String((portalState.seo && portalState.seo.ogImagen) || '');
+    return /^https?:\\/\\//i.test(general) ? general : '';
+  }`,
+    `  function imagenParaVistaPrevia(d) {
+    const propia = urlDestacada(d);
+    if (propia) {
+      if (/^https?:\\/\\//i.test(propia)) return propia;
+      /* Una foto publicada como archivo del diario: se pone la dirección
+         completa, que es lo que necesitan para poder mostrar la imagen. */
+      if (/^multimedia\\//i.test(propia)) return urlPublicaPortal() + propia;
+    }
+    const general = String((portalState.seo && portalState.seo.ogImagen) || '');
+    return /^https?:\\/\\//i.test(general) ? general : '';
+  }`,
+    'la foto de la vista previa con dirección completa'
+  );
+
+  /* --- los títulos de los archivos subidos: presentables ----------------- */
+  /* Al subir un archivo, el título era el nombre del archivo (a veces un
+     número de WhatsApp o un código de Drive). Ahora es un nombre limpio
+     que la redacción puede cambiar en «Título visible». */
+
+
+  h = reemplazar(
+    h,
+    `      titulo: nombreArchivoMultimedia(url),
+      tipo: tipo,`,
+    `      titulo: tituloPresentable(nombreArchivoMultimedia(url), tipo),
+      tipo: tipo,`,
+    'el título al pegar un enlace'
+  );
+
+  /* --- la tarjeta muestra el título, no el nombre del archivo ------------- */
+  h = reemplazar(
+    h,
+    `        '<span class="gal-nombre">' + esc(nombre) + ' · ' + esc(item.peso ? formatearPeso(item.peso) : 'enlace externo') + '</span>' +`,
+    `        '<span class="gal-nombre">' + esc(item.peso ? formatearPeso(item.peso) : (tipo === 'imagen' ? 'Fotografía' : 'Enlace externo')) + '</span>' +`,
+    'la tarjeta no muestra el nombre del archivo'
+  );
+
+  /* --- los videos de redes sociales (TikTok) también se incrustan --------- */
+  h = reemplazar(
+    h,
+    `      if (esEnlaceYouTube(item.url)) {
+        const yt = idYouTube(item.url);
+        visual = '<div class="gal-visual"><iframe src="' + esc(yt ? 'https://www.youtube.com/embed/' + yt : 'https://player.vimeo.com/video/' + idVimeo(item.url)) + '" allowfullscreen style="width:100%;height:100%;border:0;"></iframe></div>';
+      } else {`,
+    `      const srcVideo = urlReproductorExterno(item.url);
+      if (srcVideo) {
+        visual = '<div class="gal-visual"><iframe src="' + esc(srcVideo) + '" allowfullscreen allow="encrypted-media; picture-in-picture" loading="lazy" title="' + esc(item.titulo || 'Video') + '" style="width:100%;height:100%;border:0;"></iframe></div>';
+      } else {`,
+    'los videos de redes sociales se incrustan (TikTok incluido)'
+  );
+
+
+  /* --- al compartir, cada nota con su propia página ------------------- */
+  /* Las redes sociales leen la página y toman de ella el título, la
+     entrada y la foto. Con una sola página para todas las notas, lo que
+     salía era el titular genérico del diario. */
+  h = reemplazar(
+    h,
+    `      url: urlPublicaPortal() + 'cronica.html?c=' + encodeURIComponent(c.id),`,
+    `      url: urlPublicaPortal() + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html',`,
+    'la página propia de la nota'
+  );
+
+  h = reemplazar(
+    h,
+    `      url: urlPublicaPortal() + 'cronica.html?c=' + encodeURIComponent(c.id),`,
+    `      url: urlPublicaPortal() + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html',`,
+    'enlace propio de cada crónica'
+  );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(

@@ -81,7 +81,7 @@ if (m) {
     /* Las notas vacías no se“Rastrean”: no hay nada que indexar. */
     if (!titulo || /^nueva cr[oó]nica$/i.test(titulo)) return;
     lineas.push('  <url>');
-    lineas.push('    <loc>' + BASE + 'cronica.html?c=' + encodeURIComponent(c.id) + '</loc>');
+    lineas.push('    <loc>' + BASE + 'notas/' + String(c.id).replace(/[^\w-]+/g, '') + '.html</loc>');
     lineas.push('    <lastmod>' + (c.fecha || hoy) + '</lastmod>');
     lineas.push('    <changefreq>weekly</changefreq>');
     lineas.push('    <priority>0.8</priority>');

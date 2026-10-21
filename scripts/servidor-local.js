@@ -61,15 +61,23 @@ function extraerMultimediaPesada(html, estado) {
   const visitar = function (valor) {
     if (typeof valor === 'string') {
       if (valor.indexOf('data:') !== 0) return valor;
-      const mm = /^data:(audio|video)\/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=]+)$/i.exec(valor);
+      const mm = /^data:(audio|video|image)\/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=]+)$/i.exec(valor);
       if (!mm) return valor;
       const tipo = mm[1], ext = mm[2], b64 = mm[3];
-      if (b64.length < UMBRAL_MEDIA) return valor;
+      /* Las fotos siempre salen a archivo (aunque sean pequeñas): así
+         tienen dirección web y se pueden compartir en WhatsApp y en
+         las redes. Los audios y videos solo si son pesados. */
+      const pesado = tipo !== 'image';
+      if (!pesado && b64.length < 4000) return valor;
+      if (pesado && b64.length < UMBRAL_MEDIA) return valor;
       const hash = crypto.createHash('sha1').update(b64.slice(0, 4096)).digest('hex').slice(0, 12);
       const clave = tipo + ext + '-' + hash;
       let nombre = usados[clave];
       if (!nombre) {
-        nombre = tipo + '-' + hash + '.' + (ext === 'mpeg' ? 'mp3' : ext);
+        const extension = (tipo === 'image')
+          ? ({ 'jpeg': 'jpg', 'jpg': 'jpg', 'png': 'png', 'webp': 'webp', 'gif': 'gif', 'svg+xml': 'svg', 'avif': 'avif' }[ext] || 'jpg')
+          : (ext === 'mpeg' ? 'mp3' : ext);
+        nombre = tipo + '-' + hash + '.' + extension;
         usados[clave] = nombre;
         try {
           if (!fs.existsSync(carpeta)) fs.mkdirSync(carpeta, { recursive: true });

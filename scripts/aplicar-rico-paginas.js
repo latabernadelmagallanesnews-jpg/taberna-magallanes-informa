@@ -132,6 +132,26 @@ const CAMBIOS = [
     `<link rel="canonical" id="canonicoNota" href="">
 </head>`],
 
+  ['cronica.html',
+    `function idDeNota() {
+  try {
+    var q = (location.search || '').split('c=')[1];
+    if (!q) return '';
+    return decodeURIComponent(q.split('&')[0] || '').trim();
+  } catch (e) { return ''; }
+}`,
+    `function idDeNota() {
+  try {
+    /* Las notas con pagina propia (notas/c1.html) llevan su
+       identificador escrito dentro: asi, al compartir, salen SU
+       titular, SU entrada y SU foto. */
+    if (window.__NOTA_ID__) return String(window.__NOTA_ID__);
+    var q = (location.search || '').split('c=')[1];
+    if (!q) return '';
+    return decodeURIComponent(q.split('&')[0] || '').trim();
+  } catch (e) { return ''; }
+}`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
@@ -207,11 +227,14 @@ function aplicar(archivo) {
        parche entraba dos veces y duplicaba el bloque. */
     if (h.indexOf(nuevo) !== -1) return;
     if (h.indexOf(nuevo.replace(/\n/g, '\r\n')) !== -1) return;
-    /* Y si el bloque empieza por una etiqueta propia (los que se insertan
-       en la cabeza pueden quedar intercalados entre sí), basta con que esa
-       etiqueta esté para saber que el parche ya se aplicó. */
-    const primera = String(nuevo).split('\n')[0];
-    if (primera && primera.length > 20 && h.indexOf(primera) !== -1) return;
+    /* Y si el parche inserta una etiqueta en la cabeza (los bloques se
+       intercalan entre sí), basta con que esa etiqueta esté para saber que
+       el parche ya se aplicó. Solo para esos: en los demás, la primera
+       línea puede ser una función que ya exista por otro motivo. */
+    if (String(viejo).trim() === '</head>') {
+      const primera = String(nuevo).split('\n')[0];
+      if (primera && primera.length > 20 && h.indexOf(primera) !== -1) return;
+    }
     if (h.indexOf(viejo) === -1) {
       console.warn('  ⚠ No se encontró en ' + archivo + ': ' + viejo.slice(0, 60) + '…');
       return;
