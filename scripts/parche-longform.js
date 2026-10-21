@@ -127,14 +127,14 @@ const CSS_TITULARES = `/*__CSS_TITULARES_INICIO__*/
        clic en el CMS y se ven igual en la portada y en la nota larga.
        ================================================================ */
     .tit-clasico { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; letter-spacing: -0.015em; color: #0b2240; }
-    .tit-versalitas { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.055em; font-size: 0.86em; line-height: 1.3; color: #0b2240; }
+    .tit-versalitas { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.055em; line-height: 1.22; color: #0b2240; }
     .tit-caja-alta { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.08; color: #0b2240; }
     .tit-centrado { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-align: center; text-wrap: balance; color: #0b2240; }
     .tit-reglas { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-align: center; text-wrap: balance; color: #0b2240; border-top: 2px solid #0b2240; border-bottom: 2px solid #0b2240; padding: 0.45em 0; margin: 0.15em 0; }
     .tit-sans { font-family: 'Inter', Helvetica, Arial, sans-serif; font-weight: 800; letter-spacing: -0.02em; color: #0b2240; }
     .tit-condensado { font-family: 'Inter', Helvetica, Arial, sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.005em; line-height: 1.1; color: #0b2240; }
     .tit-italica { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; color: #3f2f14; }
-    .tit-antetitulo { font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.17em; font-size: 0.6em; color: #8c1d2f; display: block; margin-bottom: 0.4em; line-height: 1.4; }
+    .tit-antetitulo { font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.17em; font-size: 0.74em; color: #8c1d2f; display: block; margin-bottom: 0.4em; line-height: 1.4; }
     .tit-bajada { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-weight: 400; color: #6b5b2e; }
     .tit-subrayado { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #0b2240; box-shadow: inset 0 -0.42em 0 #f4e6bd; }
     .tit-rojo { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #8c1d2f; }

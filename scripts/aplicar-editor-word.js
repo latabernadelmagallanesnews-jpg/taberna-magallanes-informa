@@ -315,7 +315,15 @@ const MOTOR_JS = MARCA_MOTOR + `  /* ===========================================
 let EDITOR_JS = MARCA_EDITOR + `  /* ---------------------------------------------------------------------
      EDITOR ESTILO WORD · barra de formato del CMS
      --------------------------------------------------------------------- */
-  function htmlBarraRico() {
+  /* ¿El campo es una bajada (subtítulo, entradilla)? Entonces la galería
+     es la de bajada y no la de titular. */
+  function esCampoDeBajada(ruta) {
+    return /subtitulo|bajada|entradilla|lead|resumen|deck/i.test(String(ruta || ''));
+  }
+
+  function htmlBarraRico(ruta) {
+    const esBajada = esCampoDeBajada(ruta);
+    const estilos = esBajada ? RICO_ESTILOS_BAJADA : RICO_ESTILOS_TITULAR;
     return '<div class="cms-rico-toolbar">' +
       '<div class="cms-rico-grupo">' +
         '<button type="button" class="cms-rico-btn" data-rico-cmd="bold" title="Negrita (Ctrl+B)"><b>N</b></button>' +
@@ -363,8 +371,8 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
         '<button type="button" class="cms-rico-btn" data-rico-cmd="redo" title="Rehacer (Ctrl+Y)">&#8631;</button>' +
       '</div>' +
       '<div class="cms-rico-grupo cms-rico-grupo-estilos">' +
-        '<span class="cms-rico-etiqueta">Estilos de titular</span>' +
-        RICO_ESTILOS_TITULAR.map(function (e) {
+        '<span class="cms-rico-etiqueta">' + (esBajada ? 'Estilos de bajada' : 'Estilos de titular') + '</span>' +
+        estilos.map(function (e) {
           return '<button type="button" class="cms-rico-btn cms-rico-estilo" data-rico-accion="estilo" data-rico-estilo="' + e.clave + '" title="' + esc(e.nombre) + '"><span class="' + e.clave + '">Aa</span></button>';
         }).join('') +
         '<button type="button" class="cms-rico-btn cms-rico-estilo" data-rico-accion="estilo" data-rico-estilo="" title="Quitar el estilo de titular"><span>&#10005;</span></button>' +
@@ -389,7 +397,7 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
     return '<div class="cms-campo">' + etiqueta +
       '<span class="cms-rico-marcador">✍️ Editor de texto (estilo Word)</span>' +
       '<div class="cms-rico" data-rico-campo="' + esc(ruta) + '">' +
-        htmlBarraRico() +
+        htmlBarraRico(ruta) +
         '<div class="cms-rico-editor" contenteditable="true" spellcheck="true" data-path="' + esc(ruta) + '" data-tipo="rico" data-marcador="Escriba o pegue aquí el texto…">' + html + '</div>' +
         '<div class="cms-rico-pie">' +
           '<button type="button" class="cms-rico-accion" data-rico-accion="alternar">✏️ Editar como texto simple</button>' +
@@ -462,10 +470,37 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
     { clave: 'tit-condensado', nombre: 'Titular condensado en mayúsculas' },
     { clave: 'tit-italica', nombre: 'Titular en itálica' },
     { clave: 'tit-antetitulo', nombre: 'Antetítulo (encabezado del titular)' },
-    { clave: 'tit-bajada', nombre: 'Bajada (subtítulo en cursiva)' },
     { clave: 'tit-subrayado', nombre: 'Titular con marcador' },
     { clave: 'tit-rojo', nombre: 'Titular en rojo de portada' }
   ];
+
+  /* Los estilos de la bajada (el subtítulo que va debajo del titular).
+     No están en la galería del titular: un titular nunca debe quedar
+     con aspecto de subtítulo. */
+  const RICO_ESTILOS_BAJADA = [
+    { clave: 'tit-bajada', nombre: 'Bajada en cursiva (estilo diario)' },
+    { clave: 'tit-versalitas', nombre: 'Bajada en versalitas' },
+    { clave: 'tit-centrado', nombre: 'Bajada centrada' },
+    { clave: 'tit-reglas', nombre: 'Bajada con reglas' },
+    { clave: 'tit-sans', nombre: 'Bajada sin serifa' },
+    { clave: 'tit-subrayado', nombre: 'Bajada con marcador' }
+  ];
+
+  /* Quita los estilos de la galería de un trozo de texto: al elegir otro
+     estilo, este sustituye al anterior en vez de acumularse. */
+  function desenvolverEstilosDeGaleria(nodo) {
+    if (!nodo || !nodo.querySelectorAll) return;
+    Array.prototype.slice.call(nodo.querySelectorAll('span[class]')).forEach(function (sp) {
+      const esEstilo = String(sp.className || '').split(/\\s+/).some(function (c) {
+        return RICO_ESTILOS_TITULAR.some(function (e) { return e.clave === c; }) ||
+               RICO_ESTILOS_BAJADA.some(function (e) { return e.clave === c; });
+      });
+      if (!esEstilo) return;
+      const padre = sp.parentNode;
+      while (sp.firstChild) padre.insertBefore(sp.firstChild, sp);
+      padre.removeChild(sp);
+    });
+  }
 
   function aplicarEstiloTitular(editor, clase) {
     if (!editor) return;
@@ -482,6 +517,8 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
           /* Si la selección no traía texto (el campo está tapado o el
              navegador no la reconoce), se aplica al texto entero. */
           if (trozo && String(trozo.textContent || '').trim()) {
+            /* Primero se quita el estilo anterior (si lo había). */
+            desenvolverEstilosDeGaleria(trozo);
             const span = document.createElement('span');
             span.className = clase;
             span.appendChild(trozo);
@@ -492,6 +529,7 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
       }
       if (!puesto) {
         /* Sin selección útil: se aplica al texto entero del campo. */
+        desenvolverEstilosDeGaleria(editor);
         editor.innerHTML = '<span class="' + clase + '">' + editor.innerHTML + '</span>';
       }
     } else {
@@ -683,7 +721,7 @@ EDITOR_JS = reemplazar(
 EDITOR_JS = reemplazar(
   EDITOR_JS,
   `'<span class="cms-rico-nota">Puede escribir con formato (negrita, títulos, listas, enlaces, colores). Lo que escriba aquí se publica con ese formato. Con «Editar como texto simple» vuelve a texto plano.</span>'`,
-  `'<span class="cms-rico-nota">Puede escribir con formato (negrita, títulos, listas, enlaces, colores). Lo que escriba aquí se publica con ese formato. Con «Editar como texto simple» vuelve a texto plano. En la barra, «Estilos de titular» aplica al texto elegido el estilo que usted elija (si no ha marcado nada, al campo entero); se ve igual en la portada y en la nota larga.</span>'`,
+  `'<span class="cms-rico-nota">Puede escribir con formato (negrita, títulos, listas, enlaces, colores). Lo que escriba aquí se publica con ese formato. Con «Editar como texto simple» vuelve a texto plano. En la barra, «Estilos de titular» aplica al texto elegido el estilo que usted elija (si no ha marcado nada, al campo entero): son formas de titular grande, nunca de subtítulo. En el campo del subtítulo, la galería cambia a «Estilos de bajada». El estilo se ve igual en la portada y en la nota larga.</span>'`,
   'ayuda de la galería de titulares'
 );
 
