@@ -158,6 +158,13 @@ const CAMBIOS = [
      es la que se comparte y la que ven los buscadores. */
   var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
 
+  ['cronica.html',
+    `  /* La dirección oficial de la nota es su página propia (notas/c1.html):
+     es la que se comparte y la que ven los buscadores. Se arma desde la
+     raíz del diario, no desde la carpeta de la página, para que no se
+     repita el notas/notas. */
+  var url = location.origin + location.pathname.replace(/[^/]*$/, '').replace(/notas\\/$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
