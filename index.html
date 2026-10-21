@@ -796,6 +796,7 @@
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
 /*__CSS_PROPIO_FIN__*/
+
 /*__LONGFORM_INICIO__*/
     /* ================================================================
        NIVEL 1 · TARJETA / TEASER DE PORTADA
@@ -3244,7 +3245,7 @@
       /* NIVEL 1 · tarjeta/teaser: cinta de categoría, titular, subtítulo,
          entrada y llamada a la acción. Sin cajas ni bordes. */
       return '<article class="teaser" id="card-cronica-' + esc(c.id) + '">' +
-        (img ? '<a class="teaser-imagen" href="cronica.html?c=' + encodeURIComponent(c.id) + '" tabindex="-1" aria-hidden="true"><img src="' + esc(img) + '" alt="" loading="lazy"></a>' : '') +
+        (img ? '<a class="teaser-imagen" href="cronica.html?c=' + encodeURIComponent(c.id) + '" tabindex="-1" aria-hidden="true"><img src="' + esc(img) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" decoding="async"></a>' : '') +
         '<p class="teaser-cintillo">' +
           '<span class="teaser-categoria">' + esc(c.badge || 'Crónica') + '</span>' +
           '<span class="teaser-numero">Nota ' + (i + 1) + ' de ' + visibles.length + (c.video ? ' · video' : '') + '</span>' +

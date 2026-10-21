@@ -111,7 +111,12 @@ const TARJETA_NUEVA = `      /* NIVEL 1 · tarjeta/teaser: cinta de categoría, 
         htmlAudioDeModulo(c, '🎧 Audio de la crónica') +
       '</article>';`;
 
-/* -------------------------------------------------------------------------- */
+  /* La foto de la tarjeta se carga de inmediato: con el carrusel rotando,
+     la carga diferida dejaba el espacio en blanco hasta que le tocaba. */
+  const FOTO_VIEJA = `<img src="' + esc(img) + '" alt="" loading="lazy"></a>' : '') +`;
+  const FOTO_NUEVA = `<img src="' + esc(img) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" decoding="async"></a>' : '') +`;
+
+  /* -------------------------------------------------------------------------- */
 /* NIVEL 2 · CSS de la página de destino (publicar/cronica.html)              */
 /* -------------------------------------------------------------------------- */
 
@@ -288,6 +293,7 @@ OBJETIVOS.forEach(function (archivo) {
   const antes = h;
   try {
     h = reemplazar(h, TARJETA_VIEJA, TARJETA_NUEVA, 'tarjeta del muro');
+    h = reemplazar(h, FOTO_VIEJA, FOTO_NUEVA, 'carga inmediata de la foto de la tarjeta');
     h = instalarCssLongform(h);
   } catch (err) {
     console.error('✗ ' + path.basename(archivo) + ': ' + err.message);
