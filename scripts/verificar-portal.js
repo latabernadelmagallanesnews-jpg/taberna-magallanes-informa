@@ -77,7 +77,7 @@ const pubH = fs.readFileSync(path.join(RAIZ, 'publicar', 'index.html'), 'utf8');
 const ediH = fs.readFileSync(path.join(RAIZ, 'editor', 'index.html'), 'utf8');
 if (raizH === pubH) ok('la raíz y publicar/ son idénticas (GitHub Pages sirve lo mismo en ambos modos)');
 else ko('la raíz y publicar/ difieren: la raíz debe ser una copia de publicar/');
-if (ediH === pubH) ok('la copia de trabajo y la publicada coinciden');
+if (ediH === pubH) ok('la copia de trabajo y la publicada son idénticas');
 else {
   const la = ediH.split('\n'), lb = pubH.split('\n');
   let difs = 0;
@@ -164,6 +164,23 @@ console.log('\n=== contenido con formato ===');
   else if (usos < 10) ko(par[0] + ': solo ' + usos + ' campos usan el ayudante (deberían ser más)');
   else ok(par[0] + ': ' + usos + ' campos con formato se maquetan bien');
 });
+
+/* La compresión de imágenes debe estar activa: sin ella, subir una foto de
+   4 MB produce un HTML de 30 MB que tarda una eternidad en cargar. */
+console.log('\n=== optimización de imágenes ===');
+[['editor/index.html', 'copia de trabajo'], ['publicar/index.html', 'publicado'], ['index.html', 'raíz']].forEach((par) => {
+  const f = path.join(RAIZ, par[0]);
+  if (!fs.existsSync(f)) return;
+  const h = fs.readFileSync(f, 'utf8');
+  const comprimir = h.indexOf('function comprimirImagenDataUrl') > -1;
+  const alSubir = h.indexOf('comprimirImagenDataUrl(dataUrl)') > -1;
+  const alPublicar = h.indexOf('optimizarImagenesDelEstado()') > -1;
+  if (!comprimir) ko(par[0] + ': falta la compresión de imágenes');
+  else if (!alSubir) ko(par[0] + ': las imágenes no se comprimen al subir');
+  else if (!alPublicar) ko(par[0] + ': las imágenes no se optimizan al publicar');
+  else ok(par[0] + ': las imágenes se comprimen al subir y al publicar');
+});
+
 if (pubH.indexOf('href="redaccion-cms.html"') !== -1) ok('el pie del portal enlaza a la puerta de redacción');
 else ko('el pie del portal no enlaza a la puerta de redacción');
 if (pubH.indexOf('copiarEnlaceItem') !== -1) ok('el CMS permite copiar el enlace de cada elemento');

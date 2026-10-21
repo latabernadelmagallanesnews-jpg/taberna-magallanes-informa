@@ -39,15 +39,27 @@ let copiados = 0, sinCambio = 0;
 
 ARCHIVOS.forEach(function (nombre) {
   const origen = path.join(PUBLICAR, nombre);
-  const destino = path.join(RAIZ, nombre);
   if (!fs.existsSync(origen)) {
     console.warn('  ⚠ no existe en publicar/: ' + nombre);
     return;
   }
   const datos = fs.readFileSync(origen);
-  if (fs.existsSync(destino) && fs.readFileSync(destino).equals(datos)) { sinCambio++; return; }
-  fs.writeFileSync(destino, datos);
-  copiados++;
+
+  /* La raíz del repositorio: es lo que sirve GitHub Pages. */
+  const destinoRaiz = path.join(RAIZ, nombre);
+  if (fs.existsSync(destinoRaiz) && fs.readFileSync(destinoRaiz).equals(datos)) { sinCambio++; } else {
+    fs.writeFileSync(destinoRaiz, datos);
+    copiados++;
+  }
+
+  /* La copia de trabajo: idéntica a la publicada. El contenido que edita la
+     redacción vive en el navegador (IndexedDB), así que el archivo puede ser
+     el mismo y así no se desincronizan nunca. */
+  const destinoEditor = path.join(RAIZ, 'editor', nombre);
+  if (fs.existsSync(destinoEditor) && fs.readFileSync(destinoEditor).equals(datos)) { sinCambio++; } else {
+    fs.writeFileSync(destinoEditor, datos);
+    copiados++;
+  }
 });
 
-console.log('✓ raíz del repositorio sincronizada con publicar/ (' + copiados + ' copiados, ' + sinCambio + ' sin cambios).');
+console.log('✓ raíz y copia de trabajo sincronizadas con publicar/ (' + copiados + ' copiados, ' + sinCambio + ' sin cambios).');

@@ -731,6 +731,9 @@
 
 
 
+
+
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -793,25 +796,6 @@
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
 /*__CSS_PROPIO_FIN__*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*__LONGFORM_INICIO__*/
     /* ================================================================
@@ -4005,6 +3989,15 @@
       const patron = /(<script type="application\/json" id="estadoEmbebido">)[\s\S]*?(<\/script>)/;
       if (!patron.test(html)) { toast('⚠️ No se encontró el bloque de contenido incrustado en este archivo'); return; }
 
+      /* Optimizar las imágenes antes de publicar. */
+      try {
+        const opt = await optimizarImagenesDelEstado();
+        if (opt && opt.procesadas) {
+          toast('🧹 ' + opt.procesadas + ' imagen(es) optimizadas: ' + formatearPeso(opt.antes) + ' → ' + formatearPeso(opt.despues));
+          await ALMACEN.guardar(portalState);
+        }
+      } catch (e) { }
+
       const json = JSON.stringify(estadoParaPublicar())
         .replace(/<\//g, '<\\/')
         .replace(/\u2028/g, '\\u2028')
@@ -5860,7 +5853,19 @@
     if (!path || !archivo) return;
     if (archivo.size > 45 * 1024 * 1024) toast('⚠️ Archivo muy grande (' + formatearPeso(archivo.size) + '): se recomienda menos de 45 MB');
     try {
-      const dataUrl = await leerArchivoComoDataURL(archivo);
+      let dataUrl = await leerArchivoComoDataURL(archivo);
+      if (dataUrl && dataUrl.indexOf('data:image/') === 0) {
+        if (dataUrl.indexOf('data:image/gif') === 0) {
+          /* Un GIF animado no se puede recomprimir sin perder la animación. */
+          toast('⚠️ GIF de ' + formatearPeso(dataUrl.length) + ': los GIF animados pesan mucho. Súbalo como video MP4 o por enlace (Drive / YouTube).');
+        } else {
+          const comprimida = await comprimirImagenDataUrl(dataUrl);
+          if (comprimida.length < dataUrl.length) {
+            toast('🧹 Imagen optimizada: ' + formatearPeso(dataUrl.length) + ' → ' + formatearPeso(comprimida.length));
+            dataUrl = comprimida;
+          }
+        }
+      }
       asignarRuta(portalState, path, dataUrl);
       renderizarTodo();
       persistirEstadoPortal(true);
@@ -6013,6 +6018,73 @@
       if (!archivo) return;
       await manejarArchivoParaPath(zona.getAttribute('data-droppath'), zona.getAttribute('data-clase') || 'documento', archivo);
     });
+  }
+
+  /* Reduce el peso de una imagen incrustada: la reescala a un ancho máximo
+     y la vuelve a codificar en JPEG (o WebP si el navegador lo soporta).
+     Sin esto, una foto de 4 MB incrustada weighs 5,5 MB en el HTML. */
+  const ANCHO_MAXIMO_IMAGEN = 1600;
+  const CALIDAD_IMAGEN = 0.82;
+
+  function comprimirImagenDataUrl(dataUrl, maxAncho, calidad) {
+    return new Promise(function (res) {
+      const url = String(dataUrl || '');
+      if (url.indexOf('data:image/') !== 0) return res(url);
+      const limite = maxAncho || ANCHO_MAXIMO_IMAGEN;
+      const img = new Image();
+      img.onload = function () {
+        try {
+          const escala = Math.min(1, limite / (img.naturalWidth || limite));
+          const w = Math.max(1, Math.round((img.naturalWidth || limite) * escala));
+          const h = Math.max(1, Math.round((img.naturalHeight || limite) * escala));
+          const lienzo = document.createElement('canvas');
+          lienzo.width = w; lienzo.height = h;
+          const ctx = lienzo.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          const webp = lienzo.toDataURL('image/webp', calidad || CALIDAD_IMAGEN);
+          const jpg = lienzo.toDataURL('image/jpeg', calidad || CALIDAD_IMAGEN);
+          const mejor = (webp && webp.length && webp.length < jpg.length) ? webp : jpg;
+          /* Si comprimir no ayuda (o el original es un GIF animado, que el
+             lienzo no puede reproducir), se conserva el original. */
+          if (!mejor || mejor.length >= url.length) return res(url);
+          res(mejor);
+        } catch (e) { res(url); }
+      };
+      img.onerror = function () { res(url); };
+      img.src = url;
+    });
+  }
+
+  /* Recorre el estado y comprime todas las imágenes incrustadas. */
+  async function optimizarImagenesDelEstado() {
+    let procesadas = 0, antes = 0, despues = 0;
+    const visitar = async function (valor) {
+      if (typeof valor === 'string') return valor;
+      if (Array.isArray(valor)) {
+        for (let i = 0; i < valor.length; i++) valor[i] = await visitar(valor[i]);
+        return valor;
+      }
+      if (valor && typeof valor === 'object') {
+        const claves = Object.keys(valor);
+        for (let i = 0; i < claves.length; i++) {
+          const k = claves[i];
+          if (typeof valor[k] === 'string' && valor[k].indexOf('data:image/') === 0) {
+            antes += valor[k].length;
+            const optimizada = await comprimirImagenDataUrl(valor[k]);
+            if (optimizada.length < valor[k].length) { despues += optimizada.length; procesadas++; }
+            else despues += valor[k].length;
+            valor[k] = optimizada;
+          } else {
+            valor[k] = await visitar(valor[k]);
+          }
+        }
+      }
+      return valor;
+    };
+    await visitar(portalState);
+    return { procesadas: procesadas, antes: antes, despues: despues };
   }
 
   function leerArchivoComoDataURL(archivo) {

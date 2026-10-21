@@ -26,12 +26,22 @@ const RAIZ = path.resolve(__dirname, '..');
 const DESTINO = path.join(RAIZ, 'publicar', 'index.html');
 
 /* Carpetas donde el navegador deja las descargas. */
+/* Carpetas donde el navegador deja las descargas. Se mira también un nivel
+   hacia dentro, porque el navegador a veces crea una carpeta con el nombre
+   del sitio donde descarga el archivo. */
 function carpetasDeDescargas() {
   const lista = [];
   const perfil = process.env.USERPROFILE || os.homedir();
   ['Downloads', 'Descargas', 'Desktop', 'Escritorio', 'Documentos', 'Documents'].forEach(function (d) {
     const p = path.join(perfil, d);
-    try { if (fs.existsSync(p) && fs.statSync(p).isDirectory()) lista.push(p); } catch (e) { }
+    try {
+      if (!fs.existsSync(p) || !fs.statSync(p).isDirectory()) return;
+      lista.push(p);
+      fs.readdirSync(p).forEach(function (sub) {
+        const sp = path.join(p, sub);
+        try { if (fs.statSync(sp).isDirectory()) lista.push(sp); } catch (e) { }
+      });
+    } catch (e) { }
   });
   return lista;
 }
@@ -52,31 +62,49 @@ function cuantoContenido(estado) {
   (estado.cronicas || []).forEach(function (c) {
     if (c && (c.imagen || c.cuerpo || c.titulo)) n++;
   });
-  (estado.galerias || []).forEach(function () { n++; });
+  const gal = estado.galerias || {};
+  Object.keys(gal).forEach(function (k) {
+    const piezas = gal[k] || [];
+    n += Array.isArray(piezas) ? piezas.length : 0;
+  });
   ['hero', 'footer', 'cabecera', 'seo', 'circuloVip', 'paredon', 'whatsapp'].forEach(function (k) {
     if (estado[k]) n++;
   });
   return n;
 }
 
+/* Busca la descarga más reciente que SEA una copia con contenido.
+   Se descartan los archivos que están dentro del propio proyecto (el index.html
+   del portal no es una descarga) y los que no traen contenido. */
 function buscarReciente() {
-  let mejor = null;
+  const candidatos = [];
   const ahora = Date.now();
+  const raiz = path.resolve(RAIZ);
+
   carpetasDeDescargas().forEach(function (dir) {
     let nombres = [];
     try { nombres = fs.readdirSync(dir); } catch (e) { return; }
     nombres.forEach(function (n) {
+      /* El navegador descarga como "index.html" o "index (2).html". */
       if (!/^index/i.test(n)) return;
       if (!/\.html?$/i.test(n)) return;
       const p = path.join(dir, n);
       try {
         const st = fs.statSync(p);
         if (ahora - st.mtimeMs > 24 * 3600 * 1000) return;   // solo del último día
-        if (!mejor || st.mtimeMs > mejor.mtime) mejor = { ruta: p, mtime: st.mtimeMs };
+        /* Los archivos del propio proyecto no son descargas. */
+        if (path.resolve(p).startsWith(raiz)) return;
+        candidatos.push({ ruta: p, mtime: st.mtimeMs });
       } catch (e) { }
     });
   });
-  return mejor;
+
+  candidatos.sort(function (a, b) { return b.mtime - a.mtime; });
+  for (let i = 0; i < candidatos.length; i++) {
+    const estado = leerEstado(fs.readFileSync(candidatos[i].ruta, 'utf8'));
+    if (estado && cuantoContenido(estado) >= 2) return candidatos[i];
+  }
+  return candidatos[0] || null;
 }
 
 /* -------------------------------------------------------------------------- */

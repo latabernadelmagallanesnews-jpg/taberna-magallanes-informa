@@ -78,7 +78,7 @@ function instalarCss(texto, css) {
         const q0 = region.indexOf(finPropio, p0);
         if (q0 !== -1) region = region.slice(0, p0) + region.slice(q0 + finPropio.length);
       }
-      conservado = region;
+      conservado = region.replace(/^\s+/, '').replace(/\s+$/, '');
     }
   }
 
@@ -87,14 +87,17 @@ function instalarCss(texto, css) {
   while (i !== -1) {
     const j = h.indexOf(fin, i);
     if (j === -1) break;
-    h = h.slice(0, i) + h.slice(j + fin.length);
+    /* Se come también el salto de línea que sigue a la marca, para que el
+       resultado sea idéntico al original y no se acumulen líneas en blanco. */
+    h = h.slice(0, i) + h.slice(j + fin.length).replace(/^\n/, '');
     i = h.indexOf(ini);
   }
 
   /* 3 · Reinsertar: nuestro CSS y lo que se conserva. */
   const p = h.indexOf('</style>');
   if (p === -1) throw new Error('No se encontró </style>');
-  return h.slice(0, p) + ini + css + conservado + fin + '\n' + h.slice(p);
+  const bloque = ini + css + (conservado ? conservado + '\n' : '') + fin;
+  return h.slice(0, p) + bloque + '\n' + h.slice(p);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1308,6 +1311,148 @@ function aplicar(archivo) {
   CON_FORMATO.forEach(function (c) {
     h = reemplazar(h, c[0], c[1], c[2]);
   });
+
+  /* --- compresión de imágenes: sin esto el HTML pesa 30 MB ------------------ */
+  h = reemplazar(
+    h,
+    `  function leerArchivoComoDataURL(archivo) {`,
+    `  /* Reduce el peso de una imagen incrustada: la reescala a un ancho máximo
+     y la vuelve a codificar en JPEG (o WebP si el navegador lo soporta).
+     Sin esto, una foto de 4 MB incrustada weighs 5,5 MB en el HTML. */
+  const ANCHO_MAXIMO_IMAGEN = 1600;
+  const CALIDAD_IMAGEN = 0.82;
+
+  function comprimirImagenDataUrl(dataUrl, maxAncho, calidad) {
+    return new Promise(function (res) {
+      const url = String(dataUrl || '');
+      if (url.indexOf('data:image/') !== 0) return res(url);
+      const limite = maxAncho || ANCHO_MAXIMO_IMAGEN;
+      const img = new Image();
+      img.onload = function () {
+        try {
+          const escala = Math.min(1, limite / (img.naturalWidth || limite));
+          const w = Math.max(1, Math.round((img.naturalWidth || limite) * escala));
+          const h = Math.max(1, Math.round((img.naturalHeight || limite) * escala));
+          const lienzo = document.createElement('canvas');
+          lienzo.width = w; lienzo.height = h;
+          const ctx = lienzo.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          const webp = lienzo.toDataURL('image/webp', calidad || CALIDAD_IMAGEN);
+          const jpg = lienzo.toDataURL('image/jpeg', calidad || CALIDAD_IMAGEN);
+          const mejor = (webp && webp.length && webp.length < jpg.length) ? webp : jpg;
+          /* Si comprimir no ayuda (o el original es un GIF animado, que el
+             lienzo no puede reproducir), se conserva el original. */
+          if (!mejor || mejor.length >= url.length) return res(url);
+          res(mejor);
+        } catch (e) { res(url); }
+      };
+      img.onerror = function () { res(url); };
+      img.src = url;
+    });
+  }
+
+  /* Recorre el estado y comprime todas las imágenes incrustadas. */
+  async function optimizarImagenesDelEstado() {
+    let procesadas = 0, antes = 0, despues = 0;
+    const visitar = async function (valor) {
+      if (typeof valor === 'string') return valor;
+      if (Array.isArray(valor)) {
+        for (let i = 0; i < valor.length; i++) valor[i] = await visitar(valor[i]);
+        return valor;
+      }
+      if (valor && typeof valor === 'object') {
+        const claves = Object.keys(valor);
+        for (let i = 0; i < claves.length; i++) {
+          const k = claves[i];
+          if (typeof valor[k] === 'string' && valor[k].indexOf('data:image/') === 0) {
+            antes += valor[k].length;
+            const optimizada = await comprimirImagenDataUrl(valor[k]);
+            if (optimizada.length < valor[k].length) { despues += optimizada.length; procesadas++; }
+            else despues += valor[k].length;
+            valor[k] = optimizada;
+          } else {
+            valor[k] = await visitar(valor[k]);
+          }
+        }
+      }
+      return valor;
+    };
+    await visitar(portalState);
+    return { procesadas: procesadas, antes: antes, despues: despues };
+  }
+
+  function leerArchivoComoDataURL(archivo) {`,
+    'compresión de imágenes'
+  );
+
+  /* Al subir un archivo, las imágenes se comprimen al momento.
+     Se aceptan las dos formas del bloque (con y sin compresión previa) para
+     que el parche sirva tanto sobre un archivo recién descargado del CMS
+     como sobre el que ya estaba optimizado. */
+  const SUBIR_NUEVO = `      let dataUrl = await leerArchivoComoDataURL(archivo);
+      if (dataUrl && dataUrl.indexOf('data:image/') === 0) {
+        if (dataUrl.indexOf('data:image/gif') === 0) {
+          /* Un GIF animado no se puede recomprimir sin perder la animación. */
+          toast('⚠️ GIF de ' + formatearPeso(dataUrl.length) + ': los GIF animados pesan mucho. Súbalo como video MP4 o por enlace (Drive / YouTube).');
+        } else {
+          const comprimida = await comprimirImagenDataUrl(dataUrl);
+          if (comprimida.length < dataUrl.length) {
+            toast('🧹 Imagen optimizada: ' + formatearPeso(dataUrl.length) + ' → ' + formatearPeso(comprimida.length));
+            dataUrl = comprimida;
+          }
+        }
+      }
+      asignarRuta(portalState, path, dataUrl);`;
+
+  h = reemplazar(
+    h,
+    `      const dataUrl = await leerArchivoComoDataURL(archivo);
+      asignarRuta(portalState, path, dataUrl);`,
+    SUBIR_NUEVO,
+    'compresión al subir'
+  );
+
+  h = reemplazar(
+    h,
+    `      let dataUrl = await leerArchivoComoDataURL(archivo);
+      if (dataUrl && dataUrl.indexOf('data:image/') === 0) {
+        const comprimida = await comprimirImagenDataUrl(dataUrl);
+        if (comprimida.length < dataUrl.length) {
+          toast('🧹 Imagen optimizada: ' + formatearPeso(dataUrl.length) + ' → ' + formatearPeso(comprimida.length));
+          dataUrl = comprimida;
+        }
+      }
+      asignarRuta(portalState, path, dataUrl);`,
+    SUBIR_NUEVO,
+    'compresión al subir (versión previa)'
+  );
+
+  /* Al publicar, se optimizan las imágenes incrustadas antes de generar el
+     HTML: si no, un archivo con fotos de 4 MB pesa 30 MB y la web tarda
+     una eternidad en cargar. */
+  h = reemplazar(
+    h,
+    `      const patron = /(<script type="application\\/json" id="estadoEmbebido">)[\\s\\S]*?(<\\/script>)/;
+      if (!patron.test(html)) { toast('⚠️ No se encontró el bloque de contenido incrustado en este archivo'); return; }
+
+      const json = JSON.stringify(estadoParaPublicar())`,
+    `      const patron = /(<script type="application\\/json" id="estadoEmbebido">)[\\s\\S]*?(<\\/script>)/;
+      if (!patron.test(html)) { toast('⚠️ No se encontró el bloque de contenido incrustado en este archivo'); return; }
+
+      /* Optimizar las imágenes antes de publicar. */
+      try {
+        const opt = await optimizarImagenesDelEstado();
+        if (opt && opt.procesadas) {
+          toast('🧹 ' + opt.procesadas + ' imagen(es) optimizadas: ' + formatearPeso(opt.antes) + ' → ' + formatearPeso(opt.despues));
+          await ALMACEN.guardar(portalState);
+        }
+      } catch (e) { }
+
+      const json = JSON.stringify(estadoParaPublicar())`,
+    'optimización al publicar'
+  );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(

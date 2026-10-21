@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sala de redacción · CMS | La Taberna del Magallanes News</title>
+<meta name="description" content="Acceso privado del equipo editorial al gestor de contenidos del portal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=EB+Garamond:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --marino: #0b2240; --oro: #c59b27; --tinta: #1f2937; --gris: #4a5568; --linea: #e2ded9; --papel: #fbfaf9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: var(--tinta); font-family: Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  a { color: var(--marino); }
+  .cab { border-bottom: 3px solid var(--marino); background: #ffffff; }
+  .cab-in { max-width: 1080px; margin: 0 auto; padding: 12px 18px 0; }
+  .cab-marca { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cab-marca a.nombre { font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; font-weight: 900; color: var(--marino); text-decoration: none; letter-spacing: -0.02em; }
+  .cab-marca a.nombre.tip-nyt { font-family: 'UnifrakturMaguntia', 'Playfair Display', Georgia, serif; font-weight: 400; letter-spacing: 0.01em; }
+  .cab-marca a.nombre.tip-playfair { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; }
+  .cab-marca a.nombre.tip-baskerville { font-family: 'Libre Baskerville', Georgia, serif; font-weight: 700; }
+  .cab-marca a.nombre.tip-garamond { font-family: 'EB Garamond', Georgia, serif; font-weight: 800; }
+  .cab-marca a.nombre.tip-times { font-family: 'Times New Roman', Times, Georgia, serif; font-weight: 700; }
+  .cab-marca a.nombre.tip-moderna { font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-weight: 900; }
+  .cab-marca a.nombre img { display: block; max-width: 100%; }
+  .cab-lema { font-size: 0.68rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; padding: 10px 0 8px; border-top: 1px solid var(--linea); margin-top: 10px; }
+  .nav a { font-size: 0.76rem; font-weight: 700; text-decoration: none; color: var(--marino); padding: 6px 10px; border-radius: 20px; }
+  .nav a:hover { background: var(--papel); color: var(--oro); }
+  main { max-width: 1080px; margin: 0 auto; padding: 26px 18px 60px; }
+  h1.titulo { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.7rem, 4.4vw, 2.5rem); font-weight: 900; color: var(--marino); margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sello { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: var(--oro); }
+  .intro { font-size: 0.9rem; color: var(--gris); line-height: 1.65; max-width: 780px; margin: 0 0 22px; }
+  .regla { border: 0; border-top: 1px solid var(--linea); margin: 22px 0; }
+  .rejilla { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .tarjeta { border: 1px solid var(--linea); border-radius: 12px; padding: 16px; background: #ffffff; box-shadow: 0 2px 10px rgba(11,34,64,0.04); display: flex; flex-direction: column; gap: 8px; }
+  .tarjeta h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.12rem; color: var(--marino); margin: 0; line-height: 1.3; }
+  .tarjeta p { font-size: 0.84rem; color: var(--gris); line-height: 1.6; margin: 0; }
+  .etiqueta { display: inline-block; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oro); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip { border: 1px solid var(--linea); background: #ffffff; border-radius: 20px; padding: 6px 13px; font-size: 0.74rem; font-weight: 700; color: var(--gris); cursor: pointer; font-family: inherit; }
+  .chip.activo, .chip:hover { border-color: var(--oro); color: var(--marino); background: #fffdf5; }
+  .campo { width: 100%; border: 1px solid var(--linea); border-radius: 9px; padding: 11px 13px; font-size: 0.85rem; font-family: inherit; color: var(--tinta); background: #ffffff; }
+  .campo:focus { outline: none; border-color: var(--oro); box-shadow: 0 0 0 3px rgba(197,155,39,0.15); }
+  .boton { display: inline-block; background: var(--marino); color: #ffcc00; border: 1px solid var(--oro); border-radius: 9px; padding: 11px 18px; font-size: 0.82rem; font-weight: 800; cursor: pointer; font-family: inherit; text-decoration: none; }
+  .boton:hover { background: #122c52; }
+  .boton.wa { background: #25d366; color: #06301a; border-color: #128c7e; }
+  .boton.sec { background: #ffffff; color: var(--marino); border-color: var(--linea); }
+  .nota { font-size: 0.76rem; color: var(--gris); line-height: 1.55; }
+  .aviso { background: #fffdf5; border-left: 4px solid var(--oro); border-radius: 8px; padding: 10px 13px; font-size: 0.78rem; color: #5b4a1f; line-height: 1.6; }
+  .pie { border-top: 1px solid var(--linea); background: var(--papel); }
+  .pie-in { max-width: 1080px; margin: 0 auto; padding: 22px 18px 30px; font-size: 0.76rem; color: var(--gris); line-height: 1.7; }
+  .pie-in b { color: var(--marino); }
+  .dos-col { display: grid; gap: 22px; grid-template-columns: 2fr 1fr; }
+  @media (max-width: 780px) { .dos-col { grid-template-columns: 1fr; } }
+  .tabla { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .tabla th, .tabla td { padding: 8px 9px; border-bottom: 1px solid var(--linea); text-align: left; white-space: nowrap; }
+  .tabla th { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris); }
+  .tabla tr.vipfila td { background: #fffdf5; font-weight: 700; }
+  .oculto { display: none; }
+</style>
+</head>
+<body>
+<header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
+<span class="sello">Zona reservada · Redacción</span>
+<h1 class="titulo">🔐 Sala de redacción (CMS)</h1>
+<p class="intro">Esta es la puerta de entrada privada del equipo editorial. Al continuar se abre la portada en <b>modo redacción</b> y el portal le pedirá su clave personal. Los lectores que lleguen a esta dirección no ven nada: sin la clave no hay acceso.</p>
+<div class="rejilla">
+  <article class="tarjeta"><h3>👑 Director</h3><p>Control total: contenido, publicidad, seguridad, claves y descarga del HTML publicado.</p><button type="button" class="boton" onclick="irAlCMS()">Entrar como Director</button></article>
+  <article class="tarjeta"><h3>✍️ Periodista</h3><p>Redacción, galerías multimedia, hilos, roster y moderación del Paredón.</p><button type="button" class="boton sec" onclick="irAlCMS()">Entrar como Periodista</button></article>
+  <article class="tarjeta"><h3>🧱 Moderación del Paredón</h3><p>Revise los mensajes enviados por la afición antes de publicarlos, o retire los que no cumplan las normas.</p><button type="button" class="boton sec" onclick="irAlCMS()">Abrir el panel del Paredón</button></article>
+</div>
+<hr class="regla">
+<div class="aviso"><b>Seguridad.</b> El acceso queda recordado 180 días en sus equipos autorizados y puede borrarlo desde «Cerrar sesión» en el CMS. Las puertas de acceso (botón flotante y botón del pie) se controlan desde el panel «Seguridad» del Director: en la copia publicada el HTML sale sin puertas visibles.</div>
+<p id="auto" class="nota">Redirigiendo a la sala de redacción…</p>
+</main>
+<footer class="pie"><div class="pie-in"><b>La Taberna del Magallanes News</b> · Gaceta sabermétrica, analítica Statcast y scouting de los Navegantes del Magallanes (LVBP).<br>Fundador &amp; Director: Luis Enrique Aponte Guzmán.<br><span style="font-size:0.72rem;">Páginas: <a href="index.html">Portada</a> · <a href="cronica.html">Crónicas</a> · <a href="roster.html">Roster</a> · <a href="buscador.html">Buscador</a> · <a href="vip.html">Círculo VIP</a></span></div></footer>
+<script>
+
+function irAlCMS() {
+  location.href = 'index.html?cms=1#sala-de-redaccion';
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var t = document.getElementById('auto');
+  try {
+    if (location.search.indexOf('auto=1') !== -1 || location.hash === '#entrar') { irAlCMS(); return; }
+  } catch (e) { }
+  t.className = 'oculto';
+
+  /* Si quien llega es la redacción, la puerta se abre sola: no tiene que
+     buscar ningún botón. Un lector que llegue aquí ve esta misma pantalla
+     y, sin la clave, no entra a nada. */
+  try {
+    var recordada = JSON.parse(localStorage.getItem('taberna_rol_sesion_v1') || 'null');
+    if (recordada && recordada.rol && (!recordada.expira || recordada.expira > Date.now())) {
+      setTimeout(function () { irAlCMS(); }, 400);
+    }
+  } catch (e) { }
+});
+
+</script>
+
+<script>
+(function () {
+  function aplicar(d) {
+    if (!d || !d.portal) return;
+    var el = document.getElementById('marcaPrincipal');
+    if (!el) return;
+    var p = d.portal;
+    if (p.marca) el.textContent = p.marca;
+    el.className = 'nombre tip-' + (p.tipografia || 'nyt');
+    if (p.colorLogo) el.style.color = p.colorLogo;
+    var escala = parseFloat(p.escalaTitulo) || 100;
+    if (escala !== 100) el.style.fontSize = (1.15 * (escala / 100)) + 'rem';
+    if (p.logoImagen) {
+      el.textContent = '';
+      var img = document.createElement('img');
+      img.src = p.logoImagen;
+      img.alt = p.marca || 'Logotipo del medio';
+      img.style.height = (parseInt(p.logoAlto, 10) || 48) + 'px';
+      img.style.width = 'auto';
+      el.appendChild(img);
+    }
+  }
+  try {
+    fetch('data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
+  } catch (e) { }
+})();
+</script></body>
+</html>
