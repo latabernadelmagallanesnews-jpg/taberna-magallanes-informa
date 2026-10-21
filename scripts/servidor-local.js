@@ -187,9 +187,21 @@ const servidor = http.createServer((req, res) => {
     });
   });
 });
-
 servidor.listen(PUERTO, function () {
   console.log('Servidor local del diario en http://localhost:' + PUERTO + '/');
   console.log('  · portal publicado : http://localhost:' + PUERTO + '/');
   console.log('  · copia de trabajo : http://localhost:' + PUERTO + '/editor/index.html');
+});
+
+/* El servidor no debe caerse nunca: si una petición sale mal o se recompila
+   el portal mientras se sirve, sigue listening para que «Publicar ahora»
+   siga funcionando. */
+servidor.on('clientError', function (err, socket) {
+  try { socket.end('HTTP/1.1 400 Bad Request\r\n\r\n'); } catch (e) { }
+});
+servidor.on('error', function (err) {
+  console.error('· el servidor local tuvo un problema: ' + String(err && err.message ? err.message : err));
+});
+process.on('uncaughtException', function (err) {
+  console.error('· error inesperado en el servidor local: ' + String(err && err.message ? err.message : err));
 });

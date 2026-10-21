@@ -120,6 +120,35 @@ const TARJETA_NUEVA = `      /* NIVEL 1 · tarjeta/teaser: cinta de categoría, 
 /* NIVEL 2 · CSS de la página de destino (publicar/cronica.html)              */
 /* -------------------------------------------------------------------------- */
 
+const CSS_TITULARES = `/*__CSS_TITULARES_INICIO__*/
+    /* ================================================================
+       ESTILOS DE TITULAR PREESTABLECIDOS
+       Las formas de titular de los grandes diarios. Se eligen con un
+       clic en el CMS y se ven igual en la portada y en la nota larga.
+       ================================================================ */
+    .tit-clasico { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; letter-spacing: -0.015em; color: #0b2240; }
+    .tit-versalitas { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.055em; font-size: 0.86em; line-height: 1.3; color: #0b2240; }
+    .tit-caja-alta { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.08; color: #0b2240; }
+    .tit-centrado { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-align: center; text-wrap: balance; color: #0b2240; }
+    .tit-reglas { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; text-align: center; text-wrap: balance; color: #0b2240; border-top: 2px solid #0b2240; border-bottom: 2px solid #0b2240; padding: 0.45em 0; margin: 0.15em 0; }
+    .tit-sans { font-family: 'Inter', Helvetica, Arial, sans-serif; font-weight: 800; letter-spacing: -0.02em; color: #0b2240; }
+    .tit-condensado { font-family: 'Inter', Helvetica, Arial, sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.005em; line-height: 1.1; color: #0b2240; }
+    .tit-italica { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; color: #3f2f14; }
+    .tit-antetitulo { font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.17em; font-size: 0.6em; color: #8c1d2f; display: block; margin-bottom: 0.4em; line-height: 1.4; }
+    .tit-bajada { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-weight: 400; color: #6b5b2e; }
+    .tit-subrayado { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #0b2240; box-shadow: inset 0 -0.42em 0 #f4e6bd; }
+    .tit-rojo { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #8c1d2f; }
+    /* La galería, dentro del editor */
+    .cms-rico-grupo-estilos { gap: 1px; }
+    .cms-rico-etiqueta { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #64748b; margin-right: 3px; }
+    .cms-rico-estilo { min-width: 27px; }
+    .cms-rico-estilo span { line-height: 1; display: inline-block; }
+    .cms-rico-estilo span.tit-versalitas { font-size: 0.6rem; }
+    .cms-rico-estilo span.tit-caja-alta { font-size: 0.56rem; letter-spacing: -0.02em; }
+    .cms-rico-estilo span.tit-antetitulo { font-size: 0.52rem; }
+    .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
+/*__CSS_TITULARES_FIN__*/`;
+
 const CSS_PAGINA = `/*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -266,6 +295,24 @@ function reemplazar(texto, viejo, nuevo, etiqueta) {
   return texto.split(viejo).join(nuevo);
 }
 
+/* El bloque de estilos de titular se instala en la portada y en la nota. */
+function instalarCssTitulares(html) {
+  const ini = '/*__CSS_TITULARES_INICIO__*/';
+  const fin = '/*__CSS_TITULARES_FIN__*/';
+  let h = html;
+  let i = h.indexOf(ini);
+  while (i !== -1) {
+    const j = h.indexOf(fin, i);
+    if (j === -1) break;
+    h = h.slice(0, i) + h.slice(j + fin.length);
+    i = h.indexOf(ini);
+  }
+  const cierre = '</style>';
+  const p = h.indexOf(cierre);
+  if (p === -1) return h;
+  return h.slice(0, p) + CSS_TITULARES + '\n' + h.slice(p);
+}
+
 function instalarCssLongform(html) {
   const ini = '/*__LONGFORM_INICIO__*/';
   const fin = '/*__LONGFORM_FIN__*/';
@@ -295,6 +342,7 @@ OBJETIVOS.forEach(function (archivo) {
     h = reemplazar(h, TARJETA_VIEJA, TARJETA_NUEVA, 'tarjeta del muro');
     h = reemplazar(h, FOTO_VIEJA, FOTO_NUEVA, 'carga inmediata de la foto de la tarjeta');
     h = instalarCssLongform(h);
+    h = instalarCssTitulares(h);
   } catch (err) {
     console.error('✗ ' + path.basename(archivo) + ': ' + err.message);
     process.exitCode = 1;
@@ -337,6 +385,7 @@ if (fs.existsSync(PAGINA)) {
       h = h.replace('</style>', CSS_PAGINA + '</style>');
     }
 
+    h = instalarCssTitulares(h);
     h = reemplazar(h, RAIL_VIEJO, RAIL_NUEVO, 'barra lateral de la nota');
     h = reemplazar(h, CIERRE_VIEJO, CIERRE_NUEVO, 'cierre de la nota');
   } catch (err) {

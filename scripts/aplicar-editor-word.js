@@ -235,7 +235,12 @@ const MOTOR_JS = MARCA_MOTOR + `  /* ===========================================
     TD: ['colspan','rowspan'],
     TH: ['colspan','rowspan']
   };
-  const RICO_ATTRS_COMUN = ['style'];
+  const RICO_ATTRS_COMUN = ['style', 'class'];
+
+  /* Únicas clases admitidas en el contenido: las de la galería de
+     titulares. Cualquier otra se quita al publicar. */
+  const RICO_CLASES = ['tit-clasico', 'tit-versalitas', 'tit-caja-alta', 'tit-centrado', 'tit-reglas',
+    'tit-sans', 'tit-condensado', 'tit-italica', 'tit-antetitulo', 'tit-bajada', 'tit-subrayado', 'tit-rojo'];
   const RICO_PROPIEDADES = ['color','background-color','font-weight','font-style','font-size','font-family','text-align','text-decoration','text-transform','line-height','letter-spacing','margin','margin-top','margin-bottom','margin-left','margin-right','padding','padding-top','padding-bottom','padding-left','padding-right','width','max-width','height','max-height','border','border-top','border-bottom','border-left','border-right','border-color','border-width','border-style','border-radius','vertical-align','list-style-type'];
 
   function limpiarEstiloRico(valor) {
@@ -286,7 +291,14 @@ const MOTOR_JS = MARCA_MOTOR + `  /* ===========================================
             if (/^\\s*(javascript|vbscript|data:text\\/html)/i.test(valor)) hijo.removeAttribute(a.name);
             return;
           }
-          if (nombre === 'style') hijo.setAttribute('style', limpiarEstiloRico(valor));
+          if (nombre === 'style') { hijo.setAttribute('style', limpiarEstiloRico(valor)); return; }
+          if (nombre === 'class') {
+            /* Solo pasan las clases de la galería de titulares. */
+            const buenas = valor.split(/\\s+/).filter(function (c) { return c && RICO_CLASES.indexOf(c) !== -1; });
+            if (buenas.length) hijo.setAttribute('class', buenas.join(' '));
+            else hijo.removeAttribute('class');
+            return;
+          }
         });
         limpiar(hijo);
       });
@@ -349,6 +361,13 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
       '<div class="cms-rico-grupo">' +
         '<button type="button" class="cms-rico-btn" data-rico-cmd="undo" title="Deshacer (Ctrl+Z)">&#8630;</button>' +
         '<button type="button" class="cms-rico-btn" data-rico-cmd="redo" title="Rehacer (Ctrl+Y)">&#8631;</button>' +
+      '</div>' +
+      '<div class="cms-rico-grupo cms-rico-grupo-estilos">' +
+        '<span class="cms-rico-etiqueta">Estilos de titular</span>' +
+        RICO_ESTILOS_TITULAR.map(function (e) {
+          return '<button type="button" class="cms-rico-btn cms-rico-estilo" data-rico-accion="estilo" data-rico-estilo="' + e.clave + '" title="' + esc(e.nombre) + '"><span class="' + e.clave + '">Aa</span></button>';
+        }).join('') +
+        '<button type="button" class="cms-rico-btn cms-rico-estilo" data-rico-accion="estilo" data-rico-estilo="" title="Quitar el estilo de titular"><span>&#10005;</span></button>' +
       '</div>' +
     '</div>';
   }
@@ -428,6 +447,67 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
     programarRender();
     persistirEstadoPortal();
     actualizarIndicadorEstado('Editando');
+  }
+
+  /* Estilos de titular preestablecidos: las formas de titular de los
+     grandes diarios. Se aplican con un clic sobre el texto elegido; si
+     no hay nada seleccionado, se aplican a todo el campo. */
+  const RICO_ESTILOS_TITULAR = [
+    { clave: 'tit-clasico', nombre: 'Titular clásico (serif del diario)' },
+    { clave: 'tit-versalitas', nombre: 'Titular en versalitas' },
+    { clave: 'tit-caja-alta', nombre: 'Titular en caja alta (mayúsculas)' },
+    { clave: 'tit-centrado', nombre: 'Titular centrado' },
+    { clave: 'tit-reglas', nombre: 'Titular con reglas arriba y abajo' },
+    { clave: 'tit-sans', nombre: 'Titular sans (el de los titulares)' },
+    { clave: 'tit-condensado', nombre: 'Titular condensado en mayúsculas' },
+    { clave: 'tit-italica', nombre: 'Titular en itálica' },
+    { clave: 'tit-antetitulo', nombre: 'Antetítulo (encabezado del titular)' },
+    { clave: 'tit-bajada', nombre: 'Bajada (subtítulo en cursiva)' },
+    { clave: 'tit-subrayado', nombre: 'Titular con marcador' },
+    { clave: 'tit-rojo', nombre: 'Titular en rojo de portada' }
+  ];
+
+  function aplicarEstiloTitular(editor, clase) {
+    if (!editor) return;
+    const sel = window.getSelection ? window.getSelection() : null;
+    const haySeleccion = !!(sel && sel.rangeCount > 0 && !sel.isCollapsed &&
+      editor.contains(sel.anchorNode) && editor.contains(sel.focusNode));
+
+    if (clase) {
+      let puesto = false;
+      if (haySeleccion) {
+        try {
+          const rango = sel.getRangeAt(0);
+          const trozo = rango.extractContents();
+          /* Si la selección no traía texto (el campo está tapado o el
+             navegador no la reconoce), se aplica al texto entero. */
+          if (trozo && String(trozo.textContent || '').trim()) {
+            const span = document.createElement('span');
+            span.className = clase;
+            span.appendChild(trozo);
+            rango.insertNode(span);
+            puesto = true;
+          }
+        } catch (e) { }
+      }
+      if (!puesto) {
+        /* Sin selección útil: se aplica al texto entero del campo. */
+        editor.innerHTML = '<span class="' + clase + '">' + editor.innerHTML + '</span>';
+      }
+    } else {
+      /* Quitar el estilo: se desenvuelve el <span> que lo lleva. */
+      Array.prototype.slice.call(editor.querySelectorAll('span[class]')).forEach(function (sp) {
+        const esEstilo = String(sp.className || '').split(/\\s+/).some(function (c) {
+          return RICO_ESTILOS_TITULAR.some(function (e) { return e.clave === c; });
+        });
+        if (!esEstilo) return;
+        const padre = sp.parentNode;
+        while (sp.firstChild) padre.insertBefore(sp.firstChild, sp);
+        padre.removeChild(sp);
+      });
+    }
+    guardarEditorRico(editor);
+    contadorDeRico(editor);
   }
 
   function ejecutarComandoRico(editor, cmd, valor) {
@@ -529,6 +609,7 @@ let EDITOR_JS = MARCA_EDITOR + `  /* -------------------------------------------
         ejecutarComandoRico(editor, cmd, null);
         return;
       }
+      if (accion === 'estilo') return aplicarEstiloTitular(editor, btn.getAttribute('data-rico-estilo') || '');
       if (accion === 'alternar') return alternarModoSimple(editor);
       if (accion === 'vista') return vistaPreviaRico(editor);
       if (accion === 'limpiar') {
@@ -597,6 +678,13 @@ EDITOR_JS = reemplazar(
 
   function activarEditoresRicos(contenedor) {`,
   'limpieza al pegar'
+);
+
+EDITOR_JS = reemplazar(
+  EDITOR_JS,
+  `'<span class="cms-rico-nota">Puede escribir con formato (negrita, títulos, listas, enlaces, colores). Lo que escriba aquí se publica con ese formato. Con «Editar como texto simple» vuelve a texto plano.</span>'`,
+  `'<span class="cms-rico-nota">Puede escribir con formato (negrita, títulos, listas, enlaces, colores). Lo que escriba aquí se publica con ese formato. Con «Editar como texto simple» vuelve a texto plano. En la barra, «Estilos de titular» aplica al texto elegido el estilo que usted elija (si no ha marcado nada, al campo entero); se ve igual en la portada y en la nota larga.</span>'`,
+  'ayuda de la galería de titulares'
 );
 
 EDITOR_JS = reemplazar(
@@ -1756,6 +1844,7 @@ function aplicar(archivo) {
     `connect-src 'self' https: data: blob: http://localhost:8099 http://127.0.0.1:8099;`,
     'política de seguridad: conexión al servidor local'
   );
+
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(

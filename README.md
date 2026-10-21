@@ -210,6 +210,37 @@ El script que lo aplica es `scripts/parche-longform.js` (idempotente).
 
 ---
 
+## 3 bis · Los estilos de titular (galería preestablecida)
+
+Los titulares de las notas se escriben con formato real y con un **catálogo
+de estilos ya hechos**, al estilo de los grandes diarios. En la barra del
+editor, el grupo **«Estilos de titular»** aplica al texto que esté
+seleccionado el estilo que usted elija (si no ha marcado nada, se aplica al
+campo entero):
+
+| Estilo | Cómo se ve |
+|---|---|
+| `tit-clasico` | Serif del diario, negro,Tracking cerrado |
+| `tit-versalitas` | Serif en versalitas, con aire entre letras |
+| `tit-caja-alta` | Serif en caja alta, muy marcada |
+| `tit-centrado` | Centrado y equilibrado |
+| `tit-reglas` | Centrado, con filetes arriba y abajo |
+| `tit-sans` | Sans de los titulares, sin adornos |
+| `tit-condensado` | Sans condensado en mayúsculas |
+| `tit-italica` | Serif en itálica, para notas de opinión |
+| `tit-antetitulo` | Encabezado del titular, en rojo |
+| `tit-bajada` | Cursiva de subtítulo |
+| `tit-subrayado` | Con marcadoramarillo |
+| `tit-rojo` | Titular en rojo de portada |
+
+El botón **✕** quita el estilo. Las clases viajan con el contenido (marcadas
+con `␟` como el resto del texto enriquecido) y el saneador **solo** admite
+esas doce clases: cualquier otra se quita al publicar. Los estilos están
+definidos en un bloque de CSS propio (`__CSS_TITULARES_INICIO__`) que se
+instala **en la portada y en la nota larga**, para que se vean igual.
+
+---
+
 ## 4 · Flujo de trabajo del editor
 
 1. Copia de trabajo: `editor/index.html`.
