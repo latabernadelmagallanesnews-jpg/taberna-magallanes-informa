@@ -1931,18 +1931,6 @@ function aplicar(archivo) {
     'publicar no se queda a medias esperando la clave'
   );
 
-  h = reemplazar(
-    h,
-    `    } catch (e) {
-      toast('⚠️ No se pudo publicar desde aquí. Si está en el teléfono o en otro equipo, baje el archivo con «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd. Si está en esta computadora, abra ese mismo PUBLICAR-EL-DIARIO.cmd para encender el servidor y vuelva a pulsar.', 12000);
-    }`,
-    `    } catch (e) {
-      /* El servidor local está apagado o no se alcanza. El aviso dice qué
-         hacer en cada caso, sin dejar a nadie sin salida. */
-      toast('⚠️ No se pudo conectar con la computadora. Si el servidor local está apagado: doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio) y después pulse «Publicar ahora» otra vez. Si está en el teléfono: pulse «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd.', 16000);
-    }`,
-    'aviso claro cuando el servidor local no responde'
-  );
 
   h = reemplazar(
     h,
