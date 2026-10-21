@@ -1195,6 +1195,120 @@ function aplicar(archivo) {
     'contadores al refrescar el panel del CMS'
   );
 
+  /* --- helper para MOSTRAR contenido con formato --------------------------- */
+  h = reemplazar(
+    h,
+    `  function textoDeRico(html) {`,
+    `  /* Muestra un valor del CMS: si viene con formato (editor Word) lo
+     interpreta como HTML; si es texto plano, lo escapa. Sin esto, una nota
+     escrita con formato salía con las etiquetas a la vista.
+
+     Si el contenido es un solo párrafo, se desenvuelve: insertado dentro de
+     un <p> o un <span>, el navegador cerraría la etiqueta antes de tiempo y
+     el texto se quedaría fuera. */
+  function htmlDeContenido(valor) {
+    if (valor === undefined || valor === null) return '';
+    const s = String(valor);
+    if (!esValorRico(s)) return esc(s);
+    const html = santizarRico(s.slice(1));
+    const soloParrafo = /^<p>([\\s\\S]*)<\\/p>$/.exec(html);
+    return soloParrafo ? soloParrafo[1] : html;
+  }
+
+  function textoDeRico(html) {`,
+    'htmlDeContenido()'
+  );
+
+  /* --- el teaser y la ficha muestran el contenido con formato -------------- */
+  h = reemplazar(
+    h,
+    `        '<h3 class="teaser-titular">' + esc(c.titulo) + '</h3>' +
+        (c.subtitulo ? '<p class="teaser-subtitulo">' + esc(c.subtitulo) + '</p>' : '') +
+        '<p class="teaser-lead">' + esc(c.entradilla) + '</p>' +`,
+    `        '<h3 class="teaser-titular">' + htmlDeContenido(c.titulo) + '</h3>' +
+        (c.subtitulo ? '<p class="teaser-subtitulo">' + htmlDeContenido(c.subtitulo) + '</p>' : '') +
+        '<p class="teaser-lead">' + htmlDeContenido(c.entradilla) + '</p>' +`,
+    'teaser de la crónica'
+  );
+
+  h = reemplazar(
+    h,
+    `        '<h3 class="ficha-titulo">' + esc(d.titulo || 'Sin título') + '</h3>' +
+        (d.sub ? '<p class="ficha-sub">' + esc(d.sub) + '</p>' : '') +`,
+    `        '<h3 class="ficha-titulo">' + htmlDeContenido(d.titulo || 'Sin título') + '</h3>' +
+        (d.sub ? '<p class="ficha-sub">' + htmlDeContenido(d.sub) + '</p>' : '') +`,
+    'ficha de contenido'
+  );
+
+  /* --- el CMS tampoco debe mostrar el HTML crudo al editar -------------- */
+  h = reemplazar(
+    h,
+    `  function construirEditorRico(def, ruta, valor) {`,
+    `  function construirEditorRico(def, ruta, valor) {`,
+    'construirEditorRico()'
+  );
+
+  /* --- todos los campos con formato se MUESTRAN con su formato ----------- */
+  /* Antes se escapaban con esc(), así que una nota escrita en el editor Word
+     salía con las etiquetas a la vista en vez de maquetada. */
+  const CON_FORMATO = [
+    ['<p style="font-size:0.8125rem; color:#4a4a4a; margin-bottom:0.85rem;">\' + esc(i.desc) + \'</p>',
+      '<p style="font-size:0.8125rem; color:#4a4a4a; margin-bottom:0.85rem;">\' + htmlDeContenido(i.desc) + \'</p>',
+      'descripción de la infografía'],
+
+    ['<p style="font-size:0.75rem; color:#555; font-style:italic; margin-bottom:0.6rem;">\' + esc(m.sub) + \'</p>',
+      '<p style="font-size:0.75rem; color:#555; font-style:italic; margin-bottom:0.6rem;">\' + htmlDeContenido(m.sub) + \'</p>',
+      'subtítulo del meme'],
+
+    ['return \'<li style="margin-bottom: 5px;">★ \' + esc(b.texto) + \'</li>\';',
+      'return \'<li style="margin-bottom: 5px;">★ \' + htmlDeContenido(b.texto) + \'</li>\';',
+      'beneficio del Círculo VIP'],
+
+    ['\' data-flyer-campo="sub" data-flyer-indice="\' + indice + \'">\' + esc(f.sub || \'Sin descripción\') + \'</span>\'',
+      '\' data-flyer-campo="sub" data-flyer-indice="\' + indice + \'">\' + htmlDeContenido(f.sub || \'Sin descripción\') + \'</span>\'',
+      'subtítulo del flyer'],
+
+    ['esc(s.leyenda || \'\'));',
+      'htmlDeContenido(s.leyenda || \'\'));',
+      'leyenda de la tabla de posiciones'],
+
+    ['\'<b class="cp-titulo">\' + esc(d.titulo || \'\') + \'</b>\'',
+      '\'<b class="cp-titulo">\' + htmlDeContenido(d.titulo || \'\') + \'</b>\'',
+      'previsualización de la ficha'],
+
+    ['\' data-pub-campo="sub" data-pub-id="\' + esc(f.id) + \'">\' + esc(f.sub || \'Sin descripción\') + \'</span>\'',
+      '\' data-pub-campo="sub" data-pub-id="\' + esc(f.id) + \'">\' + htmlDeContenido(f.sub || \'Sin descripción\') + \'</span>\'',
+      'subtítulo del flyer publicitario'],
+
+    ['\'<span class="pub-desc">\' + esc(cat.descripcion || \'\') + \'</span>\'',
+      '\'<span class="pub-desc">\' + htmlDeContenido(cat.descripcion || \'\') + \'</span>\'',
+      'descripción de la categoría publicitaria'],
+
+    ['\' data-rm-campo="desc" data-rm-id="\' + esc(it.id) + \'">\' + esc(it.desc || \'\') + \'</span>\'',
+      '\' data-rm-campo="desc" data-rm-id="\' + esc(it.id) + \'">\' + htmlDeContenido(it.desc || \'\') + \'</span>\'',
+      'descripción de la publicación de redes'],
+
+    ['\'<p class="hj-texto">\' + esc(j.texto || \'\') + \'</p>\'',
+      '\'<p class="hj-texto">\' + htmlDeContenido(j.texto || \'\') + \'</p>\'',
+      'texto de la jugada'],
+
+    ['\'<span class="hilo-sub">\' + esc(hilo.descripcion || \'\') + \'</span>\'',
+      '\'<span class="hilo-sub">\' + htmlDeContenido(hilo.descripcion || \'\') + \'</span>\'',
+      'descripción del hilo'],
+
+    ['\' data-hm-campo="pie" data-hm-id="\' + esc(m.id) + \'">\' + esc(m.pie || \'Sin descripción\') + \'</span>\'',
+      '\' data-hm-campo="pie" data-hm-id="\' + esc(m.id) + \'">\' + htmlDeContenido(m.pie || \'Sin descripción\') + \'</span>\'',
+      'pie de foto del heatmap'],
+
+    ['\';\"><p>\' + esc(it.texto || it.titulo || \'Historia\') + \'</p></div>\'',
+      '\';\"><p>\' + htmlDeContenido(it.texto || it.titulo || \'Historia\') + \'</p></div>\'',
+      'texto de la historia']
+  ];
+
+  CON_FORMATO.forEach(function (c) {
+    h = reemplazar(h, c[0], c[1], c[2]);
+  });
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

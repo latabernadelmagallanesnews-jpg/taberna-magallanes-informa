@@ -724,6 +724,13 @@
 
 
 
+
+
+
+
+
+
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -786,6 +793,17 @@
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
     @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
 /*__CSS_PROPIO_FIN__*/
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1978,6 +1996,22 @@
   }
 
   /* Convierte HTML enriquecido en texto plano (para compartir, buscar, etc.). */
+  /* Muestra un valor del CMS: si viene con formato (editor Word) lo
+     interpreta como HTML; si es texto plano, lo escapa. Sin esto, una nota
+     escrita con formato salía con las etiquetas a la vista.
+
+     Si el contenido es un solo párrafo, se desenvuelve: insertado dentro de
+     un <p> o un <span>, el navegador cerraría la etiqueta antes de tiempo y
+     el texto se quedaría fuera. */
+  function htmlDeContenido(valor) {
+    if (valor === undefined || valor === null) return '';
+    const s = String(valor);
+    if (!esValorRico(s)) return esc(s);
+    const html = santizarRico(s.slice(1));
+    const soloParrafo = /^<p>([\s\S]*)<\/p>$/.exec(html);
+    return soloParrafo ? soloParrafo[1] : html;
+  }
+
   function textoDeRico(html) {
     const s = String(html === undefined || html === null ? '' : html);
     if (!s) return '';
@@ -3232,9 +3266,9 @@
           '<span class="teaser-categoria">' + esc(c.badge || 'Crónica') + '</span>' +
           '<span class="teaser-numero">Nota ' + (i + 1) + ' de ' + visibles.length + (c.video ? ' · video' : '') + '</span>' +
         '</p>' +
-        '<h3 class="teaser-titular">' + esc(c.titulo) + '</h3>' +
-        (c.subtitulo ? '<p class="teaser-subtitulo">' + esc(c.subtitulo) + '</p>' : '') +
-        '<p class="teaser-lead">' + esc(c.entradilla) + '</p>' +
+        '<h3 class="teaser-titular">' + htmlDeContenido(c.titulo) + '</h3>' +
+        (c.subtitulo ? '<p class="teaser-subtitulo">' + htmlDeContenido(c.subtitulo) + '</p>' : '') +
+        '<p class="teaser-lead">' + htmlDeContenido(c.entradilla) + '</p>' +
         (tieneCuerpo ? '<a class="teaser-cta" href="cronica.html?c=' + encodeURIComponent(c.id) + '">Leer reportaje completo <span aria-hidden="true">→</span></a>' : '') +
         '<p class="teaser-firma">✍️ ' + esc(c.autor) + (c.fecha ? ' · ' + esc(c.fecha) : '') + '</p>' +
         '<div class="teaser-acciones">' +
@@ -3426,7 +3460,7 @@
         '<div style="display:flex; justify-content:space-between; font-size:0.65rem; font-weight:700; color:#c59b27; text-transform:uppercase; margin-bottom:0.4rem; gap:0.5rem;">' +
           '<span>' + esc(i.categoria) + '</span><span style="color:#888;">' + esc(i.sub) + '</span></div>' +
         '<h4 style="font-family:\'Playfair Display\', serif; font-size:1.15rem; font-weight:800; color:#0b2240; margin-bottom:0.5rem;">' + esc(i.titulo) + '</h4>' +
-        '<p style="font-size:0.8125rem; color:#4a4a4a; margin-bottom:0.85rem;">' + esc(i.desc) + '</p>' +
+        '<p style="font-size:0.8125rem; color:#4a4a4a; margin-bottom:0.85rem;">' + htmlDeContenido(i.desc) + '</p>' +
         '<div class="visual-asset-frame" style="height: 200px;"><img src="' + esc(urlMultimediaReal('imagen', i.img)) + '" alt="' + esc(i.titulo) + '"></div>' +
         '<div style="display:flex; justify-content:space-between; background:#f6f3f3; padding:6px 10px; border-radius:6px; font-family:\'JetBrains Mono\', monospace; font-size:0.8rem; margin-top:0.75rem;">' +
           '<span><b>' + esc(i.m1) + '</b></span><span><b style="color:#166534;">' + esc(i.m2) + '</b></span><span><b>' + esc(i.m3) + '</b></span></div>' +
@@ -3448,7 +3482,7 @@
           '<div style="display:flex; justify-content:space-between; font-size:0.62rem; font-weight:700; color:#c59b27; text-transform:uppercase; margin-bottom:0.35rem; gap:0.5rem;">' +
             '<span>' + esc(m.tag) + '</span><span style="color:#888;">' + esc(m.hashtag) + '</span></div>' +
           '<h5 style="font-family:\'Playfair Display\', serif; font-size:1rem; font-weight:800; color:#0b2240;">' + esc(m.titulo) + '</h5>' +
-          '<p style="font-size:0.75rem; color:#555; font-style:italic; margin-bottom:0.6rem;">' + esc(m.sub) + '</p>' +
+          '<p style="font-size:0.75rem; color:#555; font-style:italic; margin-bottom:0.6rem;">' + htmlDeContenido(m.sub) + '</p>' +
           '<div style="display:flex; gap:0.4rem;">' +
             '<button type="button" style="background:#f6f3f3; border:1px solid #dcd9d9; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:0.72rem;" onclick="sumarReaccionMeme(\'' + m.id + '\', 1, this)">😂 <span class="rx-cnt">' + esc(m.rx1) + '</span></button>' +
             '<button type="button" style="background:#f6f3f3; border:1px solid #dcd9d9; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:0.72rem;" onclick="sumarReaccionMeme(\'' + m.id + '\', 2, this)">🔥 <span class="rx-cnt">' + esc(m.rx2) + '</span></button>' +
@@ -3518,7 +3552,7 @@
     setTxt('vipFormNota', v.formNota);
     setTxt('vipBotonTxt', v.boton);
     setHtml('vipBeneficiosLista', (v.beneficios || []).map(function (b) {
-      return '<li style="margin-bottom: 5px;">★ ' + esc(b.texto) + '</li>';
+      return '<li style="margin-bottom: 5px;">★ ' + htmlDeContenido(b.texto) + '</li>';
     }).join(''));
     setHtml('vipAudioModulo', htmlAudioDeModulo(v, '🎧 Audio del Círculo VIP', true));
     const gv = document.getElementById('vipGrupoGeneralEnlace');
@@ -6571,7 +6605,7 @@
       '<div class="gal-cuerpo">' +
         '<span class="gal-kind"' + editable + ' data-flyer-campo="tag" data-flyer-indice="' + indice + '">' + esc(f.tag || 'Flyer') + '</span>' +
         '<b class="gal-titulo"' + editable + ' data-flyer-campo="titulo" data-flyer-indice="' + indice + '">' + esc(f.titulo || 'Flyer sin título') + '</b>' +
-        '<span class="gal-nombre"' + editable + ' data-flyer-campo="sub" data-flyer-indice="' + indice + '">' + esc(f.sub || 'Sin descripción') + '</span>' +
+        '<span class="gal-nombre"' + editable + ' data-flyer-campo="sub" data-flyer-indice="' + indice + '">' + htmlDeContenido(f.sub || 'Sin descripción') + '</span>' +
       '</div>' +
       (audio ? '<div class="flyer-audio"><audio controls preload="metadata" src="' + esc(audio) + '"></audio><a href="' + esc(audio) + '" download="' + esc(nombreAudio) + '">⬇️ MP3</a></div>' : '') +
       '<div class="gal-acciones">' +
@@ -6918,7 +6952,7 @@
       '<span class="zona-marca"><span class="zona-punto" style="background:#166534;"></span>Clasificación (Top ' + cupos + ')</span>' +
       '<span class="zona-marca"><span class="zona-punto" style="background:#b91c1c;"></span>Último lugar</span>' +
       '<span class="zona-marca"><span class="zona-punto" style="background:#c59b27;"></span>Navegantes del Magallanes</span><br>' +
-      esc(s.leyenda || ''));
+      htmlDeContenido(s.leyenda || ''));
   }
 
   /* ============== 11.e · ROSTER INTERACTIVO (MÓDULO 10) ============== */
@@ -7345,8 +7379,8 @@
       (destacada ? '<img class="ficha-destacada" src="' + esc(destacada) + '" alt="' + escTexto(d.titulo || 'Imagen destacada') + '">' : '') +
       '<div class="ficha-cuerpo">' +
         '<span class="ficha-etiqueta">' + esc(d.tipoTexto || 'Producto comunicacional') + '</span>' +
-        '<h3 class="ficha-titulo">' + esc(d.titulo || 'Sin título') + '</h3>' +
-        (d.sub ? '<p class="ficha-sub">' + esc(d.sub) + '</p>' : '') +
+        '<h3 class="ficha-titulo">' + htmlDeContenido(d.titulo || 'Sin título') + '</h3>' +
+        (d.sub ? '<p class="ficha-sub">' + htmlDeContenido(d.sub) + '</p>' : '') +
         (d.meta ? '<span class="ficha-meta">' + esc(d.meta) + '</span>' : '') +
         medio +
         (d.texto ? '<div class="ficha-texto">' + textoAParrafos(d.texto) + '</div>' : '') +
@@ -7360,7 +7394,7 @@
             (destacada ? '<img src="' + esc(destacada) + '" alt="Imagen destacada">' : '') +
             '<div class="cp-txt">' +
               '<span class="cp-dominio">' + esc(dominioDePortal()) + '</span>' +
-              '<b class="cp-titulo">' + esc(d.titulo || '') + '</b>' +
+              '<b class="cp-titulo">' + htmlDeContenido(d.titulo || '') + '</b>' +
               '<span class="cp-desc">' + esc(String(d.sub || d.texto || '').slice(0, 190)) + '</span>' +
             '</div>' +
           '</div>' +
@@ -7609,7 +7643,7 @@
       '<div class="pub-cuerpo">' +
         (f.marca ? '<span class="pub-marca"' + editar + ' data-pub-campo="marca" data-pub-id="' + esc(f.id) + '">' + esc(f.marca) + '</span>' : '') +
         '<b class="pub-nombre"' + editar + ' data-pub-campo="titulo" data-pub-id="' + esc(f.id) + '">' + esc(f.titulo || 'Flyer sin título') + '</b>' +
-        '<span class="pub-sub"' + editar + ' data-pub-campo="sub" data-pub-id="' + esc(f.id) + '">' + esc(f.sub || 'Sin descripción') + '</span>' +
+        '<span class="pub-sub"' + editar + ' data-pub-campo="sub" data-pub-id="' + esc(f.id) + '">' + htmlDeContenido(f.sub || 'Sin descripción') + '</span>' +
       '</div>' +
       '<div class="pub-acciones">' +
         '<button type="button" class="gal-btn" data-pub-accion="ficha" data-pub-id="' + esc(f.id) + '">📖 Ficha</button>' +
@@ -7643,7 +7677,7 @@
           '<div>' +
             '<span class="pub-sello" style="background:' + esc(cat.color || '#0b2240') + ';">' + esc(cat.icono || '📌') + ' ' + esc(cat.nombre || 'Categoría') + ' · ' + esc(cat.sello || '') + '</span>' +
             '<b class="pub-titulo" style="font-size:1rem;">Carrusel ' + esc(cat.nombre || '') + ' · ' + lista.length + ' de ' + maximo + ' flyers</b>' +
-            '<span class="pub-desc">' + esc(cat.descripcion || '') + '</span>' +
+            '<span class="pub-desc">' + htmlDeContenido(cat.descripcion || '') + '</span>' +
           '</div>' +
           '<div class="pub-meta">' +
             '<span>⏱️ Rotación cada ' + segundos + ' s</span>' +
@@ -8025,7 +8059,7 @@
       medio +
       '<div class="rm-cuerpo">' +
         '<b class="rm-titulo"' + editar + ' data-rm-campo="titulo" data-rm-id="' + esc(it.id) + '">' + esc(it.titulo || 'Publicación incrustada') + '</b>' +
-        '<span class="rm-desc"' + editar + ' data-rm-campo="desc" data-rm-id="' + esc(it.id) + '">' + esc(it.desc || '') + '</span>' +
+        '<span class="rm-desc"' + editar + ' data-rm-campo="desc" data-rm-id="' + esc(it.id) + '">' + htmlDeContenido(it.desc || '') + '</span>' +
         '<span class="rm-autor"' + editar + ' data-rm-campo="autor" data-rm-id="' + esc(it.id) + '">' + esc(it.autor || 'Redacción') + '</span>' +
       '</div>' +
       '<div class="rm-acciones">' +
@@ -8511,7 +8545,7 @@
       '<div class="hj-cuerpo">' +
         '<span class="hj-tipo">' + esc(j.tipo || 'JUGADA') + '</span>' +
         '<h4 class="hj-titulo">' + esc(j.titulo || 'Jugada') + '</h4>' +
-        '<p class="hj-texto">' + esc(j.texto || '') + '</p>' +
+        '<p class="hj-texto">' + htmlDeContenido(j.texto || '') + '</p>' +
         (audio ? '<audio controls preload="metadata" src="' + esc(audio) + '" style="width:100%;"></audio>' : '') +
         (doc ? '<a class="hj-doc" href="' + esc(doc) + '" target="_blank" rel="noopener">📄 Abrir documento de la jugada</a>' : '') +
         (j.autor ? '<span class="hilo-sub oscuro">✍️ ' + esc(j.autor) + '</span>' : '') +
@@ -8586,7 +8620,7 @@
         '<div style="min-width:min(100%,320px);">' +
           '<span class="hilo-hash">' + esc(hilo.hashtag || '') + '</span>' +
           '<h4 class="hilo-nombre">' + esc(hilo.titulo || '') + '</h4>' +
-          '<span class="hilo-sub">' + esc(hilo.descripcion || '') + '</span>' +
+          '<span class="hilo-sub">' + htmlDeContenido(hilo.descripcion || '') + '</span>' +
         '</div>' +
         '<div style="text-align:right;">' +
           '<span class="hilo-marcador">' + esc(hilo.marcador || '') + '</span>' +
@@ -8888,7 +8922,7 @@
       '<div class="pub-cuerpo">' +
         '<span class="pub-marca">' + (esFlyer ? '🖼️ Flyer / afiche' : '📷 Fotografía') + '</span>' +
         '<b class="pub-nombre"' + editar + ' data-hm-campo="titulo" data-hm-id="' + esc(m.id) + '">' + esc(m.titulo || 'Sin título') + '</b>' +
-        '<span class="pub-sub"' + editar + ' data-hm-campo="pie" data-hm-id="' + esc(m.id) + '">' + esc(m.pie || 'Sin descripción') + '</span>' +
+        '<span class="pub-sub"' + editar + ' data-hm-campo="pie" data-hm-id="' + esc(m.id) + '">' + htmlDeContenido(m.pie || 'Sin descripción') + '</span>' +
       '</div>' +
       (audio ? '<div class="flyer-audio"><audio controls preload="metadata" src="' + esc(audio) + '"></audio></div>' : '') +
       '<div class="pub-acciones">' +
@@ -10706,7 +10740,7 @@
     } else if (tipo === 'imagen' && real) {
       medio = '<img src="' + esc(real) + '" alt="' + esc(it.titulo || 'Historia') + '">';
     } else {
-      medio = '<div class="historia-texto-card" style="background:' + esc(it.fondo || 'linear-gradient(135deg,#0b2240,#962fbf)') + ';"><p>' + esc(it.texto || it.titulo || 'Historia') + '</p></div>';
+      medio = '<div class="historia-texto-card" style="background:' + esc(it.fondo || 'linear-gradient(135deg,#0b2240,#962fbf)') + ';"><p>' + htmlDeContenido(it.texto || it.titulo || 'Historia') + '</p></div>';
     }
     const barras = lista.map(function (_, k) {
       return '<span class="historia-barra-prog"><span data-barra="' + k + '" style="width:' + (k < historiaIndice ? '100%' : '0%') + ';"></span></span>';

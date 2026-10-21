@@ -150,6 +150,20 @@ console.log('\n=== diseño de dos niveles ===');
   else if (!css) ko(par[0] + ': falta el CSS de la tarjeta (quedaría sin formato)');
   else ok(par[0] + ': tarjeta con marcado y CSS');
 });
+
+/* Los campos con formato deben maquetarse, no escaparse: si se escapan, la
+   nota escrita en el editor Word sale con las etiquetas a la vista. */
+console.log('\n=== contenido con formato ===');
+[['editor/index.html', 'copia de trabajo'], ['publicar/index.html', 'publicado'], ['index.html', 'raíz']].forEach((par) => {
+  const f = path.join(RAIZ, par[0]);
+  if (!fs.existsSync(f)) return;
+  const h = fs.readFileSync(f, 'utf8');
+  const helper = h.indexOf('function htmlDeContenido') > -1;
+  const usos = (h.match(/htmlDeContenido\(/g) || []).length;
+  if (!helper) ko(par[0] + ': falta el ayudante que maqueta el contenido con formato');
+  else if (usos < 10) ko(par[0] + ': solo ' + usos + ' campos usan el ayudante (deberían ser más)');
+  else ok(par[0] + ': ' + usos + ' campos con formato se maquetan bien');
+});
 if (pubH.indexOf('href="redaccion-cms.html"') !== -1) ok('el pie del portal enlaza a la puerta de redacción');
 else ko('el pie del portal no enlaza a la puerta de redacción');
 if (pubH.indexOf('copiarEnlaceItem') !== -1) ok('el CMS permite copiar el enlace de cada elemento');

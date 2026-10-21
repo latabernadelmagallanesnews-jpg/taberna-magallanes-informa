@@ -251,6 +251,10 @@ const CIERRE_NUEVO = `  /* Ficha técnica de contacto al final de la nota. */
 
 function reemplazar(texto, viejo, nuevo, etiqueta) {
   if (texto.indexOf(nuevo) !== -1) return texto;
+  /* El marcado de la tarjeta lo aplica el parche del editor Word (que además
+     le pasa los campos por htmlDeContenido). Si ya está la tarjeta, aquí solo
+     falta el CSS. */
+  if (etiqueta === 'tarjeta del muro' && texto.indexOf('class="teaser"') > -1) return texto;
   if (texto.indexOf(viejo) === -1) {
     throw new Error('No se encontró el fragmento «' + etiqueta + '»');
   }
