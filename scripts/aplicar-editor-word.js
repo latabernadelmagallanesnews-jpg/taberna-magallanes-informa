@@ -2207,6 +2207,27 @@ function aplicar(archivo) {
     'el distintivo de la previsualización reconoce TikTok'
   );
 
+  /* --- si el servidor local no responde, el HTML baja solo ---------------- */
+  /* Cuando el servidor no está, el CMS baja el HTML publicado en la carpeta
+     de Descargas y el diario lo recoge y lo sube solo. Así la publicación
+     nunca se queda sin salida. */
+  h = reemplazar(
+    h,
+    `    } catch (e) {
+      /* El servidor local está apagado o no se alcanza. El aviso dice qué
+         hacer en cada caso, sin dejar a nadie sin salida. */
+      toast('⚠️ No se pudo conectar con la computadora. Si el servidor local está apagado: doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio) y después pulse «Publicar ahora» otra vez. Si está en el teléfono: pulse «⬇️ Descargar HTML publicado» y en la computadora del diario doble clic en PUBLICAR-EL-DIARIO.cmd.', 16000);
+    }`,
+    `    } catch (e) {
+      /* El servidor local no respondió. Se baja el HTML publicado: el
+         diario lo recoge de la carpeta de Descargas y lo sube solo, sin
+         que haya que hacer nada más. */
+      try { descargarPaginaPublicada(); } catch (e2) { }
+      toast('⚠️ El servidor local no respondió, así que he bajado el HTML publicado. En cuanto termine de bajar, el diario se instala y se publica solo. Si no ocurre, doble clic en PUBLICAR-EL-DIARIO.cmd (Escritorio).', 16000);
+    }`,
+    'si el servidor no responde, el HTML baja y se publica solo'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

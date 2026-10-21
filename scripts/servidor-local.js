@@ -16,6 +16,7 @@
 
 const http = require('http');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
@@ -197,7 +198,62 @@ servidor.listen(PUERTO, function () {
   console.log('Servidor local del diario en http://localhost:' + PUERTO + '/');
   console.log('  · portal publicado : http://localhost:' + PUERTO + '/');
   console.log('  · copia de trabajo : http://localhost:' + PUERTO + '/editor/index.html');
+  console.log('  · vigilando Descargas: si baja un index.html del CMS, se publica solo');
 });
+
+/* -------------------------------------------------------------------------- */
+/* VIGILAR LA CARPETA DE DESCARGAS                                              */
+/* -------------------------------------------------------------------------- */
+/* Cuando el CMS baja el HTML publicado, esta carpeta lo recibe. Aquí se
+   recoge y se publica sin que nadie tenga que hacer nada. Así el botón
+   «Publicar ahora» del CMS sirve aunque el navegador no alcance al
+   servidor: basta con que baje el archivo. */
+const CARPETA_DESCARGAS = path.join(os.homedir(), 'Downloads');
+const MARCA_PROCESADOS = path.join(RAIZ, '.html-procesados.json');
+const EDAD_MAXIMA_MS = 3 * 60 * 1000;   // solo lo nuevo: tres minutos
+
+let procesados = {};
+try { procesados = JSON.parse(fs.readFileSync(MARCA_PROCESADOS, 'utf8')); } catch (e) { }
+
+function estadoDelArchivo(ruta) {
+  const m = fs.readFileSync(ruta, 'utf8');
+  const mm = m.match(/<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/);
+  if (!mm) return null;
+  try { return JSON.parse(mm[1]); } catch (e) { return null; }
+}
+
+function vigilarDescargas() {
+  setInterval(function () {
+    let nombres = [];
+    try { nombres = fs.readdirSync(CARPETA_DESCARGAS); } catch (e) { return; }
+    nombres.filter(function (n) { return /^index.*\.html$/i.test(n); }).forEach(function (nombre) {
+      const ruta = path.join(CARPETA_DESCARGAS, nombre);
+      let st;
+      try { st = fs.statSync(ruta); } catch (e) { return; }
+      if (Date.now() - st.mtimeMs > EDAD_MAXIMA_MS) return;         // no es nuevo
+      const clave = st.size + '|' + Math.round(st.mtimeMs);
+      if (procesados[nombre] === clave) return;                     // ya se hizo
+      procesados[nombre] = clave;
+      try { fs.writeFileSync(MARCA_PROCESADOS, JSON.stringify(procesados)); } catch (e) { }
+
+      console.log('· HTML nuevo en Descargas (' + nombre + '): se instala y se publica solo');
+      try {
+        const { execFileSync } = require('child_process');
+        execFileSync(process.execPath, [path.join(RAIZ, 'scripts', 'instalar-html-publicado.js')], { stdio: 'pipe' });
+        const estado = estadoDelArchivo(path.join(PUBLICAR, 'index.html'));
+        if (!estado) { console.log('· el HTML descargado no trae contenido'); return; }
+        const r = publicarContenido(estado, { publicar: true });
+        console.log(r.publicado
+          ? '  ✓ publicado: ' + (r.error ? r.error : 'subido a GitHub')
+          : '  ✗ no se pudo publicar: ' + (r.error || ''));
+      } catch (e) {
+        console.log('· no se pudo publicar el archivo descargado: ' + String(e && e.message ? e.message : e));
+      }
+    });
+  }, 8000);
+}
+vigilarDescargas();
+
 
 /* El servidor no debe caerse nunca: si una petición sale mal o se recompila
    el portal mientras se sirve, sigue listening para que «Publicar ahora»
