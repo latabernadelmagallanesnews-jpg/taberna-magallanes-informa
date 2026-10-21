@@ -219,12 +219,23 @@ El script que lo aplica es `scripts/parche-longform.js` (idempotente).
    `publicar/redaccion-cms.html`.
 4. Escriba con formato en el editor estilo Word y suba sus fotos, audios y
    videos.
-5. Pulse **🚀 Descargar HTML publicado**: el navegador baja un `index.html`
-   con TODO su contenido (fotos, notas, textos).
-6. **`npm run instalar`** → ese archivo se copia solo a `publicar/` y se
-   regenera `data.json`. *(También puede copiarlo a mano, pero el comando
-   comprueba que sí traiga su contenido y avisa si no.)*
+5. Pulse **🚀 Publicar ahora**: el contenido viaja directo a la computadora
+   (sin descargar archivos de 30 MB), se instala solo en `publicar/`, se sube a
+   GitHub y queda publicado. **Un clic y listo.**
+6. Si prefiere el archivo, pulse **⬇️ Descargar HTML publicado**: el navegador
+   baja un `index.html` con TODO su contenido (fotos, notas, textos) y luego
+   `npm run instalar` lo copia solo a `publicar/`.
 7. `npm run deploy` para publicar en Firebase, o `git push` para GitHub.
+
+> **Atajo sin escribir nada:** doble clic en **`PUBLICAR-EL-DIARIO.cmd`** (en el
+> Escritorio). Instala lo que se descargó, compila, sube a GitHub y **espera a
+> comprobar que el sitio ya muestra el contenido** antes de darle luz verde.
+> Así nadie se queda con la duda de si salió o no.
+
+> **Audios y videos pesados:** no se incrustan en el HTML (un MP3 repetido en
+> cinco campos pasaba el diario de 1,9 MB a 37 MB). Al instalar, los archivos
+> grandes se sacan a `publicar/multimedia/` y el HTML guarda solo su nombre:
+> el audio se reproduce igual y la página pesa poco.
 
 > **Si algo "desaparece":** casi siempre es que el HTML descargado no se
 > copió a `publicar/`. El contenido se guarda en el navegador del editor, no

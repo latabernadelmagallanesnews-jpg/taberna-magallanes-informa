@@ -1729,6 +1729,23 @@ function aplicar(archivo) {
     'ayuda de publicación del CMS'
   );
 
+  /* --- al cargar, las imágenes locales (file://) se limpian ---------------- */
+  /* Una imagen pegada desde el escritorio (file:///C:/...) solo existe en esa
+     computadora: se ve rota y no se puede publicar. Se quita al abrir. */
+  h = reemplazar(
+    h,
+    `    portalState = fusionar(base, guardado);
+    const contador = document.getElementById('cmsContadorModulos');`,
+    `    portalState = fusionar(base, guardado);
+    const locales = quitarImagenesLocales(portalState);
+    if (locales) {
+      toast('⚠️ Se quitaron ' + locales + ' imagen(es) locales (file://): no se pueden publicar. Súbalas con el botón de multimedia del módulo.', 9000);
+      persistirEstadoPortal(false);
+    }
+    const contador = document.getElementById('cmsContadorModulos');`,
+    'limpieza de imágenes locales al cargar'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,

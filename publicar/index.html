@@ -2989,6 +2989,11 @@
     const embebido = leerEstadoEmbebido();
     const base = fusionar(ESTADO_SEMILLA, embebido);
     portalState = fusionar(base, guardado);
+    const locales = quitarImagenesLocales(portalState);
+    if (locales) {
+      toast('⚠️ Se quitaron ' + locales + ' imagen(es) locales (file://): no se pueden publicar. Súbalas con el botón de multimedia del módulo.', 9000);
+      persistirEstadoPortal(false);
+    }
     const contador = document.getElementById('cmsContadorModulos');
     if (contador) contador.textContent = ESQUEMA_CMS.length;
     const almacenEl = document.getElementById('cmsEstadoAlmacen');
