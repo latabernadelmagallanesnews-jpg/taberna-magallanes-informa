@@ -45,15 +45,18 @@ const CAMBIOS = [
 
   ['cronica.html',
     `function parrafos(t) {
-  return String(t || '').split(/\\n\\s*\\n/).filter(function (x) { return x.trim(); })
-    .map(function (p) { return '<p style="font-size:0.92rem; line-height:1.75; color:#1f2937; margin:0 0 12px;">' + esc(p.trim()) + '</p>'; }).join('');
+  var s = String(t || '');
+  /* Si el texto viene con formato (editor Word), se muestra tal cual. */
+  if (ricoEsRico(s)) return ricoHtml(s);
+  return s.split(/\\n\\s*\\n/).filter(function (x) { return x.trim(); })
+    .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
 }`,
     `function parrafos(t) {
   var s = String(t || '');
   /* Si el texto viene con formato (editor Word), se muestra tal cual. */
   if (ricoEsRico(s)) return ricoHtml(s);
   return s.split(/\\n\\s*\\n/).filter(function (x) { return x.trim(); })
-    .map(function (p) { return '<p style="font-size:0.92rem; line-height:1.75; color:#1f2937; margin:0 0 12px;">' + esc(p.trim()) + '</p>'; }).join('');
+    .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
 }`],
 
   /* ------------------------------------------------------------------ */

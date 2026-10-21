@@ -1604,6 +1604,57 @@ function aplicar(archivo) {
     'escucha del pegado en los editores'
   );
 
+  /* --- las descargas grandes necesitan más tiempo ------------------------ */
+  /* Con un archivo de 30 MB, revocar el enlace a los 1,5 s cancelaba la
+     descarga a medias y el navegador avisaba que no se pudo descargar. */
+  h = reemplazar(
+    h,
+    `    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);`,
+    `    setTimeout(function () { URL.revokeObjectURL(url); }, 120000);`,
+    'tiempo de vida del enlace de descarga'
+  );
+
+  /* --- publicar desde el CMS, sin descargar archivos de 30 MB ------------- */
+  if (h.indexOf('async function publicarAhora(') === -1) {
+  h = reemplazar(
+    h,
+    `  async function descargarPaginaPublicada() {`,
+    `  /* Publica el contenido directamente en la computadora que tiene el
+     proyecto. Evita descargar un archivo de 30 MB (y que el navegador lo
+     cancele). Si el portal está abierto con doble clic (file://), no hay
+     servidor: se avisa y se cae al método de siempre. */
+  async function publicarAhora() {
+    if (!rolSesion) { toast('🔐 Identifíquese para publicar'); solicitarAccesoCMS(); return; }
+    toast('🚀 Publicando…');
+    try {
+      const r = await fetch('http://localhost:' + (location.port || 8099) + '/publicar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Opciones': JSON.stringify({ publicar: true }) },
+        body: JSON.stringify(estadoParaPublicar())
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'Error desconocido');
+      toast('✅ Publicado. GitHub lo sube en 1-4 minutos.');
+      if (j.extraidos) toast('🗂 ' + j.extraidos + ' archivo(s) de audio/video sacados a la carpeta multimedia/');
+    } catch (e) {
+      toast('⚠️ No se pudo publicar directamente. Si abrió el portal con doble clic, abra http://localhost:' + (location.port || 8099) + '/editor/index.html y use «Publicar ahora».');
+    }
+  }
+
+  async function descargarPaginaPublicada() {`,
+    'publicarAhora()'
+  );
+  }
+
+  /* --- botón «Publicar ahora» en la barra del CMS ------------------------ */
+  h = reemplazar(
+    h,
+    `          <button type="button" class="cms-boton oro" onclick="descargarPaginaPublicada()" title="Genera un index.html con todo su contenido dentro, listo para subir al hosting">🚀 Descargar HTML publicado</button>`,
+    `          <button type="button" class="cms-boton oro" onclick="publicarAhora()" title="Publica el contenido directamente en esta computadora y lo sube a GitHub (sin descargar archivos de 30 MB)">🚀 Publicar ahora</button>
+          <button type="button" class="cms-boton" onclick="descargarPaginaPublicada()" title="Genera un index.html con todo su contenido dentro, listo para subir al hosting">⬇️ Descargar HTML publicado</button>`,
+    'botón Publicar ahora'
+  );
+
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
   h = reemplazar(
     h,
