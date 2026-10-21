@@ -166,6 +166,20 @@ console.log('\n=== diseño de dos niveles ===');
 
   });
 
+  console.log('\n=== los parches del portal no están encadenados ===');
+  try {
+    const { revisarTodos } = require('./detectar-parches-encadenados');
+    const revision = revisarTodos();
+    if (revision.problemas.length) {
+      ko('hay parches encadenados: ' + [...new Set(revision.problemas)].join(', '));
+    } else {
+      ok('los ' + revision.resultados.reduce(function (a, r) { return a + r.cambios; }, 0) +
+        ' parches pendientes se aplican sin pisarse entre sí');
+    }
+  } catch (e) {
+    ko('no se pudo comprobar los parches: ' + String(e && e.message ? e.message : e));
+  }
+
 console.log('\n=== contenido con formato ===');
 [['editor/index.html', 'copia de trabajo'], ['publicar/index.html', 'publicado'], ['index.html', 'raíz']].forEach((par) => {
   const f = path.join(RAIZ, par[0]);
