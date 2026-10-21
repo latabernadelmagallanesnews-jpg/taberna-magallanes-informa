@@ -119,6 +119,19 @@ const CAMBIOS = [
     `<script type="application/ld+json" id="datosNota">{}</script>
 </head>`],
 
+  ['cronica.html',
+    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });`,
+    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);`],
+
+  ['cronica.html',
+    `</head>`,
+    `<link rel="canonical" id="canonicoNota" href="">
+</head>`],
+
   /* ------------------------------------------------------------------ */
   /* roster.html                                                        */
   /* ------------------------------------------------------------------ */
@@ -194,6 +207,11 @@ function aplicar(archivo) {
        parche entraba dos veces y duplicaba el bloque. */
     if (h.indexOf(nuevo) !== -1) return;
     if (h.indexOf(nuevo.replace(/\n/g, '\r\n')) !== -1) return;
+    /* Y si el bloque empieza por una etiqueta propia (los que se insertan
+       en la cabeza pueden quedar intercalados entre sí), basta con que esa
+       etiqueta esté para saber que el parche ya se aplicó. */
+    const primera = String(nuevo).split('\n')[0];
+    if (primera && primera.length > 20 && h.indexOf(primera) !== -1) return;
     if (h.indexOf(viejo) === -1) {
       console.warn('  ⚠ No se encontró en ' + archivo + ': ' + viejo.slice(0, 60) + '…');
       return;

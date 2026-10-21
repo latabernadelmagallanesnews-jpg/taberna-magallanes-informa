@@ -209,6 +209,12 @@
 
 
 
+
+
+
+
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -407,7 +413,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-21T20:39:49.601Z">
+  <meta name="taberna-version" content="2026-10-21T20:48:07.209Z">
 
 
 
@@ -416,6 +422,9 @@
 
 
 <script type="application/ld+json" id="datosNota">{}</script>
+<link rel="canonical" id="canonicoNota" href="">
+
+
 </head>
 <body>
 <header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html" style="background:#0b2240;color:#ffffff;">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
@@ -588,6 +597,37 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: resumen });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);
+
+  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
+     quién la firma y cuándo se publicó. */
+  var datos = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: titulo,
+    description: resumen,
+    image: c.imagen || '',
+    datePublished: c.fecha || '',
+    dateModified: c.fecha || '',
+    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
+    publisher: {
+      '@type': 'NewsMediaOrganization',
+      name: 'La Taberna del Magallanes News',
+      url: location.origin + location.pathname.replace(/[^/]*$/, '')
+    },
+    mainEntityOfPage: url,
+    articleSection: c.badge || 'Crónica',
+    inLanguage: 'es'
+  };
+  var bloqueDatos = document.getElementById('datosNota');
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);
 
   /* Datos estructurados: con esto Google sabe que es una nota de prensa,
      quién la firma y cuándo se publicó. */
