@@ -61,7 +61,7 @@
     "activo": true,
     "etiqueta": "Investigación de Terreno",
     "titulo": "Muro de la Crónica & Scouting Reports",
-    "nota": "␟<h1 style=\"text-align: center\"><span style=\"font-size: xx-large; font-style: italic\">Titulo pegado de Word</span></h1><p>Texto con <img src=\"file:///C:/Users/F4NT45M4/Desktop/foto.jpg\" alt=\"foto local\"> imagen pegada</p>",
+    "nota": "␟<h1 style=\"text-align: center\"><span style=\"font-size: xx-large; font-style: italic\">Titulo pegado de Word</span></h1><p>Texto con  imagen pegada</p>",
     "maximoMuro": "4"
   },
   "cronicas": [

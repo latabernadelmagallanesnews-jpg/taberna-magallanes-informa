@@ -300,7 +300,7 @@ const MOTOR_JS = MARCA_MOTOR + `  /* ===========================================
 /* 3 · Editor estilo Word (interfaz del CMS)                                  */
 /* -------------------------------------------------------------------------- */
 
-const EDITOR_JS = MARCA_EDITOR + `  /* ---------------------------------------------------------------------
+let EDITOR_JS = MARCA_EDITOR + `  /* ---------------------------------------------------------------------
      EDITOR ESTILO WORD · barra de formato del CMS
      --------------------------------------------------------------------- */
   function htmlBarraRico() {
@@ -576,6 +576,44 @@ const EDITOR_JS = MARCA_EDITOR + `  /* -----------------------------------------
     });
   }
 ` + MARCA_EDITOR_FIN;
+
+/* --- parches que van DENTRO del bloque del editor --------------------- */
+/* Ojo: si se aplican sobre el HTML, el bloque del editor se reinstala
+   después (instalarBloque) y los borra. Por eso se parchea la fuente. */
+EDITOR_JS = reemplazar(
+  EDITOR_JS,
+  `  function activarEditoresRicos(contenedor) {`,
+  `  /* Al pegar desde Word o desde el explorador de archivos, las imagenes
+     llegan como file:///C:/... y SOLO existen en esa computadora: no se
+     pueden publicar. Se quitan y se avisa de que hay que subirlas. */
+  function limpiarPegado(contenedor) {
+    var imagenes = contenedor.querySelectorAll('img[src^="file:"], img[src^="blob:"], img[data-src^="file:"]');
+    if (!imagenes.length) return;
+    Array.prototype.slice.call(imagenes).forEach(function (im) {
+      if (im.parentNode) im.parentNode.removeChild(im);
+    });
+    toast('⚠️ Se quitaron ' + imagenes.length + ' imagen(es) locales del portapapeles. Para que se publiquen, súbalas con el botón de multimedia del módulo.', 7000);
+  }
+
+  function activarEditoresRicos(contenedor) {`,
+  'limpieza al pegar'
+);
+
+EDITOR_JS = reemplazar(
+  EDITOR_JS,
+  `    contenedor.addEventListener('change', function (e) {
+      const sel = e.target;`,
+  `    contenedor.addEventListener('paste', function (e) {
+      const ed = e.target && e.target.closest ? e.target.closest('.cms-rico-editor') : null;
+      if (!ed) return;
+      setTimeout(function () { limpiarPegado(ed); }, 0);
+    });
+
+    contenedor.addEventListener('change', function (e) {
+      const sel = e.target;`,
+  'escucha del pegado en los editores'
+);
+
 
 /* -------------------------------------------------------------------------- */
 /* 4 · Campos del esquema que usan el editor con formato                      */
@@ -1569,41 +1607,6 @@ function aplicar(archivo) {
     'etiqueta de los elementos en el listado del CMS'
   );
 
-  /* --- 2 · al pegar, las imágenes locales (file://) no se pueden publicar --- */
-  h = reemplazar(
-    h,
-    `  function activarEditoresRicos(contenedor) {`,
-    `  /* Al pegar desde Word o desde el explorador de archivos, las imágenes
-     llegan como file:///C:/... y SOLO existen en esa computadora: no se
-     pueden publicar. Se quitan y se avisa de que hay que subirlas. */
-  function limpiarPegado(contenedor) {
-    var imagenes = contenedor.querySelectorAll('img[src^="file:"], img[src^="blob:"], img[data-src^="file:"]');
-    if (!imagenes.length) return;
-    Array.prototype.slice.call(imagenes).forEach(function (im) {
-      if (im.parentNode) im.parentNode.removeChild(im);
-    });
-    toast('⚠️ Se quitaron ' + imagenes.length + ' imagen(es) locales del portapapeles. Para que se publiquen, súbalas con el botón de multimedia del módulo.', 7000);
-  }
-
-  function activarEditoresRicos(contenedor) {`,
-    'limpieza al pegar'
-  );
-
-  h = reemplazar(
-    h,
-    `    contenedor.addEventListener('change', function (e) {
-      const sel = e.target;`,
-    `    contenedor.addEventListener('paste', function (e) {
-      const ed = e.target && e.target.closest ? e.target.closest('.cms-rico-editor') : null;
-      if (!ed) return;
-      setTimeout(function () { limpiarPegado(ed); }, 0);
-    });
-
-    contenedor.addEventListener('change', function (e) {
-      const sel = e.target;`,
-    'escucha del pegado en los editores'
-  );
-
   /* --- las descargas grandes necesitan más tiempo ------------------------ */
   /* Con un archivo de 30 MB, revocar el enlace a los 1,5 s cancelaba la
      descarga a medias y el navegador avisaba que no se pudo descargar. */
@@ -1653,6 +1656,46 @@ function aplicar(archivo) {
     `          <button type="button" class="cms-boton oro" onclick="publicarAhora()" title="Publica el contenido directamente en esta computadora y lo sube a GitHub (sin descargar archivos de 30 MB)">🚀 Publicar ahora</button>
           <button type="button" class="cms-boton" onclick="descargarPaginaPublicada()" title="Genera un index.html con todo su contenido dentro, listo para subir al hosting">⬇️ Descargar HTML publicado</button>`,
     'botón Publicar ahora'
+  );
+
+  /* --- al publicar, las imágenes locales (file://) no van ---------------- */
+  /* Una imagen pegada desde el escritorio (file:///C:/...) solo existe en esa
+     computadora. Si se publica, sale rota y el navegador avisa al visitante.
+     Se quitan del contenido al publicar y se avisa de que hay que subirlas. */
+  h = reemplazar(
+    h,
+    `  function estadoParaPublicar() {`,
+    `  /* Cuenta y quita las imágenes que solo existen en esta computadora. */
+  function quitarImagenesLocales(valor) {
+    let total = 0;
+    const limpiar = function (txt) {
+      return String(txt)
+        .replace(/<img\\b[^>]*?\\bsrc\\s*=\\s*["']?(?:file|blob):[^>]*>/gi, function () { total++; return ''; })
+        .replace(/<img\\b[^>]*?\\bdata-src\\s*=\\s*["']?(?:file|blob):[^>]*>/gi, function () { total++; return ''; });
+    };
+    const visitar = function (v) {
+      if (typeof v === 'string') return limpiar(v);
+      if (Array.isArray(v)) { for (let i = 0; i < v.length; i++) v[i] = visitar(v[i]); return v; }
+      if (v && typeof v === 'object') { Object.keys(v).forEach(function (k) { v[k] = visitar(v[k]); }); }
+      return v;
+    };
+    visitar(valor);
+    return total;
+  }
+
+  function estadoParaPublicar() {`,
+    'quitar imágenes locales al publicar'
+  );
+
+  h = reemplazar(
+    h,
+    `    const copia = clonar(portalState);
+    const seg = copia.seguridad || (copia.seguridad = {});`,
+    `    const copia = clonar(portalState);
+    const locales = quitarImagenesLocales(copia);
+    if (locales) toast('⚠️ Se quitaron ' + locales + ' imagen(es) locales (file://) del contenido: no se pueden publicar. Súbalas con el botón de multimedia del módulo.', 9000);
+    const seg = copia.seguridad || (copia.seguridad = {});`,
+    'aviso de imágenes locales al publicar'
   );
 
   /* --- ?cms=1 abre el CMS si el equipo ya está autorizado -------------- */
