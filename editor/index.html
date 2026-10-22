@@ -10,21 +10,21 @@
   <title>La Taberna del Magallanes News | Gaceta Sabermétrica & LVBP</title>
 
   <!-- SEO & Metadatos Principales (editables desde el CMS) -->
-  <meta id="seoDescripcion" name="description" content="Gaceta sabermétrica, analítica Statcast, scouting y crónicas de investigación sobre los Navegantes del Magallanes y la LVBP. Fundador y Director: Luis Enrique Aponte Guzmán.">
+  <meta name="description" content="La Taberna del Magallanes News · Gaceta Sabermétrica &amp; LVBP · La Taberna del Magallanes News | Gaceta Sabermétrica &amp; LVBP">
   <meta id="seoAutor" name="author" content="Luis Enrique Aponte Guzmán">
   <link id="seoCanonica" rel="canonical" href="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/">
 
   <!-- Open Graph / WhatsApp / Redes Sociales -->
   <meta id="ogTagSitio" property="og:site_name" content="La Taberna del Magallanes News">
-  <meta id="ogTagTitulo" property="og:title" content="Opening Day LVBP: El colapso del pitcheo abridor y las señales sabermétricas en el arranque turco">
-  <meta id="ogTagDesc" property="og:description" content="Investigación especial: Análisis de comando, decrecimiento angular en el slider y telemetría de lanzamientos en Valencia.">
+  <meta property="og:title" content="La Taberna del Magallanes News | Gaceta Sabermétrica &amp; LVBP">
+  <meta property="og:description" content="La Taberna del Magallanes News · Gaceta Sabermétrica &amp; LVBP">
   <meta id="ogTagImagen" property="og:image" content="https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=1200&h=630&fit=crop">
   <meta id="ogTagImagenSegura" property="og:image:secure_url" content="https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=1200&h=630&fit=crop">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta id="ogTagUrl" property="og:url" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/">
-  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/">
+  <meta property="og:type" content="website">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
@@ -796,6 +796,7 @@
 
 
 
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -1042,8 +1043,154 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-22T17:04:10.439Z">
-<script type="application/ld+json" id="datosMedio">{}</script></head>
+  <meta name="taberna-version" content="2026-10-22T17:43:51.605Z">
+<script type="application/ld+json" id="datosMedio">{}</script>
+<!-- Google Analytics 4 - La Taberna del Magallanes News -->
+<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: document.title,
+    page_location: document.location.href
+  });
+  /* Evento personalizado: cuando se lee una nota completa */
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (a && a.href && a.href.includes('cronica.html')) {
+      gtag('event', 'click_nota', {
+        event_category: 'navegacion',
+        event_label: a.getAttribute('href') || a.textContent
+      });
+    }
+    if (a && a.href && a.href.includes('whatsapp')) {
+      gtag('event', 'compartir_whatsapp', {
+        event_category: 'compartir',
+        event_label: document.title
+      });
+    }
+  });
+</script>
+
+<!-- Contador de visitantes - La Taberna del Magallanes News -->
+<div id="contador-visitas" style="
+  position:fixed; bottom:10px; right:10px; z-index:9999;
+  background:#0b2240; color:#ffffff; padding:6px 10px;
+  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
+  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
+</div>
+<script>
+(function(){
+  const CONTADOR_URL = 'http://localhost:8099/contador';
+  const elNum = document.getElementById('contador-numero');
+  const elDiv = document.getElementById('contador-visitas');
+  let mostrado = false;
+
+  function mostrar(n) {
+    if (!elNum || !elDiv) return;
+    elNum.textContent = n;
+    elDiv.style.display = 'block';
+    mostrado = true;
+  }
+
+  /* Intenta obtener el conteo del servidor local */
+  fetch(CONTADOR_URL, { mode: 'no-cache' })
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.visitas !== undefined) mostrar(d.visitas);
+    })
+    .catch(function () {
+      /* Sin servidor local: usa localStorage (solo este navegador) */
+      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
+      let n = parseInt(localStorage.getItem(clave) || '0', 10);
+      if (!n) {
+        n = 1;
+        localStorage.setItem(clave, n);
+      } else {
+        n++;
+        localStorage.setItem(clave, n);
+      }
+      mostrar(n);
+    });
+})();
+</script>
+<script type="application/ld+json" id="datosMedio">{}</script>
+<!-- Google Analytics 4 - La Taberna del Magallanes News -->
+<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: document.title,
+    page_location: document.location.href
+  });
+  /* Evento personalizado: cuando se lee una nota completa */
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (a && a.href && a.href.includes('cronica.html')) {
+      gtag('event', 'click_nota', {
+        event_category: 'navegacion',
+        event_label: a.getAttribute('href') || a.textContent
+      });
+    }
+    if (a && a.href && a.href.includes('whatsapp')) {
+      gtag('event', 'compartir_whatsapp', {
+        event_category: 'compartir',
+        event_label: document.title
+      });
+    }
+  });
+</script>
+
+<!-- Contador de visitantes - La Taberna del Magallanes News -->
+<div id="contador-visitas" style="
+  position:fixed; bottom:10px; right:10px; z-index:9999;
+  background:#0b2240; color:#ffffff; padding:6px 10px;
+  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
+  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
+</div>
+<script>
+(function(){
+  const CONTADOR_URL = 'http://localhost:8099/contador';
+  const elNum = document.getElementById('contador-numero');
+  const elDiv = document.getElementById('contador-visitas');
+  let mostrado = false;
+
+  function mostrar(n) {
+    if (!elNum || !elDiv) return;
+    elNum.textContent = n;
+    elDiv.style.display = 'block';
+    mostrado = true;
+  }
+
+  /* Intenta obtener el conteo del servidor local */
+  fetch(CONTADOR_URL, { mode: 'no-cache' })
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.visitas !== undefined) mostrar(d.visitas);
+    })
+    .catch(function () {
+      /* Sin servidor local: usa localStorage (solo este navegador) */
+      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
+      let n = parseInt(localStorage.getItem(clave) || '0', 10);
+      if (!n) {
+        n = 1;
+        localStorage.setItem(clave, n);
+      } else {
+        n++;
+        localStorage.setItem(clave, n);
+      }
+      mostrar(n);
+    });
+})();
+</script>
+</head>
 
 <body>
 
