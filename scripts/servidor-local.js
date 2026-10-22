@@ -43,6 +43,21 @@ const RE_ESTADO = /(<script type="application\/json" id="estadoEmbebido">)([\s\S
 const CARPETA_MEDIA = 'multimedia';
 const UMBRAL_MEDIA = 1.5 * 1024 * 1024;
 
+/* -------------------------------------------------------------------------- */
+/* Contador de visitantes del diario                                           */
+/* -------------------------------------------------------------------------- */
+const CONTADOR_ARCHIVO = path.join(RAIZ, 'contador.json');
+function leerContador() {
+  try { return JSON.parse(fs.readFileSync(CONTADOR_ARCHIVO, 'utf8')); }
+  catch (e) { return { visitas: 0, ultima: '' }; }
+}
+function guardarContador(c) {
+  try { fs.writeFileSync(CONTADOR_ARCHIVO, JSON.stringify(c, null, 2)); }
+  catch (e) { console.error('No se pudo guardar el contador:', e.message); }
+}
+
+/* -------------------------------------------------------------------------- */
+
 /* El estado que hay ahora mismo publicado en el diario. */
 function leerEstadoPublicado() {
   try {
@@ -205,6 +220,30 @@ const servidor = http.createServer((req, res) => {
       res.end(JSON.stringify(resultado));
     });
     return;
+  }
+
+  /* --- contar cada visita al sitio publicado ----------------------------- */
+  /* Cada vez que alguien entra al portal (cualquier página), se cuenta una
+     visita. Así sabemos cuánta gente lee el diario. */
+  if (req.method === 'GET' && url !== '/contador' && !url.startsWith('/multimedia/') && !url.startsWith('/notas/')) {
+    const c = leerContador();
+    c.visitas = (c.visitas || 0) + 1;
+    c.ultima = new Date().toISOString();
+    guardarContador(c);
+  }
+
+  /* --- endpoint: consultar el contador ----------------------------------- */
+  if (req.method === 'GET' && (url === '/contador' || url === '/contador/')) {
+    const c = leerContador();
+    res.writeHead(200, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
+    return res.end(JSON.stringify({ visitas: c.visitas || 0, ultima: c.ultima || '' }));
+  }
+
+  /* --- endpoint: reiniciar el contador (solo desde la redacción) --------- */
+  if (req.method === 'POST' && (url === '/contador/reset' || url === '/contador/reset/')) {
+    guardarContador({ visitas: 0, ultima: '' });
+    res.writeHead(200, Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, CABECERAS_CORS));
+    return res.end(JSON.stringify({ ok: true, visitas: 0 }));
   }
 
   /* --- servir archivos --- */

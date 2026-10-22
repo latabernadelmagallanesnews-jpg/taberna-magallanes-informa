@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-21",
+  "generado": "2026-10-22",
   "portal": {
     "activo": true,
     "ciudad": "Los Teques, Venezuela • Edición Diaria Sabermétrica & Scouting",
@@ -87,7 +87,7 @@
     "etiqueta": "Investigación de Terreno",
     "titulo": "Muro de la Crónica & Scouting Reports",
     "nota": "",
-    "maximoMuro": "1"
+    "maximoMuro": "4"
   },
   "cronicas": [
     {
