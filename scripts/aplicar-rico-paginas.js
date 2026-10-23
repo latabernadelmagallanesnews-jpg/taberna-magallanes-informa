@@ -150,12 +150,21 @@ const CAMBIOS = [
   var lista = d.cronicas || [];
   var c = null;
   if (id === 'hero' && d.hero) {
+    /* Si el "cuerpo" guardado no es el reportaje del titular (por ejemplo,
+       porque quedó el artículo anterior), se usa el epígrafe, que sí lo es.
+       Cuando el CMS se corrige, el cuerpo vuelve a mandar. */
+    var cuerpoHero = d.hero.cuerpo || '';
+    var inicioCita = ricoTexto(d.hero.cita || '').slice(0, 60);
+    if (inicioCita && ricoTexto(d.hero.epigrafe || '').indexOf(inicioCita) !== -1 &&
+        ricoTexto(cuerpoHero).indexOf(inicioCita) === -1) {
+      cuerpoHero = d.hero.epigrafe;
+    }
     c = {
       id: 'hero',
       titulo: d.hero.titulo,
       entradilla: d.hero.cita || d.hero.epigrafe || '',
       subtitulo: '',
-      cuerpo: d.hero.epigrafe || d.hero.cuerpo || '',
+      cuerpo: cuerpoHero || d.hero.epigrafe || '',
       imagen: d.hero.imagen || '',
       autor: d.hero.autor || 'Redacción Central',
       fecha: d.hero.fecha || d.hero.meta || '',
