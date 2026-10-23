@@ -161,9 +161,10 @@ const CSS_WORD = `/*__CSS_PROPIO_INICIO__*/
     .compartir-enlace-url { user-select: all; -webkit-user-select: all; }
     .compartir-enlace .red-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 0.68rem; }
     .cms-rico-marcador { display: inline-block; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px; }
-    /* Entrada discreta a la sala de redacción, en el pie del diario */
-    footer a[href="redaccion-cms.html"] { opacity: 0.55; transition: opacity .15s ease; }
-    footer a[href="redaccion-cms.html"]:hover { opacity: 1; color: #0b2240 !important; text-decoration: underline !important; }
+    /* Enlace interno de la sala de redacción: oculto para los lectores.
+       La redacción entra por el atajo Ctrl+Alt+M, el gesto del logotipo o la
+       dirección privada; nunca por un enlace visible en el pie. */
+    footer a[href="redaccion-cms.html"] { display: none !important; }
     /* Columna derecha del muro de crónicas: la nota de la redacción */
     .cronicas-cabecera { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 34%); gap: 1.6rem; align-items: start; border-bottom: 2px solid #0b2240; padding-bottom: 1.1rem; margin-bottom: 1.4rem; }
     .cronicas-cabecera-izq { min-width: 0; }
