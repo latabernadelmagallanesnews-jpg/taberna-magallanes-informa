@@ -84,13 +84,21 @@ const CSS_COMUN_LONGFORM = `
     .longform-texto span[style*="background-color"], .longform-texto p[style*="background-color"] {
       background-color: transparent !important;
     }
-    /* El epígrafe sobre la foto: legible también en un teléfono pequeño. */
-    #heroEpigrafe { font-size: clamp(0.8rem, 2.6vw, 0.95rem) !important; line-height: 1.45; }
+    /* La entrada de portada va debajo de la foto, en su propio bloque:
+       nada de texto blanco encima de la imagen. */
+    .hero-epigrafe { text-align: left; }
+    #heroEpigrafe {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: clamp(1.05rem, 2.4vw, 1.22rem) !important;
+      line-height: 1.62;
+      color: #374151;
+      margin: 0;
+    }
     /* El titular de portada, con medida corta y sin aire de más. */
     #heroTitulo { font-size: clamp(1.55rem, 5.6vw, 2.9rem) !important; line-height: 1.14; letter-spacing: -0.015em; }
     @media (max-width: 560px) {
       #heroTitulo { font-size: clamp(1.35rem, 7.4vw, 1.9rem) !important; line-height: 1.2; }
-      #heroEpigrafe { font-size: 0.82rem !important; }
+      #heroEpigrafe { font-size: 1.02rem !important; line-height: 1.58; }
     }
     /* ================================================================
        QUE LA NOTA LARGA QUEPA EN UN TELÉFONO
@@ -177,19 +185,9 @@ const CSS = `/*__LONGFORM_INICIO__*/
       .pizarra-acciones span { flex: 1 1 100%; line-height: 1.4; }
       .pizarra-btn { white-space: nowrap; }
     }
-    /* ================================================================
-       EL EPÍGRAFE DE LA PORTADA, SIEMPRE LEGIBLE
-       ----------------------------------------------------------------
-       El texto blanco encima de la foto se mezclaba con el gráfico de
-       la imagen. En pantallas pequeñas pasa debajo de la foto, con su
-       propio fondo y su filete dorado.
-       ================================================================ */
-    .hero-epigrafe { max-width: 64ch; }
-    @media (max-width: 760px) {
-      .hero-epigrafe { position: static !important; background: #0d141c !important;
-        border-left: 3px solid #c59b27; padding: 0.75rem 0.9rem !important;
-        max-width: none; }
-    }
+    /* La entrada de la portada ya vive debajo de la foto: su fondo y su
+       padding vienen del bloque de la figura, sin reglas de escritorio
+       que la vuelvan a montar sobre la imagen. */
     /*__LONGFORM_FIN__*/
 `;
 
@@ -393,7 +391,7 @@ const RAIL_NUEVO = `  /* La nota ocupa todo el ancho: sin barras laterales. El m
     relacionadas = '<div class="nota-caja" style="margin-top:2rem;"><b class="nota-caja-tit">📖 Seguir leyendo</b><div class="nota-caja-cuerpo">' +
       otras.map(function (o) {
         return '<a href="cronica.html?c=' + encodeURIComponent(o.id) + '" style="display:block; text-decoration:none; color:inherit;">' +
-          (o.imagen ? '<img src="' + esc(o.imagen) + '" alt="" loading="lazy" style="width:100%; height:110px; object-fit:cover; border-radius:7px;">' : '') +
+          (o.imagen ? '<img src="' + esc(urlFotoNota(o.imagen)) + '" alt="" loading="lazy" style="width:100%; height:110px; object-fit:cover; border-radius:7px;">' : '') +
           '<div style="font-family:Playfair Display, Georgia, serif; font-size:0.95rem; color:#0b2240; font-weight:700; line-height:1.3; margin-top:5px;">' + ricoHtml(o.titulo) + '</div>' +
           '<div class="pie">' + esc(o.badge || 'Crónica') + '</div>' +
         '</a>';

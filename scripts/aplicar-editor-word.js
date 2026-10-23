@@ -1986,16 +1986,8 @@ function aplicar(archivo) {
     'el CMS enseña el error real del servidor'
   );
 
-  /* --- el epígrafe del hero: legible, también en un teléfono ------------- */
-  /* El texto blanco encima de la foto se mezclaba con el gráfico de la
-     imagen y no se leía. En pantallas pequeñas pasa debajo de la foto,
-     con su propio fondo; en las grandes, con un velo más cerrado. */
-  h = reemplazar(
-    h,
-    `        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%); padding: 12px 18px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 0.75rem;">`,
-    `        <div class="hero-epigrafe" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.93) 0%, rgba(0,0,0,0.74) 55%, rgba(0,0,0,0.46) 100%); padding: 12px 18px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 0.75rem;">`,
-    'el epígrafe del hero tiene clase propia'
-  );
+  /* El epígrafe del hero ya trae su clase en el marcado y su diseño vive
+     en parche-longform.js. No hace falta un parche de texto aquí. */
 
   /* --- los videos pesados: mejor en YouTube o TikTok ---------------------- */
   /* Un video de 40 MB en el hosting lo descarga CADA visitante y pesa lo

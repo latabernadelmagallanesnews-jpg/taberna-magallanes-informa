@@ -108,11 +108,12 @@
       "entradilla": "El promedio colectivo sube 34 puntos cuando el equipo juega de local. Analizamos viento, altura y horario nocturno del estadio.",
       "autor": "Por Luis Enrique Aponte",
       "cuerpo": "Efecto del Estadio: La brisa que entra por el jardín derecho a partir del séptimo inning convierte batazos de rutina en dobles. Nuestras mediciones de trayectoria en el José Bernardo Pérez muestran un incremento de 7.4 pies de distancia promedio en elevados hacia esa banda.\n\nCon 12.480 personas en las tribunas, el equipo batea .291 de local contra .259 de visitante: la afición no empuja la pelota, pero el parque sí.",
-      "imagen": "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&fit=crop",
+      "imagen": "multimedia/estadio-jose-bernardo-perez-2007.jpg",
       "video": "",
       "enlace": "",
       "audioUrl": "",
-      "audioNombre": ""
+      "audioNombre": "",
+      "imagenPie": "Foto: xolkanf / Wikimedia Commons, CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/). Estadio José Bernardo Pérez, Valencia, 2007."
     }
   ],
   "hilosSeccion": {
@@ -954,13 +955,13 @@
       {
         "id": "fi3",
         "label": "Alojamiento: ",
-        "valor": "Google Firebase Hosting",
+        "valor": "GitHub Pages",
         "color": "#0b2240"
       },
       {
         "id": "fi4",
         "label": "Seguridad: ",
-        "valor": "CSP Certified / Anti-404 Fallback",
+        "valor": "HTTPS · Respaldo activo",
         "color": "#0b2240"
       }
     ],
@@ -1000,7 +1001,7 @@
         "desc": "La cuenta oficial publicó la gráfica con el lineup del día y la rotación anunciada para el segundo juego del compromiso.",
         "autor": "@magallanes",
         "fecha": "Hoy",
-        "imagen": "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&fit=crop"
+        "imagen": "multimedia/estadio-jose-bernardo-perez-2007.jpg"
       },
       {
         "id": "rm3",

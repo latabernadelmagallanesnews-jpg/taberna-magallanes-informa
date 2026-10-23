@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NCA2NCc+PHJlY3Qgd2lkdGg9JzY0JyBoZWlnaHQ9JzY0JyByeD0nMTInIGZpbGw9JyMwYjIyNDAnLz48cGF0aCBkPSdNMTQgMTdoMzZ2NkgxNHonIGZpbGw9JyNjNTliMjcnLz48dGV4dCB4PSczMicgeT0nNDknIGZvbnQtZmFtaWx5PSdHZW9yZ2lhLHNlcmlmJyBmb250LXNpemU9JzM0JyBmb250LXdlaWdodD0nNzAwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjZmZjYzAwJz5UPC90ZXh0Pjwvc3ZnPg==">
 <title>Página no encontrada | La Taberna del Magallanes News</title>
 <meta name="description" content="La página solicitada no existe en La Taberna del Magallanes News.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,6 +82,13 @@
 
 
 
+
+
+
+
+
+
+
 </head>
 <body>
 <header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
@@ -88,9 +96,9 @@
 <h1 class="titulo">Esa jugada se fue por la línea de foul</h1>
 <p class="intro">La página que busca no existe o cambió de dirección. Vuelva a la portada o use el buscador para encontrar la crónica, el jugador o la métrica que necesita.</p>
 <div class="rejilla">
-  <article class="tarjeta"><h3>📰 Portada</h3><p>La investigación especial, la cabina Statcast y el minuto a minuto.</p><a class="boton" href="/index.html">Volver a la portada</a></article>
-  <article class="tarjeta"><h3>🔍 Buscador</h3><p>Busque en todas las crónicas, el roster, la tabla y El Paredón.</p><a class="boton sec" href="/buscador.html">Abrir el buscador</a></article>
-  <article class="tarjeta"><h3>👑 Círculo VIP</h3><p>Regístrese y desbloquee la Cabina Statcast y el scouting.</p><a class="boton sec" href="/vip.html">Hacerme socio VIP</a></article>
+  <article class="tarjeta"><h3>📰 Portada</h3><p>La investigación especial, la cabina Statcast y el minuto a minuto.</p><a class="boton" href="index.html">Volver a la portada</a></article>
+  <article class="tarjeta"><h3>🔍 Buscador</h3><p>Busque en todas las crónicas, el roster, la tabla y El Paredón.</p><a class="boton sec" href="buscador.html">Abrir el buscador</a></article>
+  <article class="tarjeta"><h3>👑 Círculo VIP</h3><p>Regístrese y desbloquee la Cabina Statcast y el scouting.</p><a class="boton sec" href="vip.html">Hacerme socio VIP</a></article>
 </div>
 <hr class="regla">
 <form class="tarjeta" onsubmit="location.href='buscador.html?q='+encodeURIComponent(this.q.value);return false;">
@@ -130,7 +138,29 @@ document.addEventListener('DOMContentLoaded', function () { document.title = '40
     fetch('data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
   } catch (e) { }
 })();
-</script><!-- TABERNA-CONTADOR-INICIO -->
+</script><script>
+/* La página 404 puede servirse en una ruta profunda. Los enlaces relativos
+   se corrigen para que siempre vuelvan a la raíz del portal. */
+(function () {
+  var sub = '/taberna-magallanes-informa/';
+  var base = location.pathname.indexOf(sub) === 0 ? sub : '/';
+  var enlaces = document.querySelectorAll('a[href]');
+  for (var i = 0; i < enlaces.length; i++) {
+    var href = enlaces[i].getAttribute('href');
+    if (!href || /^(https?:|mailto:|tel:|data:|javascript:)/i.test(href) || href.charAt(0) === '#') continue;
+    if (href.indexOf('.html') === -1) continue;
+    enlaces[i].setAttribute('href', base + href.replace(/^\.?\//, ''));
+  }
+  var form = document.querySelector('form[onsubmit]');
+  if (form) {
+    form.onsubmit = function () {
+      location.href = base + 'buscador.html?q=' + encodeURIComponent(this.q.value);
+      return false;
+    };
+  }
+})();
+</script>
+<!-- TABERNA-CONTADOR-INICIO -->
 <div id="contador-visitas" role="status" aria-live="polite" title="Lectores del multimedio" style="
   position: fixed; bottom: 12px; right: 12px; z-index: 9998;
   background: #0b2240; color: #ffffff; padding: 7px 11px;

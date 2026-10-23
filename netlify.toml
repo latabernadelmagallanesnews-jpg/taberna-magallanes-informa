@@ -19,11 +19,8 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# 404 propia del diario
-[[redirects]]
-  from = "/404.html"
-  to = "/404.html"
-  status = 200
+# La 404 propia del diario se sirve sola: Netlify reconoce 404.html
+# y mantiene el código HTTP 404 correcto.
 
 # Reglas de caché: el HTML siempre fresco, los multimedia cacheados
 [[headers]]
