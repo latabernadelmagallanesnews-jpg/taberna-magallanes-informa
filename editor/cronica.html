@@ -270,6 +270,24 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -279,19 +297,27 @@
      ================================================================ */
   .nota-zona { max-width: 1280px; margin: 0 auto; }
 
-  /* Portada inmersiva a sangre */
-  .longform-portada { position: relative; margin: 0 0 2.6rem; background: #0b1118; }
-  .longform-portada-foto { width: 100%; max-height: 74vh; overflow: hidden; }
-  .longform-portada-foto img { width: 100%; height: 100%; max-height: 74vh; object-fit: cover; display: block; }
-  .longform-portada-velo { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,17,24,.12) 0%, rgba(11,17,24,.5) 46%, rgba(11,17,24,.94) 100%); }
-  .longform-portada-texto { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.8rem 1.6rem 2rem; }
-  .longform-etiqueta { display: inline-block; font-family: 'Inter', sans-serif; font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #ffcc00; margin-bottom: .75rem; }
-  .longform-titular { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 5.2vw, 3.5rem); line-height: 1.06; font-weight: 900; color: #fff; margin: 0 0 .55rem; letter-spacing: -.022em; text-shadow: 0 2px 20px rgba(0,0,0,.5); max-width: 22ch; }
-  .longform-subtitulo { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.4rem); line-height: 1.4; color: #fde68a; font-style: italic; margin: 0 0 .8rem; max-width: 46ch; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
-  .longform-entrada { font-family: 'EB Garamond', Georgia, serif; font-size: 1.18rem; line-height: 1.6; color: #eef0f4; margin: 0 0 .9rem; max-width: 56ch; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
-  .longform-firma { font-family: 'Inter', sans-serif; font-size: .74rem; color: #cbd5e1; letter-spacing: .02em; }
-  .longform-firma b { color: #fff; }
-  .longform-sin-foto { background: linear-gradient(140deg, #0b2240 0%, #16233a 60%, #0b1118 100%); padding: 3rem 1.8rem; }
+  /* Portada editorial: la foto arriba, el titular y la entrada abajo.
+     El texto NUNCA va encima de la imagen: así se lee igual de bien en un
+     teléfono pequeño que en un monitor grande. */
+  .longform-portada { position: relative; margin: 0 0 2.2rem; background: #fff; }
+  .longform-portada-foto { width: 100%; height: clamp(240px, 46vh, 520px); overflow: hidden; background: #0b1118; }
+  .longform-portada-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .longform-portada-velo { display: none; }
+  .longform-portada-texto { position: static; max-width: 52rem; margin: 0 auto; padding: 2rem 0 1.4rem; background: #fff; }
+  .longform-etiqueta { display: inline-block; font-family: 'Inter', sans-serif; font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #8a6d00; margin-bottom: .75rem; }
+  .longform-titular { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.9rem, 5.6vw, 3.5rem); line-height: 1.06; font-weight: 900; color: #0b2240; margin: 0 0 .7rem; letter-spacing: -.022em; max-width: 22ch; text-wrap: balance; }
+  .longform-subtitulo { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.4rem); line-height: 1.4; color: #4b5563; font-style: italic; margin: 0 0 .8rem; max-width: 46ch; }
+  .longform-entrada { font-family: 'EB Garamond', Georgia, serif; font-size: 1.18rem; line-height: 1.6; color: #374151; margin: 0 0 .9rem; max-width: 56ch; }
+  .longform-firma { font-family: 'Inter', sans-serif; font-size: .74rem; color: #6b7280; letter-spacing: .02em; }
+  .longform-firma b { color: #0b2240; }
+  .longform-sin-foto { background: linear-gradient(140deg, #0b2240 0%, #16233a 60%, #0b1118 100%); padding: 3rem 1.8rem; min-height: 360px; }
+  .longform-sin-foto .longform-etiqueta { color: #ffcc00; }
+  .longform-sin-foto .longform-titular { color: #fff; }
+  .longform-sin-foto .longform-subtitulo { color: #fde68a; }
+  .longform-sin-foto .longform-entrada { color: #eef0f4; }
+  .longform-sin-foto .longform-firma { color: #cbd5e1; }
+  .longform-sin-foto .longform-firma b { color: #fff; }
 
   /* Columna de lectura: 780-850 px para el ojo */
   .longform-texto { max-width: 52rem; margin: 0 auto; }
@@ -331,7 +357,7 @@
   .nota-acciones { display: flex; flex-wrap: wrap; gap: 7px; margin: 2.2rem auto 0; max-width: 52rem; padding-top: 1.4rem; border-top: 1px solid #e2ded6; }
   .nota-pie { max-width: 52rem; margin: 2rem auto 0; font-size: .72rem; color: #8a8a8a; line-height: 1.7; }
   @media (max-width: 900px) {
-    .longform-portada-texto { padding: 1.1rem 1rem 1.3rem; }
+    .longform-portada-texto { padding: 1.4rem .9rem 1.2rem; }
     .longform-titular { max-width: none; }
     .ficha-tecnica dl { grid-template-columns: 1fr; gap: .15rem; }
     .ficha-tecnica dd { margin-bottom: .7rem; }
@@ -405,6 +431,8 @@
     #cronicas { grid-template-columns: minmax(0, 1fr) !important; }
     .nota-zona, .longform-columnas, .longform-texto, .longform-portada,
     .longform-portada-foto, .longform-portada-texto { min-width: 0; max-width: 100%; }
+    /* El bloque del titular se alinea con la columna de lectura (52rem). */
+    .longform-portada-texto { max-width: 52rem; }
     .longform-texto img, .longform-texto figure { width: min(1280px, 100vw); }
     .longform-columnas { display: block; }
     .ficha-tecnica, .nota-acciones, .nota-pie { max-width: min(52rem, 100%); }
@@ -468,7 +496,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-23T00:20:37.326Z">
+  <meta name="taberna-version" content="2026-10-23T01:10:51.215Z">
 
 
 
@@ -478,6 +506,15 @@
 
 <script type="application/ld+json" id="datosNota">{}</script>
 <link rel="canonical" id="canonicoNota" href="">
+
+
+
+
+
+
+
+
+
 
 
 
@@ -510,12 +547,108 @@
 
 var DATOS = null;
 function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+/* El texto pegado desde Word suele llegar partido en una línea por renglón:
+   cada línea es un <div> o un <p>. Si se muestra tal cual, la nota parece un
+   poema y las palabras se cortan. Estas funciones vuelven a armar párrafos,
+   subtítulos y listas legibles sin cambiar una sola palabra del original. */
+function lineasDeRico(s) {
+  var html = String(s || '').slice(1);
+  html = html.replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<h([1-6])[^>]*>/gi, '\n## ')
+    .replace(/<\/h[1-6]>/gi, '\n')
+    .replace(/<li[^>]*>/gi, '\n• ')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<\/(p|div|blockquote|tr|td|th)>/gi, '\n')
+    .replace(/<[^>]*>/g, ' ');
+  var caja = document.createElement('textarea');
+  caja.innerHTML = html;
+  return String(caja.value || '').replace(/\u00a0/g, ' ')
+    .split(/\n+/)
+    .map(function (x) { return x.replace(/[ \t]+/g, ' ').trim(); })
+    .filter(Boolean);
+}
+function esTituloDeLinea(l) {
+  return l.length <= 90 && !/[.!?:;]$/.test(l) && /^[A-ZÁÉÍÓÚÑ0-9¿¡"«]/.test(l);
+}
+function bloquesDeLineas(lineas) {
+  var bloques = [], parrafo = [], lista = null;
+  function cerrarParrafo() {
+    if (parrafo.length) { bloques.push({ t: 'p', v: parrafo.join(' ') }); parrafo = []; }
+  }
+  function cerrarLista() {
+    if (lista && lista.length) bloques.push({ t: 'ul', v: lista });
+    lista = null;
+  }
+  lineas.forEach(function (l) {
+    if (/^##\s+/.test(l)) {
+      cerrarParrafo(); cerrarLista();
+      bloques.push({ t: 'h2', v: l.replace(/^##\s+/, '') });
+      return;
+    }
+    if (/^[\uF0B7\u2022\u00B7\u25CF\u25AA\u25E6\u2043-]\s*/.test(l)) {
+      cerrarParrafo();
+      if (!lista) lista = [];
+      lista.push(l.replace(/^[\uF0B7\u2022\u00B7\u25CF\u25AA\u25E6\u2043-]\s*/, ''));
+      return;
+    }
+    if (lista) {
+      var ultima = lista[lista.length - 1] || '';
+      /* Las líneas que siguen en minúscula son la continuación del mismo
+         punto; las que empiezan en mayúscula abren otro bloque. */
+      if (/^[a-záéíóúñü0-9(,;:—-]/.test(l) || !/[.!?…]$/.test(ultima)) {
+        lista[lista.length - 1] = ultima + ' ' + l;
+        return;
+      }
+      cerrarLista();
+    }
+    if (esTituloDeLinea(l)) {
+      cerrarParrafo();
+      bloques.push({ t: 'h2', v: l });
+      return;
+    }
+    parrafo.push(l);
+  });
+  cerrarParrafo(); cerrarLista();
+  return bloques;
+}
+function parrafosDeRico(s) {
+  return bloquesDeLineas(lineasDeRico(s)).map(function (b) {
+    if (b.t === 'ul') {
+      return '<ul>' + b.v.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    }
+    if (b.t === 'h2') return '<h2>' + esc(b.v) + '</h2>';
+    return '<p>' + esc(b.v) + '</p>';
+  }).join('');
+}
+function esRicoFragmentado(s) {
+  if (!ricoEsRico(s)) return false;
+  var html = String(s).slice(1);
+  var divs = (html.match(/<div\b/gi) || []).length;
+  var bloques = (html.match(/<(p|div|h[1-6]|li|blockquote)\b/gi) || []).length;
+  if (!bloques) return false;
+  var texto = ricoTexto(s);
+  if (divs >= 8 && divs / bloques > 0.7 && (texto.length / bloques) < 160) return true;
+  var caja = document.createElement('div');
+  caja.innerHTML = html;
+  var primero = caja.querySelector('p,div,h1,h2,h3,h4,h5,h6,li,blockquote');
+  if (bloques >= 2 && primero) {
+    var t = (primero.textContent || '').replace(/\s+/g, ' ').trim();
+    if (t && !/[.!?…]$/.test(t)) return true;
+  }
+  return false;
+}
 function parrafos(t) {
   var s = String(t || '');
-  /* Si el texto viene con formato (editor Word), se muestra tal cual. */
-  if (ricoEsRico(s)) return ricoHtml(s);
+  /* Si el texto viene con formato (editor Word), se muestra con su formato
+     cuando está bien maquetado y se rearma cuando viene partido en líneas. */
+  if (ricoEsRico(s)) return esRicoFragmentado(s) ? parrafosDeRico(s) : ricoHtml(s);
   return s.split(/\n\s*\n/).filter(function (x) { return x.trim(); })
     .map(function (p) { return '<p>' + esc(p.trim()) + '</p>'; }).join('');
+}
+function entradaHtml(v) {
+  var s = String(v || '');
+  if (!ricoEsRico(s)) return esc(s);
+  return esRicoFragmentado(s) ? parrafosDeRico(s) : ricoHtml(s);
 }
 function pintarMuralAntiguo(d) {
   var caja = document.getElementById('cronicas');
@@ -794,7 +927,7 @@ function pintarNota(d, id) {
         '<span class="longform-etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
         '<h1 class="longform-titular">' + esc(ricoTexto(c.titulo)) + '</h1>' +
         (c.subtitulo ? '<div class="longform-subtitulo">' + ricoHtml(c.subtitulo) + '</div>' : '') +
-        (c.entradilla ? '<div class="longform-entrada">' + ricoHtml(c.entradilla) + '</div>' : '') +
+        (c.entradilla ? '<div class="longform-entrada">' + entradaHtml(c.entradilla) + '</div>' : '') +
         '<div class="longform-firma">✍️ <b>' + esc(c.autor || 'Redacción') + '</b>' + (c.fecha ? ' · ' + esc(c.fecha) : '') + ' · La Taberna del Magallanes News</div>' +
       '</div>' +
     '</header>' +

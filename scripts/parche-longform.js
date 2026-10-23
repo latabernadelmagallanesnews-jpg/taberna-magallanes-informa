@@ -103,6 +103,8 @@ const CSS_COMUN_LONGFORM = `
     #cronicas { grid-template-columns: minmax(0, 1fr) !important; }
     .nota-zona, .longform-columnas, .longform-texto, .longform-portada,
     .longform-portada-foto, .longform-portada-texto { min-width: 0; max-width: 100%; }
+    /* El bloque del titular se alinea con la columna de lectura (52rem). */
+    .longform-portada-texto { max-width: 52rem; }
     .longform-texto img, .longform-texto figure { width: min(1280px, 100vw); }
     .longform-columnas { display: block; }
     .ficha-tecnica, .nota-acciones, .nota-pie { max-width: min(52rem, 100%); }
@@ -292,19 +294,27 @@ const CSS_PAGINA = `/*__CSS_LONGFORM_INICIO__*/
      ================================================================ */
   .nota-zona { max-width: 1280px; margin: 0 auto; }
 
-  /* Portada inmersiva a sangre */
-  .longform-portada { position: relative; margin: 0 0 2.6rem; background: #0b1118; }
-  .longform-portada-foto { width: 100%; max-height: 74vh; overflow: hidden; }
-  .longform-portada-foto img { width: 100%; height: 100%; max-height: 74vh; object-fit: cover; display: block; }
-  .longform-portada-velo { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,17,24,.12) 0%, rgba(11,17,24,.5) 46%, rgba(11,17,24,.94) 100%); }
-  .longform-portada-texto { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.8rem 1.6rem 2rem; }
-  .longform-etiqueta { display: inline-block; font-family: 'Inter', sans-serif; font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #ffcc00; margin-bottom: .75rem; }
-  .longform-titular { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 5.2vw, 3.5rem); line-height: 1.06; font-weight: 900; color: #fff; margin: 0 0 .55rem; letter-spacing: -.022em; text-shadow: 0 2px 20px rgba(0,0,0,.5); max-width: 22ch; }
-  .longform-subtitulo { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.4rem); line-height: 1.4; color: #fde68a; font-style: italic; margin: 0 0 .8rem; max-width: 46ch; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
-  .longform-entrada { font-family: 'EB Garamond', Georgia, serif; font-size: 1.18rem; line-height: 1.6; color: #eef0f4; margin: 0 0 .9rem; max-width: 56ch; text-shadow: 0 1px 10px rgba(0,0,0,.6); }
-  .longform-firma { font-family: 'Inter', sans-serif; font-size: .74rem; color: #cbd5e1; letter-spacing: .02em; }
-  .longform-firma b { color: #fff; }
-  .longform-sin-foto { background: linear-gradient(140deg, #0b2240 0%, #16233a 60%, #0b1118 100%); padding: 3rem 1.8rem; }
+  /* Portada editorial: la foto arriba, el titular y la entrada abajo.
+     El texto NUNCA va encima de la imagen: así se lee igual de bien en un
+     teléfono pequeño que en un monitor grande. */
+  .longform-portada { position: relative; margin: 0 0 2.2rem; background: #fff; }
+  .longform-portada-foto { width: 100%; height: clamp(240px, 46vh, 520px); overflow: hidden; background: #0b1118; }
+  .longform-portada-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .longform-portada-velo { display: none; }
+  .longform-portada-texto { position: static; max-width: 52rem; margin: 0 auto; padding: 2rem 0 1.4rem; background: #fff; }
+  .longform-etiqueta { display: inline-block; font-family: 'Inter', sans-serif; font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #8a6d00; margin-bottom: .75rem; }
+  .longform-titular { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.9rem, 5.6vw, 3.5rem); line-height: 1.06; font-weight: 900; color: #0b2240; margin: 0 0 .7rem; letter-spacing: -.022em; max-width: 22ch; text-wrap: balance; }
+  .longform-subtitulo { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.4rem); line-height: 1.4; color: #4b5563; font-style: italic; margin: 0 0 .8rem; max-width: 46ch; }
+  .longform-entrada { font-family: 'EB Garamond', Georgia, serif; font-size: 1.18rem; line-height: 1.6; color: #374151; margin: 0 0 .9rem; max-width: 56ch; }
+  .longform-firma { font-family: 'Inter', sans-serif; font-size: .74rem; color: #6b7280; letter-spacing: .02em; }
+  .longform-firma b { color: #0b2240; }
+  .longform-sin-foto { background: linear-gradient(140deg, #0b2240 0%, #16233a 60%, #0b1118 100%); padding: 3rem 1.8rem; min-height: 360px; }
+  .longform-sin-foto .longform-etiqueta { color: #ffcc00; }
+  .longform-sin-foto .longform-titular { color: #fff; }
+  .longform-sin-foto .longform-subtitulo { color: #fde68a; }
+  .longform-sin-foto .longform-entrada { color: #eef0f4; }
+  .longform-sin-foto .longform-firma { color: #cbd5e1; }
+  .longform-sin-foto .longform-firma b { color: #fff; }
 
   /* Columna de lectura: 780-850 px para el ojo */
   .longform-texto { max-width: 52rem; margin: 0 auto; }
@@ -344,7 +354,7 @@ const CSS_PAGINA = `/*__CSS_LONGFORM_INICIO__*/
   .nota-acciones { display: flex; flex-wrap: wrap; gap: 7px; margin: 2.2rem auto 0; max-width: 52rem; padding-top: 1.4rem; border-top: 1px solid #e2ded6; }
   .nota-pie { max-width: 52rem; margin: 2rem auto 0; font-size: .72rem; color: #8a8a8a; line-height: 1.7; }
   @media (max-width: 900px) {
-    .longform-portada-texto { padding: 1.1rem 1rem 1.3rem; }
+    .longform-portada-texto { padding: 1.4rem .9rem 1.2rem; }
     .longform-titular { max-width: none; }
     .ficha-tecnica dl { grid-template-columns: 1fr; gap: .15rem; }
     .ficha-tecnica dd { margin-bottom: .7rem; }
