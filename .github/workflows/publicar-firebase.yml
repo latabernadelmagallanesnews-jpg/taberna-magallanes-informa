@@ -33,7 +33,6 @@ jobs:
     name: Construir y publicar
     runs-on: ubuntu-latest
     env:
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID || 'la-taberna-del-magallanes-news' }}
 
     steps:
@@ -67,6 +66,8 @@ jobs:
         run: npm install --global firebase-tools@latest
 
       - name: Autenticar con Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "::error::Falta el secreto FIREBASE_SERVICE_ACCOUNT en Settings > Secrets and variables > Actions."
