@@ -118,6 +118,15 @@ function generarUna(nota) {
   meta('name', 'twitter:description', entrada);
   meta('name', 'twitter:image', foto);
 
+  /* --- la descripción para los buscadores ------------------------------
+     La plantilla trae una descripción genérica (y a veces una segunda).
+     Aquí se quitan todas y se deja una sola, la entrada de esta nota. */
+  html = html.replace(/<meta name="description"[^>]*>\s*/g, '');
+  if (entrada) {
+    html = html.replace('</head>',
+      '<meta name="description" content="' + escapar(entrada) + '">\n</head>');
+  }
+
   /* --- el título de la pestaña ----------------------------------------- */
   html = html.replace(/<title>[^<]*<\/title>/, '<title>' + escapar(titulo) + ' · La Taberna del Magallanes News</title>');
 
