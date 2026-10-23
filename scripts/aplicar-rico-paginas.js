@@ -71,6 +71,10 @@ const CAMBIOS = [
   return '<video controls preload="metadata" src="' + esc(url) + '"></video>';
 }`],
 
+  /* Un solo parche para los datos estructurados Y la URL canónica.
+     Antes eran dos parches con la misma ancla: el segundo se metía en
+     medio del primero y, en cada compilación, se añadía otra copia.
+     Por eso cronica.html llegó a tener 33 copias del mismo bloque. */
   ['cronica.html',
     `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });`,
     `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
@@ -96,20 +100,17 @@ const CAMBIOS = [
     inLanguage: 'es'
   };
   var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);`],
+  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
+     cronica.html a secas como si fuera lo mismo que cada nota. */
+  var canonico = document.getElementById('canonicoNota');
+  if (canonico) canonico.setAttribute('href', url);`],
 
   ['cronica.html',
     `</head>`,
     `<script type="application/ld+json" id="datosNota">{}</script>
 </head>`],
-
-  ['cronica.html',
-    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });`,
-    `  if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);`],
 
   ['cronica.html',
     `</head>`,
@@ -137,9 +138,39 @@ const CAMBIOS = [
 }`],
 
 
+  /* La nota principal de la portada (el "hero") también se lee y se
+     comparte en su propia página: notas/hero.html. */
   ['cronica.html',
-    `var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\w-]+/g, '') + '.html';`,
-    `var url = location.origin + location.pathname.replace(/[^/]*$/, '').replace(/notas\/$/, '') + 'notas/' + String(c.id).replace(/[^\w-]+/g, '') + '.html';`],
+    `function pintarNota(d, id) {
+  var lista = d.cronicas || [];
+  var c = null;
+  for (var i = 0; i < lista.length; i++) { if (lista[i] && lista[i].id === id) { c = lista[i]; break; } }
+  if (!c) { mostrarIndice(d); return; }`,
+    `function pintarNota(d, id) {
+  var lista = d.cronicas || [];
+  var c = null;
+  if (id === 'hero' && d.hero) {
+    c = {
+      id: 'hero',
+      titulo: d.hero.titulo,
+      entradilla: d.hero.cita || d.hero.epigrafe || '',
+      subtitulo: '',
+      cuerpo: d.hero.epigrafe || d.hero.cuerpo || '',
+      imagen: d.hero.imagen || '',
+      autor: d.hero.autor || 'Redacción Central',
+      fecha: d.hero.fecha || d.hero.meta || '',
+      badge: d.hero.badge || 'Investigación',
+      video: d.hero.video || '',
+      audioUrl: d.hero.audioUrl || '',
+      audioNombre: d.hero.audioNombre || '',
+      enlace: d.hero.enlace || '',
+      enlaceTxt: d.hero.enlaceTxt || ''
+    };
+  }
+  if (!c) {
+    for (var i = 0; i < lista.length; i++) { if (lista[i] && lista[i].id === id) { c = lista[i]; break; } }
+  }
+  if (!c) { mostrarIndice(d); return; }`],
 
   ['cronica.html',
     `var url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'notas/' + String(c.id).replace(/[^\\w-]+/g, '') + '.html';`,
@@ -228,6 +259,14 @@ function aplicar(archivo) {
       const primera = String(nuevo).split('\n')[0];
       if (primera && primera.length > 20 && h.indexOf(primera) !== -1) return;
     }
+    /* Los bloques que insertan datos estructurados o la URL canónica no
+       deben entrar dos veces aunque otro parche se haya metido en medio:
+       si la señal ya está en el archivo, este parche ya se aplicó. */
+    const traeDatos = nuevo.indexOf('var datos = {') !== -1;
+    const traeCanonico = nuevo.indexOf('var canonico = document.getElementById') !== -1;
+    if (traeDatos && traeCanonico && h.indexOf('var datos = {') !== -1 && h.indexOf('var canonico = document.getElementById') !== -1) return;
+    if (traeDatos && !traeCanonico && h.indexOf('var datos = {') !== -1) return;
+    if (traeCanonico && !traeDatos && h.indexOf('var canonico = document.getElementById') !== -1) return;
     if (h.indexOf(viejo) === -1) {
       console.warn('  ⚠ No se encontró en ' + archivo + ': ' + viejo.slice(0, 60) + '…');
       return;

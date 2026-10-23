@@ -13,3 +13,6 @@ Thumbs.db
 .html-procesados.json
 .ultimo-html-procesado.json
 .estado-respaldo.json
+
+# Contador local del servidor de pruebas (no va al repositorio)
+contador.json

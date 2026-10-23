@@ -255,6 +255,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 /*__CSS_LONGFORM_INICIO__*/
   /* ================================================================
      NIVEL 2 · PÁGINA DE DESTINO A ANCHO COMPLETO (LONGFORM)
@@ -453,7 +463,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-22T22:58:33.493Z">
+  <meta name="taberna-version" content="2026-10-23T00:10:40.770Z">
 
 
 
@@ -463,6 +473,15 @@
 
 <script type="application/ld+json" id="datosNota">{"@context":"https://schema.org","@type":"NewsArticle","headline":"La Nave Turca en casa: cómo el factor Valencia cambia los números del lineup","description":"El promedio colectivo sube 34 puntos cuando el equipo juega de local. Analizamos viento, altura y horario nocturno del estadio.","image":"https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&fit=crop","datePublished":"","dateModified":"","author":{"@type":"Person","name":"Por Luis Enrique Aponte"},"publisher":{"@type":"NewsMediaOrganization","name":"La Taberna del Magallanes News","url":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/"},"mainEntityOfPage":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/c4.html","articleSection":"Afición • 12.480 asistentes","inLanguage":"es"}</script>
 <link rel="canonical" id="canonicoNota" href="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/c4.html">
+
+
+
+
+
+
+
+
+
 
 
 </head>
@@ -626,7 +645,27 @@ function multimediaDeLaNota(d, c) {
 function pintarNota(d, id) {
   var lista = d.cronicas || [];
   var c = null;
-  for (var i = 0; i < lista.length; i++) { if (lista[i] && lista[i].id === id) { c = lista[i]; break; } }
+  if (id === 'hero' && d.hero) {
+    c = {
+      id: 'hero',
+      titulo: d.hero.titulo,
+      entradilla: d.hero.cita || d.hero.epigrafe || '',
+      subtitulo: '',
+      cuerpo: d.hero.epigrafe || d.hero.cuerpo || '',
+      imagen: d.hero.imagen || '',
+      autor: d.hero.autor || 'Redacción Central',
+      fecha: d.hero.fecha || d.hero.meta || '',
+      badge: d.hero.badge || 'Investigación',
+      video: d.hero.video || '',
+      audioUrl: d.hero.audioUrl || '',
+      audioNombre: d.hero.audioNombre || '',
+      enlace: d.hero.enlace || '',
+      enlaceTxt: d.hero.enlaceTxt || ''
+    };
+  }
+  if (!c) {
+    for (var i = 0; i < lista.length; i++) { if (lista[i] && lista[i].id === id) { c = lista[i]; break; } }
+  }
   if (!c) { mostrarIndice(d); return; }
 
   /* La dirección oficial de la nota es su página propia (notas/c1.html):
@@ -644,11 +683,6 @@ function pintarNota(d, id) {
   ponerMeta('twitter', { nombre: 'twitter:title', contenido: titulo });
   ponerMeta('twitter', { nombre: 'twitter:description', contenido: resumen });
   if (c.imagen) ponerMeta('og', { nombre: 'og:image', contenido: c.imagen });
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
-
   /* Datos estructurados: con esto Google sabe que es una nota de prensa,
      quién la firma y cuándo se publicó. */
   var datos = {
@@ -676,849 +710,64 @@ function pintarNota(d, id) {
   var canonico = document.getElementById('canonicoNota');
   if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
-  /* La URL canónica de cada nota: sin ella los buscadores podrían indexar
-     cronica.html a secas como si fuera lo mismo que cada nota. */
-  var canonico = document.getElementById('canonicoNota');
-  if (canonico) canonico.setAttribute('href', url);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
 
-  /* Datos estructurados: con esto Google sabe que es una nota de prensa,
-     quién la firma y cuándo se publicó. */
-  var datos = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: titulo,
-    description: resumen,
-    image: c.imagen || '',
-    datePublished: c.fecha || '',
-    dateModified: c.fecha || '',
-    author: { '@type': 'Person', name: c.autor || 'Redacción Central' },
-    publisher: {
-      '@type': 'NewsMediaOrganization',
-      name: 'La Taberna del Magallanes News',
-      url: location.origin + location.pathname.replace(/[^/]*$/, '')
-    },
-    mainEntityOfPage: url,
-    articleSection: c.badge || 'Crónica',
-    inLanguage: 'es'
-  };
-  var bloqueDatos = document.getElementById('datosNota');
-  if (bloqueDatos) bloqueDatos.textContent = JSON.stringify(datos);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   var nota =
     '<a class="volver" href="cronica.html">← Volver al muro de crónicas</a>' +
@@ -1527,7 +776,7 @@ function pintarNota(d, id) {
       '<div class="longform-portada-velo"></div>' +
       '<div class="longform-portada-texto">' +
         '<span class="longform-etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
-        '<h1 class="longform-titular">' + ricoHtml(c.titulo) + '</h1>' +
+        '<h1 class="longform-titular">' + esc(ricoTexto(c.titulo)) + '</h1>' +
         (c.subtitulo ? '<div class="longform-subtitulo">' + ricoHtml(c.subtitulo) + '</div>' : '') +
         (c.entradilla ? '<div class="longform-entrada">' + ricoHtml(c.entradilla) + '</div>' : '') +
         '<div class="longform-firma">✍️ <b>' + esc(c.autor || 'Redacción') + '</b>' + (c.fecha ? ' · ' + esc(c.fecha) : '') + ' · La Taberna del Magallanes News</div>' +
@@ -1586,7 +835,20 @@ function pintarNota(d, id) {
     '</section>';
 
   var destino = document.getElementById('cronicas');
-  destino.innerHTML = '<div class="nota-zona">' + nota + media + relacionadas + ficha + '</div>';
+  /* Las páginas de nota viven en notas/: los recursos locales (fotos,
+     audios, videos) y los enlaces al portal se piden un nivel arriba. */
+  function arreglarRutasNota(html) {
+    if (!/\/notas\//i.test(location.pathname)) return html;
+    return String(html || '')
+      .replace(/(src|href|poster)="(multimedia\/[^"]*)"/gi, '$1="../$2"')
+      .replace(/(src|href|poster)='(multimedia\/[^']*)'/gi, "$1='../$2'")
+      .replace(/(href|src)="cronica\.html\?c=([^"]+)"/gi, function (m, attr, id) {
+        return attr + '="' + String(id).replace(/[^\w-]+/g, '') + '.html"';
+      })
+      .replace(/(href|src)="cronica\.html"/gi, '$1="../cronica.html"')
+      .replace(/(href|src)="index\.html/gi, '$1="../index.html');
+  }
+  destino.innerHTML = arreglarRutasNota('<div class="nota-zona">' + nota + media + relacionadas + ficha + '</div>');
   document.getElementById('cargando').className = 'oculto';
   document.getElementById('lateral').innerHTML = '';
 
@@ -1695,5 +957,88 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('../data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
   } catch (e) { }
 })();
-</script></body>
+</script><!-- TABERNA-CONTADOR-INICIO -->
+<div id="contador-visitas" role="status" aria-live="polite" title="Lectores del multimedio" style="
+  position: fixed; bottom: 12px; right: 12px; z-index: 9998;
+  background: #0b2240; color: #ffffff; padding: 7px 11px;
+  border-radius: 999px; font-family: Inter, sans-serif; font-size: 0.72rem;
+  line-height: 1.2; box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+  display: none; max-width: calc(100vw - 24px); white-space: nowrap;">
+  <span aria-hidden="true">👥</span>
+  <b id="contador-numero">0</b>
+  <span style="font-size: 0.66rem; opacity: 0.85;">lectores hoy</span>
+  <span id="contador-total" style="font-size: 0.66rem; opacity: 0.65;"></span>
+</div>
+<script>
+(function () {
+  /* La sala de redacción no se mide. */
+  if (/\/editor\/|redaccion-cms/i.test(location.pathname)) return;
+  var elDiv = document.getElementById('contador-visitas');
+  var elNum = document.getElementById('contador-numero');
+  var elTot = document.getElementById('contador-total');
+  if (!elDiv || !elNum) return;
+
+  /* La fecha se calcula al abrir la página, no al compilar: así el contador
+     diario cambia solo aunque el diario pase días sin publicar. */
+  var HOY = new Date().toISOString().slice(0, 10);
+  var CLAVE_TOTAL = 'taberna-magallanes-informa-visitas';
+  var CLAVE_DIA = CLAVE_TOTAL + '-' + HOY;
+  var CLAVE_CACHE = 'taberna_contador_cache_v1';
+  var CLAVE_CONTADO = 'taberna_contador_contado';
+  var NS = 'latabernadelmagallanesnews-jpg.github.io';
+
+  function mostrar(dia, total) {
+    if (typeof dia === 'number') elNum.textContent = dia.toLocaleString('es-VE');
+    if (elTot && typeof total === 'number') elTot.textContent = '· ' + total.toLocaleString('es-VE') + ' en total';
+    elDiv.style.display = 'block';
+  }
+
+  /* Cache corta: al pasar de una página a otra no se vuelve a pedir. */
+  try {
+    var cache = JSON.parse(localStorage.getItem(CLAVE_CACHE) || 'null');
+    if (cache && cache.fecha === HOY && (Date.now() - cache.ts) < 5 * 60 * 1000) {
+      mostrar(cache.dia, cache.total);
+      return;
+    }
+  } catch (e) { }
+
+  var yaContado = false;
+  try { yaContado = localStorage.getItem(CLAVE_CONTADO) === HOY; } catch (e) { }
+  var accion = yaContado ? 'get' : 'hit';
+
+  function pedir(clave) {
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var reloj = ctrl ? setTimeout(function () { ctrl.abort(); }, 4500) : null;
+    var opciones = { cache: 'no-store' };
+    if (ctrl) opciones.signal = ctrl.signal;
+    return fetch('https://abacus.jasoncameron.dev/' + accion + '/' + NS + '/' + encodeURIComponent(clave), opciones)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { return d && typeof d.value === 'number' ? d.value : null; })
+      .catch(function () { return null; })
+      .then(function (v) { if (reloj) clearTimeout(reloj); return v; });
+  }
+
+  Promise.all([pedir(CLAVE_DIA), pedir(CLAVE_TOTAL)]).then(function (v) {
+    var dia = v[0], total = v[1];
+    if (dia === null && total === null) {
+      /* Sin contador global: se intenta el servidor local de la redacción. */
+      return fetch('http://localhost:8099/contador', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && typeof d.visitas === 'number') mostrar(d.visitas, null); })
+        .catch(function () { });
+    }
+    if (!yaContado) {
+      try { localStorage.setItem(CLAVE_CONTADO, HOY); } catch (e) { }
+    }
+    try {
+      localStorage.setItem(CLAVE_CACHE, JSON.stringify({
+        fecha: HOY, dia: dia, total: total, ts: Date.now()
+      }));
+    } catch (e) { }
+    mostrar(dia, total);
+  });
+})();
+</script>
+<!-- TABERNA-CONTADOR-FIN -->
+</body>
 </html>

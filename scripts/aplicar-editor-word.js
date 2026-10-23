@@ -48,6 +48,9 @@ function reemplazar(texto, viejo, nuevo, etiqueta, opciones) {
   if (texto.indexOf(nuevo.replace(/\n/g, '\r\n')) !== -1) return texto;
   const veces = texto.split(viejo).length - 1;
   if (veces === 0) {
+    /* Un parche opcional puede no encontrar su fragmento cuando el archivo
+       ya está en una versión posterior; en ese caso se deja como está. */
+    if (opc.opcional) return texto;
     throw new Error('No se encontró el fragmento «' + etiqueta + '»');
   }
   if (veces > 1 && !opc.todas) {
@@ -1020,8 +1023,8 @@ function aplicar(archivo) {
   h = reemplazar(
     h,
     `    try { setTxt('ogModalDominio', new URL(urlPublicaPortal()).hostname); } catch (e) { }`,
-    `    try { setTxt('ogModalDominio', new URL(urlPublicaPortal()).hostname); } catch (e) { }
-    setTxt('ogModalUrl', urlPublicaPortal());`,
+    `    try { setTxt('ogModalDominio', new URL(url || urlPublicaPortal()).hostname); } catch (e) { }
+    setTxt('ogModalUrl', url || urlPublicaPortal());`,
     'vista previa Open Graph (contenido)'
   );
 
@@ -1788,12 +1791,12 @@ function aplicar(archivo) {
      manda el texto limpio, nunca las etiquetas. Y las etiquetas Open Graph
      se escriben en las que existen, para que la vista previa del enlace
      (WhatsApp, X, Facebook) muestre la foto, el título y el enlace. */
+  /* El titular del hero se comparte en una sola línea, sin las etiquetas ni
+     los saltos que trae el editor Word. */
   h = reemplazar(
     h,
-    `    const titulo = (portalState.hero && portalState.hero.titulo) || s.ogTitulo || '';`,
-    `    /* El titular puede venir con formato (editor Word): para compartir va
-       el texto limpio, nunca las etiquetas. */
-    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '');`,
+    `    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '');`,
+    `    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '').replace(/\\s+/g, ' ').trim();`,
     'el titular del hero se comparte en texto plano'
   );
 

@@ -87,6 +87,16 @@ if (m) {
     lineas.push('    <priority>0.8</priority>');
     lineas.push('  </url>');
   });
+
+  /* La nota principal de la portada también tiene su página propia. */
+  if (e.hero && sinFormato(e.hero.titulo) && !/^nueva cr[oó]nica$/i.test(sinFormato(e.hero.titulo))) {
+    lineas.push('  <url>');
+    lineas.push('    <loc>' + BASE + 'notas/hero.html</loc>');
+    lineas.push('    <lastmod>' + (sinFormato(e.hero.fecha) || hoy) + '</lastmod>');
+    lineas.push('    <changefreq>weekly</changefreq>');
+    lineas.push('    <priority>0.9</priority>');
+    lineas.push('  </url>');
+  }
 }
 
 /* Las páginas sueltas */

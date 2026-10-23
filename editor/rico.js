@@ -39,6 +39,13 @@
     if (!esRico(s)) return s;
     var d = document.createElement('div');
     d.innerHTML = s.slice(1);
+    /* Separa los bloques: si no, <h2>uno</h2><h2>dos</h2> queda «unodos». */
+    Array.prototype.slice.call(d.querySelectorAll('br')).forEach(function (br) {
+      if (br.parentNode) br.parentNode.replaceChild(document.createTextNode(' '), br);
+    });
+    Array.prototype.slice.call(d.querySelectorAll('p,div,h1,h2,h3,h4,h5,h6,li,blockquote,pre,tr,td,th')).forEach(function (b) {
+      b.appendChild(document.createTextNode(' '));
+    });
     return (d.textContent || '').replace(/\s+/g, ' ').trim();
   }
 

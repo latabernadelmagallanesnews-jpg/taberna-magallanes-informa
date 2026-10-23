@@ -60,6 +60,15 @@
   .tabla tr.vipfila td { background: #fffdf5; font-weight: 700; }
   .oculto { display: none; }
 </style>
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 <header class="cab"><div class="cab-in"><div class="cab-marca"><a class="nombre tip-nyt" id="marcaPrincipal" href="index.html">La Taberna del Magallanes News</a><span class="cab-lema">Gaceta Sabermétrica · LVBP</span></div><nav class="nav"><a href="index.html">📰 Portada</a><a href="cronica.html">📖 Crónicas</a><a href="roster.html">⚾ Roster & Posiciones</a><a href="index.html#modulo-18-paredon-fanatico">🧱 El Paredón</a><a href="buscador.html">🔍 Buscador</a><a href="vip.html">👑 VIP</a></nav></div></header><main>
@@ -109,5 +118,88 @@ document.addEventListener('DOMContentLoaded', function () { document.title = '40
     fetch('data.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(aplicar).catch(function () { });
   } catch (e) { }
 })();
-</script></body>
+</script><!-- TABERNA-CONTADOR-INICIO -->
+<div id="contador-visitas" role="status" aria-live="polite" title="Lectores del multimedio" style="
+  position: fixed; bottom: 12px; right: 12px; z-index: 9998;
+  background: #0b2240; color: #ffffff; padding: 7px 11px;
+  border-radius: 999px; font-family: Inter, sans-serif; font-size: 0.72rem;
+  line-height: 1.2; box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+  display: none; max-width: calc(100vw - 24px); white-space: nowrap;">
+  <span aria-hidden="true">👥</span>
+  <b id="contador-numero">0</b>
+  <span style="font-size: 0.66rem; opacity: 0.85;">lectores hoy</span>
+  <span id="contador-total" style="font-size: 0.66rem; opacity: 0.65;"></span>
+</div>
+<script>
+(function () {
+  /* La sala de redacción no se mide. */
+  if (/\/editor\/|redaccion-cms/i.test(location.pathname)) return;
+  var elDiv = document.getElementById('contador-visitas');
+  var elNum = document.getElementById('contador-numero');
+  var elTot = document.getElementById('contador-total');
+  if (!elDiv || !elNum) return;
+
+  /* La fecha se calcula al abrir la página, no al compilar: así el contador
+     diario cambia solo aunque el diario pase días sin publicar. */
+  var HOY = new Date().toISOString().slice(0, 10);
+  var CLAVE_TOTAL = 'taberna-magallanes-informa-visitas';
+  var CLAVE_DIA = CLAVE_TOTAL + '-' + HOY;
+  var CLAVE_CACHE = 'taberna_contador_cache_v1';
+  var CLAVE_CONTADO = 'taberna_contador_contado';
+  var NS = 'latabernadelmagallanesnews-jpg.github.io';
+
+  function mostrar(dia, total) {
+    if (typeof dia === 'number') elNum.textContent = dia.toLocaleString('es-VE');
+    if (elTot && typeof total === 'number') elTot.textContent = '· ' + total.toLocaleString('es-VE') + ' en total';
+    elDiv.style.display = 'block';
+  }
+
+  /* Cache corta: al pasar de una página a otra no se vuelve a pedir. */
+  try {
+    var cache = JSON.parse(localStorage.getItem(CLAVE_CACHE) || 'null');
+    if (cache && cache.fecha === HOY && (Date.now() - cache.ts) < 5 * 60 * 1000) {
+      mostrar(cache.dia, cache.total);
+      return;
+    }
+  } catch (e) { }
+
+  var yaContado = false;
+  try { yaContado = localStorage.getItem(CLAVE_CONTADO) === HOY; } catch (e) { }
+  var accion = yaContado ? 'get' : 'hit';
+
+  function pedir(clave) {
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var reloj = ctrl ? setTimeout(function () { ctrl.abort(); }, 4500) : null;
+    var opciones = { cache: 'no-store' };
+    if (ctrl) opciones.signal = ctrl.signal;
+    return fetch('https://abacus.jasoncameron.dev/' + accion + '/' + NS + '/' + encodeURIComponent(clave), opciones)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { return d && typeof d.value === 'number' ? d.value : null; })
+      .catch(function () { return null; })
+      .then(function (v) { if (reloj) clearTimeout(reloj); return v; });
+  }
+
+  Promise.all([pedir(CLAVE_DIA), pedir(CLAVE_TOTAL)]).then(function (v) {
+    var dia = v[0], total = v[1];
+    if (dia === null && total === null) {
+      /* Sin contador global: se intenta el servidor local de la redacción. */
+      return fetch('http://localhost:8099/contador', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && typeof d.visitas === 'number') mostrar(d.visitas, null); })
+        .catch(function () { });
+    }
+    if (!yaContado) {
+      try { localStorage.setItem(CLAVE_CONTADO, HOY); } catch (e) { }
+    }
+    try {
+      localStorage.setItem(CLAVE_CACHE, JSON.stringify({
+        fecha: HOY, dia: dia, total: total, ts: Date.now()
+      }));
+    } catch (e) { }
+    mostrar(dia, total);
+  });
+})();
+</script>
+<!-- TABERNA-CONTADOR-FIN -->
+</body>
 </html>

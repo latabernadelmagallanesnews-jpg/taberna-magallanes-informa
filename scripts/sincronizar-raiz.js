@@ -32,6 +32,7 @@ const ARCHIVOS = [
   'data.json',
   'rico.js',
   'robots.txt',
+  'sitemap.xml',
   '.nojekyll'
 ];
 

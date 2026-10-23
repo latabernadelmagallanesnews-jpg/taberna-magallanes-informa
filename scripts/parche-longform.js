@@ -412,7 +412,20 @@ const CIERRE_NUEVO = `  /* Ficha técnica de contacto al final de la nota. */
     '</section>';
 
   var destino = document.getElementById('cronicas');
-  destino.innerHTML = '<div class="nota-zona">' + nota + media + relacionadas + ficha + '</div>';`;
+  /* Las páginas de nota viven en notas/: los recursos locales (fotos,
+     audios, videos) y los enlaces al portal se piden un nivel arriba. */
+  function arreglarRutasNota(html) {
+    if (!/\\/notas\\//i.test(location.pathname)) return html;
+    return String(html || '')
+      .replace(/(src|href|poster)="(multimedia\\/[^"]*)"/gi, '$1="../$2"')
+      .replace(/(src|href|poster)='(multimedia\\/[^']*)'/gi, "$1='../$2'")
+      .replace(/(href|src)="cronica\\.html\\?c=([^"]+)"/gi, function (m, attr, id) {
+        return attr + '="' + String(id).replace(/[^\\w-]+/g, '') + '.html"';
+      })
+      .replace(/(href|src)="cronica\\.html"/gi, '$1="../cronica.html"')
+      .replace(/(href|src)="index\\.html/gi, '$1="../index.html');
+  }
+  destino.innerHTML = arreglarRutasNota('<div class="nota-zona">' + nota + media + relacionadas + ficha + '</div>');`;
 
 /* -------------------------------------------------------------------------- */
 /* Aplicación                                                                  */

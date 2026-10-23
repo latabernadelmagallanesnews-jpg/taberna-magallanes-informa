@@ -8,6 +8,9 @@
 
   Con esto, cada nota tiene su propia página (notas/c1.html) con sus datos
   escritos dentro: al compartirla sale SU titular, SU entrada y SU foto.
+
+  La nota principal de la portada (el «hero») también tiene la suya:
+  notas/hero.html.
    ============================================================================ */
 'use strict';
 
@@ -23,7 +26,9 @@ const MARCA = '\u241F';
 function sinFormato(v) {
   return String(v === undefined || v === null ? '' : v)
     .replace(new RegExp(MARCA, 'g'), '')
-    .replace(/<[^>]*>/g, '')
+    /* Las etiquetas se cambian por un espacio, no se borran: si no, dos
+       titulares seguidos (<h2>…</h2><h2>…</h2>) quedan pegados. */
+    .replace(/<[^>]*>/g, ' ')
     .replace(/&nbsp;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -82,19 +87,18 @@ if (!fs.existsSync(CARPETA)) fs.mkdirSync(CARPETA, { recursive: true });
 const vigentes = {};
 let hechas = 0;
 
-(estado.cronicas || []).forEach(function (c) {
-  if (!c || !c.id) return;
-  const titulo = sinFormato(c.titulo);
-  if (!titulo || /^nueva cr[oó]nica$/i.test(titulo)) return;
-
-  const nombreArchivo = c.id.replace(/[^\w-]+/g, '') || 'nota';
+/* Genera la página de una nota a partir de la plantilla de cronica.html. */
+function generarUna(nota) {
+  const nombreArchivo = String(nota.id).replace(/[^\w-]+/g, '') || 'nota';
   const urlNota = BASE + 'notas/' + nombreArchivo + '.html';
   vigentes[nombreArchivo + '.html'] = true;
 
-  const entrada = sinFormato(c.entradilla || c.subtitulo || '').slice(0, 220);
-  const foto = fotoAbsoluta(c.imagen);
-  const autor = sinFormato(c.autor || 'Redacción Central');
-  const fecha = sinFormato(c.fecha || '');
+  const titulo = nota.titulo;
+  const entradaCompleta = String(nota.entrada || '');
+  const entrada = entradaCompleta.slice(0, 220) + (entradaCompleta.length > 220 ? '…' : '');
+  const foto = nota.foto || '';
+  const autor = nota.autor || 'Redacción Central';
+  const fecha = nota.fecha || '';
 
   let html = fs.readFileSync(PLANTILLA, 'utf8');
 
@@ -137,7 +141,7 @@ let hechas = 0;
       url: BASE
     },
     mainEntityOfPage: urlNota,
-    articleSection: sinFormato(c.badge || 'Crónica'),
+    articleSection: nota.badge || 'Crónica',
     inLanguage: 'es'
   };
   const json = JSON.stringify(datos).replace(/<\//g, '<\\/');
@@ -148,12 +152,47 @@ let hechas = 0;
   /* La página vive en notas/, una carpeta más abajo: el archivo de datos y
      el de las funciones se piden en la carpeta de arriba. */
   html = html.replace(/<script src="rico\.js"><\/script>/,
-    '<script src="../rico.js"></script>\n  <script>window.__NOTA_ID__=' + JSON.stringify(c.id) + ';</script>');
+    '<script src="../rico.js"></script>\n  <script>window.__NOTA_ID__=' + JSON.stringify(nota.id) + ';</script>');
   html = html.replace(/fetch\('data\.json'/g, "fetch('../data.json'");
 
   fs.writeFileSync(path.join(CARPETA, nombreArchivo + '.html'), html, 'utf8');
   hechas++;
+}
+
+/* Las crónicas del muro. */
+(estado.cronicas || []).forEach(function (c) {
+  if (!c || !c.id) return;
+  const titulo = sinFormato(c.titulo);
+  if (!titulo || /^nueva cr[oó]nica$/i.test(titulo)) return;
+
+  generarUna({
+    id: c.id,
+    titulo: titulo,
+    entrada: sinFormato(c.entradilla || c.subtitulo || ''),
+    foto: fotoAbsoluta(c.imagen),
+    autor: sinFormato(c.autor || 'Redacción Central'),
+    fecha: sinFormato(c.fecha || ''),
+    badge: sinFormato(c.badge || 'Crónica')
+  });
 });
+
+/* La nota principal de la portada (el «hero»). */
+if (estado.hero) {
+  const h = estado.hero;
+  const titulo = sinFormato(h.titulo);
+  if (titulo && !/^nueva cr[oó]nica$/i.test(titulo)) {
+    const hoy = new Date().toISOString().slice(0, 10);
+    generarUna({
+      id: 'hero',
+      titulo: titulo,
+      entrada: sinFormato(h.cita || h.epigrafe || ''),
+      foto: fotoAbsoluta(h.imagen),
+      autor: sinFormato(h.autor || 'Redacción Central'),
+      fecha: sinFormato(h.fecha || h.meta || '') || hoy,
+      badge: sinFormato(h.badge || 'Investigación')
+    });
+  }
+}
 
 /* Limpiar las páginas de notas que ya no existen. */
 try {

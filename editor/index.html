@@ -799,6 +799,11 @@
 
 
 
+
+
+
+
+
 /*__CSS_INICIO__*//*__CSS_PROPIO_INICIO__*/
     /* ===== EDITOR DE TEXTO ENRIQUECIDO · ESTILO WORD ===== */
     .cms-rico { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
@@ -1045,299 +1050,20 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-22T22:58:33.493Z">
+  <meta name="taberna-version" content="2026-10-23T00:10:40.770Z">
 <script type="application/ld+json" id="datosMedio">{}</script>
-<!-- Google Analytics 4 - La Taberna del Magallanes News -->
-<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX', {
-    page_title: document.title,
-    page_location: document.location.href
-  });
-  /* Evento personalizado: cuando se lee una nota completa */
-  document.addEventListener('click', function(e) {
-    const a = e.target.closest('a');
-    if (a && a.href && a.href.includes('cronica.html')) {
-      gtag('event', 'click_nota', {
-        event_category: 'navegacion',
-        event_label: a.getAttribute('href') || a.textContent
-      });
-    }
-    if (a && a.href && a.href.includes('whatsapp')) {
-      gtag('event', 'compartir_whatsapp', {
-        event_category: 'compartir',
-        event_label: document.title
-      });
-    }
-  });
-</script>
-
-<!-- Contador de visitantes - La Taberna del Magallanes News -->
-<div id="contador-visitas" style="
-  position:fixed; bottom:10px; right:10px; z-index:9999;
-  background:#0b2240; color:#ffffff; padding:6px 10px;
-  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
-  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
-</div>
-<script>
-(function(){
-  const CONTADOR_URL = 'http://localhost:8099/contador';
-  const elNum = document.getElementById('contador-numero');
-  const elDiv = document.getElementById('contador-visitas');
-  let mostrado = false;
-
-  function mostrar(n) {
-    if (!elNum || !elDiv) return;
-    elNum.textContent = n;
-    elDiv.style.display = 'block';
-    mostrado = true;
-  }
-
-  /* Intenta obtener el conteo del servidor local */
-  fetch(CONTADOR_URL, { mode: 'no-cache' })
-    .then(r => r.json())
-    .then(d => {
-      if (d && d.visitas !== undefined) mostrar(d.visitas);
-    })
-    .catch(function () {
-      /* Sin servidor local: usa localStorage (solo este navegador) */
-      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
-      let n = parseInt(localStorage.getItem(clave) || '0', 10);
-      if (!n) {
-        n = 1;
-        localStorage.setItem(clave, n);
-      } else {
-        n++;
-        localStorage.setItem(clave, n);
-      }
-      mostrar(n);
-    });
-})();
-</script>
 <script type="application/ld+json" id="datosMedio">{}</script>
-<!-- Google Analytics 4 - La Taberna del Magallanes News -->
-<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX', {
-    page_title: document.title,
-    page_location: document.location.href
-  });
-  /* Evento personalizado: cuando se lee una nota completa */
-  document.addEventListener('click', function(e) {
-    const a = e.target.closest('a');
-    if (a && a.href && a.href.includes('cronica.html')) {
-      gtag('event', 'click_nota', {
-        event_category: 'navegacion',
-        event_label: a.getAttribute('href') || a.textContent
-      });
-    }
-    if (a && a.href && a.href.includes('whatsapp')) {
-      gtag('event', 'compartir_whatsapp', {
-        event_category: 'compartir',
-        event_label: document.title
-      });
-    }
-  });
-</script>
-
-<!-- Contador de visitantes - La Taberna del Magallanes News -->
-<div id="contador-visitas" style="
-  position:fixed; bottom:10px; right:10px; z-index:9999;
-  background:#0b2240; color:#ffffff; padding:6px 10px;
-  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
-  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
-</div>
-<script>
-(function(){
-  const CONTADOR_URL = 'http://localhost:8099/contador';
-  const elNum = document.getElementById('contador-numero');
-  const elDiv = document.getElementById('contador-visitas');
-  let mostrado = false;
-
-  function mostrar(n) {
-    if (!elNum || !elDiv) return;
-    elNum.textContent = n;
-    elDiv.style.display = 'block';
-    mostrado = true;
-  }
-
-  /* Intenta obtener el conteo del servidor local */
-  fetch(CONTADOR_URL, { mode: 'no-cache' })
-    .then(r => r.json())
-    .then(d => {
-      if (d && d.visitas !== undefined) mostrar(d.visitas);
-    })
-    .catch(function () {
-      /* Sin servidor local: usa localStorage (solo este navegador) */
-      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
-      let n = parseInt(localStorage.getItem(clave) || '0', 10);
-      if (!n) {
-        n = 1;
-        localStorage.setItem(clave, n);
-      } else {
-        n++;
-        localStorage.setItem(clave, n);
-      }
-      mostrar(n);
-    });
-})();
-</script>
 <script type="application/ld+json" id="datosMedio">{}</script>
-<!-- Google Analytics 4 - La Taberna del Magallanes News -->
-<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX', {
-    page_title: document.title,
-    page_location: document.location.href
-  });
-  /* Evento personalizado: cuando se lee una nota completa */
-  document.addEventListener('click', function(e) {
-    const a = e.target.closest('a');
-    if (a && a.href && a.href.includes('cronica.html')) {
-      gtag('event', 'click_nota', {
-        event_category: 'navegacion',
-        event_label: a.getAttribute('href') || a.textContent
-      });
-    }
-    if (a && a.href && a.href.includes('whatsapp')) {
-      gtag('event', 'compartir_whatsapp', {
-        event_category: 'compartir',
-        event_label: document.title
-      });
-    }
-  });
-</script>
-
-<!-- Contador de visitantes - La Taberna del Magallanes News -->
-<div id="contador-visitas" style="
-  position:fixed; bottom:10px; right:10px; z-index:9999;
-  background:#0b2240; color:#ffffff; padding:6px 10px;
-  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
-  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
-</div>
-<script>
-(function(){
-  const CONTADOR_URL = 'http://localhost:8099/contador';
-  const elNum = document.getElementById('contador-numero');
-  const elDiv = document.getElementById('contador-visitas');
-  let mostrado = false;
-
-  function mostrar(n) {
-    if (!elNum || !elDiv) return;
-    elNum.textContent = n;
-    elDiv.style.display = 'block';
-    mostrado = true;
-  }
-
-  /* Intenta obtener el conteo del servidor local */
-  fetch(CONTADOR_URL, { mode: 'no-cache' })
-    .then(r => r.json())
-    .then(d => {
-      if (d && d.visitas !== undefined) mostrar(d.visitas);
-    })
-    .catch(function () {
-      /* Sin servidor local: usa localStorage (solo este navegador) */
-      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
-      let n = parseInt(localStorage.getItem(clave) || '0', 10);
-      if (!n) {
-        n = 1;
-        localStorage.setItem(clave, n);
-      } else {
-        n++;
-        localStorage.setItem(clave, n);
-      }
-      mostrar(n);
-    });
-})();
-</script>
 <script type="application/ld+json" id="datosMedio">{}</script>
-<!-- Google Analytics 4 - La Taberna del Magallanes News -->
-<!-- Reemplaza G-XXXXXXXXXX con tu ID real de medición -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX', {
-    page_title: document.title,
-    page_location: document.location.href
-  });
-  /* Evento personalizado: cuando se lee una nota completa */
-  document.addEventListener('click', function(e) {
-    const a = e.target.closest('a');
-    if (a && a.href && a.href.includes('cronica.html')) {
-      gtag('event', 'click_nota', {
-        event_category: 'navegacion',
-        event_label: a.getAttribute('href') || a.textContent
-      });
-    }
-    if (a && a.href && a.href.includes('whatsapp')) {
-      gtag('event', 'compartir_whatsapp', {
-        event_category: 'compartir',
-        event_label: document.title
-      });
-    }
-  });
-</script>
 
-<!-- Contador de visitantes - La Taberna del Magallanes News -->
-<div id="contador-visitas" style="
-  position:fixed; bottom:10px; right:10px; z-index:9999;
-  background:#0b2240; color:#ffffff; padding:6px 10px;
-  border-radius:6px; font-family:Inter,sans-serif; font-size:0.75rem;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3); display:none;">
-  <span id="contador-numero">0</span> <span style="font-size:0.65rem;">lecturas hoy</span>
-</div>
-<script>
-(function(){
-  const CONTADOR_URL = 'http://localhost:8099/contador';
-  const elNum = document.getElementById('contador-numero');
-  const elDiv = document.getElementById('contador-visitas');
-  let mostrado = false;
 
-  function mostrar(n) {
-    if (!elNum || !elDiv) return;
-    elNum.textContent = n;
-    elDiv.style.display = 'block';
-    mostrado = true;
-  }
+<script type="application/ld+json" id="datosMedio">{}</script>
 
-  /* Intenta obtener el conteo del servidor local */
-  fetch(CONTADOR_URL, { mode: 'no-cache' })
-    .then(r => r.json())
-    .then(d => {
-      if (d && d.visitas !== undefined) mostrar(d.visitas);
-    })
-    .catch(function () {
-      /* Sin servidor local: usa localStorage (solo este navegador) */
-      const clave = 'taberna_visitas_' + new Date().toISOString().slice(0, 10);
-      let n = parseInt(localStorage.getItem(clave) || '0', 10);
-      if (!n) {
-        n = 1;
-        localStorage.setItem(clave, n);
-      } else {
-        n++;
-        localStorage.setItem(clave, n);
-      }
-      mostrar(n);
-    });
-})();
-</script>
+
+
+<script type="application/ld+json" id="datosMedio">{}</script>
+<script type="application/ld+json" id="datosMedio">{}</script>
+<script type="application/ld+json" id="datosMedio">{}</script>
 </head>
 
 <body>
@@ -1503,7 +1229,7 @@
         <div class="social-btn-group">
           <a id="heroShareWa" href="#" target="_blank" rel="noopener noreferrer" class="btn-social btn-social-wa">💬 WhatsApp</a>
           <a id="heroShareX" href="#" target="_blank" rel="noopener noreferrer" class="btn-social btn-social-x">𝕏 Compartir</a>
-          <button type="button" class="btn-social btn-social-copy" onclick="copiarEnlacePortal()">📋 Link</button>
+          <button type="button" class="btn-social btn-social-copy" onclick="copiarEnlaceHero()">📋 Link</button>
           <button type="button" class="btn-social btn-social-qr" onclick="compartirQRHero()">📷 QR</button>
           <button type="button" class="btn-social btn-social-og" onclick="compartirOGHero()">👁️ OG</button>
           <button type="button" class="btn-social" onclick="compartirHeroFicha()">📖 Ficha &amp; comentarios</button>
@@ -3630,6 +3356,12 @@
     return lugar || configurada || 'https://latabernadelmagallanes.news';
   }
 
+  /* La página propia de la nota principal: es la que se comparte, con su
+     foto y su entrada, igual que las demás crónicas. */
+  function urlDeHero() {
+    return urlPublicaPortal().replace(/\/?$/, '/') + 'notas/hero.html';
+  }
+
   function renderSEO() {
     const s = portalState.seo || {};
     if (s.titulo) document.title = s.titulo;
@@ -3661,10 +3393,10 @@
       });
     }
     // Compartir del hero depende de SEO
-    const url = urlCanonica;
+    const url = urlDeHero();
     /* El titular puede venir con formato (editor Word): para compartir va
        el texto limpio, nunca las etiquetas. */
-    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '');
+    const titulo = aTextoPlano((portalState.hero && portalState.hero.titulo) || s.ogTitulo || '').replace(/\s+/g, ' ').trim();
     setHref('heroShareWa', 'https://api.whatsapp.com/send?text=' + encodeURIComponent(titulo + ' ' + url));
     setHref('heroShareX', 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(titulo) + '&url=' + encodeURIComponent(url));
   }
@@ -4373,12 +4105,12 @@
   }
 
   /* --------------------- 6 · MODALES SOCIALES Y QR --------------------- */
-  function mostrarModalOG(tit, desc, img) {
+  function mostrarModalOG(tit, desc, img, url) {
     const s = portalState.seo || {};
-    setTxt('ogModalTitle', tit || s.ogTitulo);
-    setTxt('ogModalDesc', desc || s.ogDesc);
-    try { setTxt('ogModalDominio', new URL(urlPublicaPortal()).hostname); } catch (e) { }
-    setTxt('ogModalUrl', urlPublicaPortal());
+    setTxt('ogModalTitle', aTextoPlano(tit || s.ogTitulo).replace(/\s+/g, ' ').trim());
+    setTxt('ogModalDesc', aTextoPlano(desc || s.ogDesc).replace(/\s+/g, ' ').trim());
+    try { setTxt('ogModalDominio', new URL(url || urlPublicaPortal()).hostname); } catch (e) { }
+    setTxt('ogModalUrl', url || urlPublicaPortal());
     const mImg = document.getElementById('ogModalImg');
     if (mImg) mImg.setAttribute('src', img || s.ogImagen || '');
     const modal = document.getElementById('modalOpenGraphPreview');
@@ -4387,22 +4119,30 @@
   function cerrarModalOG() { const m = document.getElementById('modalOpenGraphPreview'); if (m) m.style.display = 'none'; }
   function compartirOGHero() {
     const h = portalState.hero || {};
-    mostrarModalOG(h.titulo, h.epigrafe, h.imagen);
+    mostrarModalOG(h.titulo, h.cita, h.imagen, urlDeHero());
   }
-  function abrirModalQR(tema) {
+  function abrirModalQR(tema, url) {
     setTxt('qrModalSubtitulo', 'Escanea para leer: ' + aTextoPlano(tema || portalState.hero.titulo));
-    const url = urlPublicaPortal();
+    const enlace = url || urlPublicaPortal();
     const img = document.getElementById('qrGeneradoImg');
-    if (img) img.setAttribute('src', 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(url));
+    if (img) img.setAttribute('src', 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(enlace));
     const modal = document.getElementById('modalGeneralQR');
     if (modal) modal.style.display = 'flex';
   }
   function cerrarModalQR() { const m = document.getElementById('modalGeneralQR'); if (m) m.style.display = 'none'; }
-  function compartirQRHero() { abrirModalQR(portalState.hero.titulo); }
+  function compartirQRHero() { abrirModalQR(portalState.hero.titulo, urlDeHero()); }
   function copiarEnlacePortal() {
     const enlace = urlPublicaPortal();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(enlace).then(function () { toast('📋 Enlace copiado al portapapeles'); }).catch(function () { toast('Enlace: ' + enlace); });
+    } else {
+      toast('Enlace: ' + enlace);
+    }
+  }
+  function copiarEnlaceHero() {
+    const enlace = urlDeHero();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(enlace).then(function () { toast('📋 Enlace de la nota copiado'); }).catch(function () { toast('Enlace: ' + enlace); });
     } else {
       toast('Enlace: ' + enlace);
     }
@@ -9363,7 +9103,7 @@
       imagen: h.imagen || '',
       video: h.video || '',
       audio: h.audioUrl || '',
-      enlace: '',
+      enlace: urlDeHero(),
       meta: h.autor || ''
     };
   }
@@ -12006,5 +11746,88 @@
   document.addEventListener('change', function (e) { if (e.target && e.target.closest && e.target.closest('#cmsPanelesContenedor')) manejarCambioCMS(e); });
   document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#panelCMSStudioOculto')) manejarClicCMS(e); });
   </script>
+<!-- TABERNA-CONTADOR-INICIO -->
+<div id="contador-visitas" role="status" aria-live="polite" title="Lectores del multimedio" style="
+  position: fixed; bottom: 12px; right: 12px; z-index: 9998;
+  background: #0b2240; color: #ffffff; padding: 7px 11px;
+  border-radius: 999px; font-family: Inter, sans-serif; font-size: 0.72rem;
+  line-height: 1.2; box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+  display: none; max-width: calc(100vw - 24px); white-space: nowrap;">
+  <span aria-hidden="true">👥</span>
+  <b id="contador-numero">0</b>
+  <span style="font-size: 0.66rem; opacity: 0.85;">lectores hoy</span>
+  <span id="contador-total" style="font-size: 0.66rem; opacity: 0.65;"></span>
+</div>
+<script>
+(function () {
+  /* La sala de redacción no se mide. */
+  if (/\/editor\/|redaccion-cms/i.test(location.pathname)) return;
+  var elDiv = document.getElementById('contador-visitas');
+  var elNum = document.getElementById('contador-numero');
+  var elTot = document.getElementById('contador-total');
+  if (!elDiv || !elNum) return;
+
+  /* La fecha se calcula al abrir la página, no al compilar: así el contador
+     diario cambia solo aunque el diario pase días sin publicar. */
+  var HOY = new Date().toISOString().slice(0, 10);
+  var CLAVE_TOTAL = 'taberna-magallanes-informa-visitas';
+  var CLAVE_DIA = CLAVE_TOTAL + '-' + HOY;
+  var CLAVE_CACHE = 'taberna_contador_cache_v1';
+  var CLAVE_CONTADO = 'taberna_contador_contado';
+  var NS = 'latabernadelmagallanesnews-jpg.github.io';
+
+  function mostrar(dia, total) {
+    if (typeof dia === 'number') elNum.textContent = dia.toLocaleString('es-VE');
+    if (elTot && typeof total === 'number') elTot.textContent = '· ' + total.toLocaleString('es-VE') + ' en total';
+    elDiv.style.display = 'block';
+  }
+
+  /* Cache corta: al pasar de una página a otra no se vuelve a pedir. */
+  try {
+    var cache = JSON.parse(localStorage.getItem(CLAVE_CACHE) || 'null');
+    if (cache && cache.fecha === HOY && (Date.now() - cache.ts) < 5 * 60 * 1000) {
+      mostrar(cache.dia, cache.total);
+      return;
+    }
+  } catch (e) { }
+
+  var yaContado = false;
+  try { yaContado = localStorage.getItem(CLAVE_CONTADO) === HOY; } catch (e) { }
+  var accion = yaContado ? 'get' : 'hit';
+
+  function pedir(clave) {
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var reloj = ctrl ? setTimeout(function () { ctrl.abort(); }, 4500) : null;
+    var opciones = { cache: 'no-store' };
+    if (ctrl) opciones.signal = ctrl.signal;
+    return fetch('https://abacus.jasoncameron.dev/' + accion + '/' + NS + '/' + encodeURIComponent(clave), opciones)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { return d && typeof d.value === 'number' ? d.value : null; })
+      .catch(function () { return null; })
+      .then(function (v) { if (reloj) clearTimeout(reloj); return v; });
+  }
+
+  Promise.all([pedir(CLAVE_DIA), pedir(CLAVE_TOTAL)]).then(function (v) {
+    var dia = v[0], total = v[1];
+    if (dia === null && total === null) {
+      /* Sin contador global: se intenta el servidor local de la redacción. */
+      return fetch('http://localhost:8099/contador', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && typeof d.visitas === 'number') mostrar(d.visitas, null); })
+        .catch(function () { });
+    }
+    if (!yaContado) {
+      try { localStorage.setItem(CLAVE_CONTADO, HOY); } catch (e) { }
+    }
+    try {
+      localStorage.setItem(CLAVE_CACHE, JSON.stringify({
+        fecha: HOY, dia: dia, total: total, ts: Date.now()
+      }));
+    } catch (e) { }
+    mostrar(dia, total);
+  });
+})();
+</script>
+<!-- TABERNA-CONTADOR-FIN -->
 </body>
 </html>
