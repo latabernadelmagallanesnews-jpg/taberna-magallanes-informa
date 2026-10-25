@@ -6,15 +6,15 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NCA2NCc+PHJlY3Qgd2lkdGg9JzY0JyBoZWlnaHQ9JzY0JyByeD0nMTInIGZpbGw9JyMwYjIyNDAnLz48cGF0aCBkPSdNMTQgMTdoMzZ2NkgxNHonIGZpbGw9JyNjNTliMjcnLz48dGV4dCB4PSczMicgeT0nNDknIGZvbnQtZmFtaWx5PSdHZW9yZ2lhLHNlcmlmJyBmb250LXNpemU9JzM0JyBmb250LXdlaWdodD0nNzAwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjZmZjYzAwJz5UPC90ZXh0Pjwvc3ZnPg==">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="La Taberna del Magallanes News">
-<meta property="og:title" content="La paradoja del buque turco: por qué Magallanes produce carreras de élite mientras se hunde en el fango (1-7)">
-<meta property="og:description" content="Un equipo que pisa la goma seis veces por tarde suele ganar. En el béisbol profesional, anotar 48 carreras en ocho desafíos otorga un 70% de probabilidades de victoria.">
-<meta property="og:url" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/hero.html">
-<meta property="og:image" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-dc8eb1d617c9.webp">
+<meta property="og:title" content="Navegantes del Magallanes somete a Caribes de Anzoátegui 4-1 en Valencia: el rigor de la colina y el trueno de Ángel Reyes en la LVBP Por Luis Aponte">
+<meta property="og:description" content="Navegantes del Magallanes venció 4-1 a Caribes de Anzoátegui en Valencia. Crónica de estirpe clásica, evidencia sabermétrica y análisis de Luis Aponte.">
+<meta property="og:url" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/magallanes-vs-caribes-resultado-lvbp-angel-reyes-cronica.html">
+<meta property="og:image" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-d09b2b3e9da7.webp">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="La paradoja del buque turco: por qué Magallanes produce carreras de élite mientras se hunde en el fango (1-7)">
-<meta name="twitter:description" content="Un equipo que pisa la goma seis veces por tarde suele ganar. En el béisbol profesional, anotar 48 carreras en ocho desafíos otorga un 70% de probabilidades de victoria.">
-<meta name="twitter:image" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-dc8eb1d617c9.webp">
-<title>La paradoja del buque turco: por qué Magallanes produce carreras de élite mientras se hunde en el fango (1-7) · La Taberna del Magallanes News</title>
+<meta name="twitter:title" content="Navegantes del Magallanes somete a Caribes de Anzoátegui 4-1 en Valencia: el rigor de la colina y el trueno de Ángel Reyes en la LVBP Por Luis Aponte">
+<meta name="twitter:description" content="Navegantes del Magallanes venció 4-1 a Caribes de Anzoátegui en Valencia. Crónica de estirpe clásica, evidencia sabermétrica y análisis de Luis Aponte.">
+<meta name="twitter:image" content="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-d09b2b3e9da7.webp">
+<title>Navegantes del Magallanes somete a Caribes de Anzoátegui 4-1 en Valencia: el rigor de la colina y el trueno de Ángel Reyes en la LVBP Por Luis Aponte · La Taberna del Magallanes News</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=EB+Garamond:wght@600;800&display=swap" rel="stylesheet">
@@ -62,8 +62,17 @@
   .pie { border-top: 1px solid var(--linea); background: var(--papel); }
   .pie-in { max-width: 1080px; margin: 0 auto; padding: 22px 18px 30px; font-size: 0.76rem; color: var(--gris); line-height: 1.7; }
   .pie-in b { color: var(--marino); }
-  .dos-col { display: grid; gap: 22px; grid-template-columns: 2fr 1fr; }
-  @media (max-width: 780px) { .dos-col { grid-template-columns: 1fr; } }
+  /* El muro de crónicas es de UNA sola columna: la nota manda y se lee
+     completa en su propia página. Sin barra lateral que le robe ancho. */
+  .dos-col { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+  #lateral { display: none !important; }
+  /* Hemeroteca: las tapas que ya cumplieron su día se conservan enteras. */
+  .portadas-anteriores { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--linea); }
+  .portadas-anteriores[hidden] { display: none; }
+  .portadas-lista { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .portadas-lista a { display: inline-flex; align-items: baseline; gap: 7px; font-family: Inter, sans-serif; font-size: 0.74rem; font-weight: 600; color: var(--marino); text-decoration: none; border: 1px solid var(--linea); border-radius: 999px; padding: 5px 13px; background: #ffffff; max-width: 100%; }
+  .portadas-lista a:hover { border-color: var(--oro); background: var(--papel); }
+  .portadas-lista time { color: var(--gris); font-size: 0.66rem; font-weight: 500; }
   .tabla { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
   .tabla th, .tabla td { padding: 8px 9px; border-bottom: 1px solid var(--linea); text-align: left; white-space: nowrap; }
   .tabla th { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris); }
@@ -75,6 +84,66 @@
   /* Párrafos sueltos en las tarjetas del muro */
   .tarjeta .mural-texto p { font-size: 0.9rem; line-height: 1.7; color: #1f2937; margin: 0 0 10px; }
   .tarjeta .mural-texto p:last-child { margin-bottom: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -524,7 +593,7 @@
     .cms-rico-estilo span.tit-subrayado { box-shadow: inset 0 -0.3em 0 #f4e6bd; }
 /*__CSS_TITULARES_FIN__*/
 </style>
-  <meta name="taberna-version" content="2026-10-23T03:33:16.795Z">
+  <meta name="taberna-version" content="2026-10-25T02:11:50.228Z">
 
 
 
@@ -532,16 +601,8 @@
 
 
 
-<script type="application/ld+json" id="datosNota">{"@context":"https://schema.org","@type":"NewsArticle","headline":"La paradoja del buque turco: por qué Magallanes produce carreras de élite mientras se hunde en el fango (1-7)","description":"Un equipo que pisa la goma seis veces por tarde suele ganar. En el béisbol profesional, anotar 48 carreras en ocho desafíos otorga un 70% de probabilidades de victoria.","image":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-dc8eb1d617c9.webp","datePublished":"2026-10-23","dateModified":"2026-10-23","author":{"@type":"Person","name":"Por Luis Enrique Aponte (Editor en Jefe)"},"publisher":{"@type":"NewsMediaOrganization","name":"La Taberna del Magallanes News","url":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/"},"mainEntityOfPage":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/hero.html","articleSection":"Noticias","inLanguage":"es"}</script>
-<link rel="canonical" id="canonicoNota" href="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/hero.html">
-
-
-
-
-
-
-
-
+<script type="application/ld+json" id="datosNota">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Navegantes del Magallanes somete a Caribes de Anzoátegui 4-1 en Valencia: el rigor de la colina y el trueno de Ángel Reyes en la LVBP Por Luis Aponte","description":"Navegantes del Magallanes venció 4-1 a Caribes de Anzoátegui en Valencia. Crónica de estirpe clásica, evidencia sabermétrica y análisis de Luis Aponte.","image":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/multimedia/image-d09b2b3e9da7.webp","datePublished":"2026-10-24","dateModified":"2026-10-24","author":{"@type":"Person","name":"Por Luis Enrique Aponte (Editor en Jefe)"},"publisher":{"@type":"NewsMediaOrganization","name":"La Taberna del Magallanes News","url":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/"},"mainEntityOfPage":"https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/magallanes-vs-caribes-resultado-lvbp-angel-reyes-cronica.html","articleSection":"CRÓNICA ANALÍTICA & SABERMETRÍA LVBP","inLanguage":"es"}</script>
+<link rel="canonical" id="canonicoNota" href="https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/notas/magallanes-vs-caribes-resultado-lvbp-angel-reyes-cronica.html">
 
 
 
@@ -565,7 +626,44 @@
 
 
 
-<meta name="description" content="Un equipo que pisa la goma seis veces por tarde suele ganar. En el béisbol profesional, anotar 48 carreras en ocho desafíos otorga un 70% de probabilidades de victoria.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Navegantes del Magallanes venció 4-1 a Caribes de Anzoátegui en Valencia. Crónica de estirpe clásica, evidencia sabermétrica y análisis de Luis Aponte.">
 
 </head>
 <body>
@@ -578,10 +676,17 @@
   <div id="cronicas" style="display:grid; gap:16px;"></div>
   <aside id="lateral" style="display:grid; gap:16px; align-content:start;"></aside>
 </div>
+<section class="portadas-anteriores" id="portadasAnteriores" hidden>
+  <span class="sello">Hemeroteca</span>
+  <h2 class="titulo" style="font-size:1.3rem; margin-bottom:0.35rem;">🗞️ Portadas anteriores</h2>
+  <p class="intro" style="font-size:0.86rem; margin-bottom:0.2rem;">Cada tapa que ya cumplió su día se conserva en su página completa.</p>
+  <div class="portadas-lista" id="portadasLista"></div>
+</section>
 </main>
 <footer class="pie"><div class="pie-in"><b>La Taberna del Magallanes News</b> · Gaceta sabermétrica, analítica Statcast y scouting de los Navegantes del Magallanes (LVBP).<br>Fundador &amp; Director: Luis Enrique Aponte Guzmán.<br><span style="font-size:0.72rem;">Páginas: <a href="index.html">Portada</a> · <a href="cronica.html">Crónicas</a> · <a href="roster.html">Roster</a> · <a href="buscador.html">Buscador</a> · <a href="vip.html">Círculo VIP</a></span></div></footer>
 <script src="../rico.js"></script>
-  <script>window.__NOTA_ID__="hero";</script>
+  <script>window.__NOTA_ID__="magallanes-vs-caribes-resultado-lvbp-angel-reyes-cronica";</script>
+  <script type="application/json" id="notaEmbebida">{"cronicas":[{"id":"magallanes-vs-caribes-resultado-lvbp-angel-reyes-cronica","titulo":"Navegantes del Magallanes somete a Caribes de Anzoátegui 4-1 en Valencia: el rigor de la colina y el trueno de Ángel Reyes en la LVBP Por Luis Aponte","entradilla":"␟<p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">El béisbol de octubre en el José Bernardo Pérez suele tener el peso de una marea<\/span><\/font><\/p><p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">turbia cuando los tropiezos del arranque amenazan con encallar la embarcación, pero anoche el<\/span><\/font><\/p><p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">ambiente en la Michelena respiró con la precisión exacta del alivio metódico. Frente a la<\/span><\/font><\/p><p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">artillería siempre temible de Caribes de Anzoátegui, Navegantes del Magallanes no recurrió al<\/span><\/font><\/p><p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">intercambio caótico de metralla, sino a un ejercicio de orfebrería monticular y contundencia<\/span><\/font><\/p><p><font color=\"#000000\"><span style=\"font-size: 14.6667px\">seca. La pizarra final de 4 carreras por<\/span><\/font><\/p>","subtitulo":"","cuerpo":"␟<p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">El medio fundado por el periodista y docente Luis Enrique Aponte alcanza una etapa de madurez institucional que une el análisis deportivo de alto nivel, la sabermetría explicada y la integración de tecnologías de la información de última generación.<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">LOS TEQUES (Miranda, Venezuela) — Octubre de 2026<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> — Al arribar a sus primeros tres años de ejercicio ininterrumpido, La Taberna del Magallanes News marca un hito en su desarrollo institucional con la apertura formal de su plataforma web.<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Este espacio representa la consolidación de un periodismo deportivo que rehúye del rumor, el clic fácil y la inmediatez superficial. Inspirada en los cánones analíticos de cabeceras internacionales de referencia como <\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: italic; text-decoration: none; vertical-align: baseline\">The Athletic<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> y <\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: italic; text-decoration: none; vertical-align: baseline\">The New York Times<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">, la plataforma formaliza una voz analítica sólida, arraigada en el béisbol venezolano y la cultura viva de la afición.<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><\/p><hr><p><\/p><h2 style=\"line-height: 1.38; margin-top: 18pt; margin-bottom: 6pt\"><span style=\"font-size: 16pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Un estadio de madurez: la web como centro neurálgico y las redes como diálogo activo<\/span><\/h2><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">El estreno del portal web no sustituye la presencia del medio en las plataformas digitales, sino que expande y organiza su alcance:<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><ul style=\"margin-top: 0; margin-bottom: 0\"><li style=\"list-style-type: disc; font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Continuidad e inmediatez en redes sociales:<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> Los canales en redes se mantienen como el espacio natural de debate en tiempo real, interacción cotidiana con la comunidad y difusión de formatos dinámicos.<\/span><\/p><\/li><li style=\"list-style-type: disc; font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Profundidad y archivo en la web:<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> El nuevo portal funciona como el centro de consulta reposada, donde convergen investigaciones de largo aliento, desgloses sabermétricos exhaustivos y coberturas documentadas.<\/span><\/p><\/li><\/ul><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Este paso sintetiza tres años de aprendizaje, rigor metodológico y construcción de audiencia, abriendo una fase que traerá nuevas coberturas especiales, formatos interactivos y sorpresas editoriales para los seguidores.<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><\/p><hr><p><\/p><h2 style=\"line-height: 1.38; margin-top: 18pt; margin-bottom: 6pt\"><span style=\"font-size: 16pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Tecnologías de la información, narrativa audiovisual y diseño computacional<\/span><\/h2><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">La propuesta técnica de La Taberna del Magallanes News combina la investigación de campo tradicional con tecnologías de la información y la comunicación (TIC) de avanzada. La arquitectura de contenidos se apoya en:<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><ul style=\"margin-top: 0; margin-bottom: 0\"><li style=\"list-style-type: disc; font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Recursos visuales y gráficos generativos:<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> Apalancamiento en herramientas digitales avanzadas y procesamiento automatizado para estructurar infografías de rendimiento, mapas de calor y piezas visuales de alta precisión que facilitate la comprensión táctica.<\/span><\/p><\/li><li style=\"list-style-type: disc; font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Producción audiovisual estructurada:<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> Formatos de vídeo y microanálisis diseñados bajo un estricto esquema de desglose de jugadas, narración sobria y soporte de datos comprobables.<\/span><\/p><\/li><\/ul><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-left: 30pt; margin-right: 30pt; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">«Nuestra meta fundacional es hacer periodismo deportivo de alto nivel respaldado por alta tecnología de la comunicación y de la información, apalancándonos en materiales audiovisuales y recursos gráficos de vanguardia», subraya <\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Luis Enrique Aponte Guzmán<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">, periodista, docente universitario y director editorial. «Las herramientas digitales y los entornos de computación gráfica están al servicio de la evidencia documental, nunca para sustituir el criterio humano ni el rigor de la fuente. Tras tres años de trabajo ininterrumpido, alcanzamos una madurez donde el dato se explica con claridad, la jugada se contextualiza y la afición encuentra un análisis honesto, científico y cultural del deporte».<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><\/p><hr><p><\/p><h2 style=\"line-height: 1.38; margin-top: 18pt; margin-bottom: 6pt\"><span style=\"font-size: 16pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Rigor analítico y lectura antropológica del juego<\/span><\/h2><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">Fiel a los pilares de su manual rector, el medio sostiene su producción en la fórmula <\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 700; font-style: normal; text-decoration: none; vertical-align: baseline\">Hecho + Evidencia + Explicación + Contexto + Significado<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">. Cada estadística avanzada (como OPS, OBP, WHIP o métricas de bateo situacional) se traduce al lector desglosando su impacto directo en las decisiones de campo. Paralelamente, se mantiene la mirada antropológica y sociológica sobre la fanaticada, documentando la memoria colectiva, los rituales y la identidad territorial que le dan sentido al espectáculo deportivo.<\/span><\/p><p><b style=\"font-weight: normal\"><br><\/b><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">La dirección del medio invita a los lectores, cronistas deportivos, investigadores y a la comunidad de aficionados a recorrer el nuevo portal y continuar el debate fundamentado en sus canales digitales<\/span><\/p><p><br><\/p><p style=\"line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt\"><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#LaTabernaDelMagallanesNews<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#PeriodismoDeportivo<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#Sabermetría<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#LVBP<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#NavegantesDelMagallanes<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#CulturaDeGrada<\/span><span style=\"font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\"> <\/span><span style=\"font-size: 11pt; font-family: 'Roboto Mono',monospace; color: #188038; background-color: transparent; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: baseline\">#TecnologíaYPeriodismo<\/span><\/p>","imagen":"multimedia/image-d09b2b3e9da7.webp","imagenPie":"Por Luis Aponte Dirección General y Editorial: Luis Enrique Aponte Guzmán Línea Editorial: Investigación, evidencia sabermétrica y sociología del diamante VALENCIA — El béisbol de octubre en el José Bernardo Pérez suele tener el peso de una marea turbia cuando los tropiezos del arranque amenazan con encallar la embarcación, pero anoche el ambiente en la Michelena respiró con la precisión exacta del alivio metódico. Frente a la artillería siempre temible de Caribes de Anzoátegui, Navegantes del Magallanes no recurrió al intercambio caótico de metralla, sino a un ejercicio de orfebrería monticular y contundencia seca. La pizarra final de 4 carreras por 1 —que coloca la foja bucanera en 2 victorias por 7 reveses al cabo de nueve compromisos— no fue un festejo decorativo; fue una bocanada de oxígeno puro en medio del pantano y la demostración física de una premisa irrefutable: cuando el cuerpo de lanzadores estrangula las almohadillas, la madera naviera cobra valor de sentencia. El cotejo se fracturó temprano, justo cuando el rumor de la tribuna aún buscaba acomodo en los tablones. En la parte baja del primer episodio, con José Gómez y Tucupita Marcano dibujando zozobra en los senderos, Ángel Reyes descifró un envío que flotó demasiado tiempo en la periferia alta del plato. El madero sonó con esa detonación seca que los cronistas de antaño reconocían de inmediato: una parábola violenta hacia las gradas que remolcó tres anotaciones y quebró la paridad antes de que el sudor empapara las franelas. No fue solo un estacazo; fue un golpe a la médula del rival. Más tarde, en el quinto acto, cuando Balbino Fuenmayor había asomado la rebeldía oriental descontando la pizarra ante Dillon Tate, apareció el bate disciplinado de Cooper Kinney. Un swing compacto, educado, depositó la pelota en terreno de nadie para fijar el 4-1 definitivo: un jonrón solitario que actuó como hielo sobre la herida aborigen, clausurando cualquier atisbo de drama en la cueva visitante. El montículo magallanero vivió dos fases complementarias: la supervivencia y la tiranía. Victor Vargas abrió el pleito caminando sobre una cuerda floja que amenazaba con romperse a cada entrada. Pese a permitir cinco incogibles y obsequiar un pasaporte, el diestro apeló a la localización quirúrgica en las esquinas cuando el agua le llegaba al cuello: ponchó a cinco rivales en cuatro entradas inmaculadas, congelando a los bates orientales en el instante preciso del remolque. La posta fue un desfile marcial. Wilmer Flores, Enderson Franco, el aplomo frío de Osvaldo Berrios y la estocada final de Felipe Rivero tejieron un tapiz impenetrable. Cuatro capítulos combinados, dos hits aislados, una base por bolas y cuatro abanicados. Sin aspavientos ni angustias innecesarias, redujeron el último tercio del juego a un trámite cronometrado. La evidencia analítica: cuando el número cobra vida sobre la cal En La Taberna sostenemos que la estadística avanzada no es un capricho de laboratorio, sino el pulso invisible que decide los juegos. Traducida al lenguaje vivo del parque, la planilla dejó verdades incuestionables:  Ángel Reyes (1.206 de OPS | .506 de wOBA | .452 de ISO): Las siglas describen a un destructor en su estado más puro. Ese OPS de 1.206 y un wOBA de .506 nos dicen que cada vez que Reyes toma el bate genera más de media carrera ponderada para el equipo; no solo se embasa cuatro de cada diez veces, sino que su poder aislado (.452 de ISO) lo ubica en el percentil 98 de la liga: un bateador que solo piensa en extrabases. Fletó tres de las cuatro anotaciones bucaneras en el primer tramo, alcanzó las 200 impulsadas de por vida en la LVBP y selló su cuarto duelo en fila sacando la pelota.  Cooper Kinney (.991 de OPS | .346 de promedio | .443 de wOBA): El arte del bateador completo. Kinney combina tacto fino con una paciencia de ajedrecista al plato (negocia boletos en el 10.3% de sus apariciones). Su vuelacercas solitario en el quinto tramo anestesió de inmediato la reacción de la tribu justo cuando amenazaban con meterse en la pelea.  Victor Vargas (1.56 de WHIP | 0.00 de efectividad | 2.67 en ratio K/BB): El WHIP retrata el tráfico que soporta un lanzador por cada inning jugado. Con 1.56, Vargas vivió al borde del abismo permitiendo más de un hombre en base por episodio; sin embargo, su compostura para retirar a cinco contrarios por la vía del ponche y su control (2.67 abanicados por cada boleto) le permitieron colgar cuatro ceros milagrosos sin pagar peaje.  Osvaldo Berrios (1.07 de WHIP | 0.00 de efectividad | 13.50 de K/9): Autoridad absoluta desde el bullpen. Su tasa de 13.50 ponches por cada nueve episodios ratifica que su recta y sus envíos quebrados caen en la zona de sombra, donde los maderos no alcanzan más que viento. Suma 4.2 capítulos en la zafra sin tolerar rayitas limpias y congeló el tercio intermedio sin titubeos.  El muro colegiado —Flores, Franco, Berrios y Rivero— (0.75 de WHIP colectivo): Menos de un corredor por episodio concedido entre los cuatro en el tramo final. Esa cifra fue la aduana que Caribes no pudo cruzar: convirtió una ventaja precaria en una sentencia firme, dándole el laurel a Wilmer Flores (1-0) y el primer salvado de la zafra a la zurda de Felipe Rivero. La correlación táctica es transparente: cuando el WHIP colectivo supera la barrera de 1.60 y se combina con titubeos defensivos, la alta producción de Reyes y Kinney se diluye en reveses como los siete que ya pesan en la tabla. Cuando los brazos limitan el tráfico a un adversario por capítulo o menos, cuatro anotaciones bastan para dictar sentencia. Antropología de la tribuna: la catarsis del buque sobrio En las gradas de Valencia el béisbol no es un pasatiempo dominical; es un tribunal moral, más aún cuando el registro colectivo marcha 2-7 y la cornisa está a la vista. El aficionado del Magallanes tolera la escasez de batazos, pero le resulta insoportable el desfile indolente de pasaportes y el descuido negligente en el cuadro. Por eso, el estallido colectivo ante las 200 empujadas de Ángel Reyes trascendió la frialdad del registro personal: fue un acto de comunión entre el pelotero que responde a la exigencia histórica y una masa que exige rigor profesional para salir del fondo. Ver desfilar a cuatro relevistas atacando la zona de strike sin titubear devolvió al graderío esa sobriedad señorial que funda la identidad del club. La Nave no ganó por obra del azar ni por un destello aislado en la oscuridad; ganó porque recordó que su historia se escribe desde el control de la loma hacia afuera. En el puerto carabobeño ha quedado asentada la pauta: la temporada no se rescata con promesas, sino con pitcheos que caen donde duele y bates que no perdonan cuando el rival pestañea. Luis Aponte Director General y Columnista de La Taberna de Magallanes News La conversación continúa en la tribuna El análisis del juego no concluye con el out veintisiete ni cabe en el conformismo de una pizarra aislada. Si valoras el periodismo que rescata la nobleza de la crónica de época y la confronta con el rigor de la sabermetría contemporánea, comparte esta entrega con quienes aún entienden el béisbol como un arte de precisión. Te invitamos a formar parte de nuestra comunidad analítica y seguir de cerca cada cobertura, investigación y pulso sociológico del diamante a través de nuestras plataformas oficiales:  X (Twitter): @TabernaMagallanesNews  Instagram &amp; Facebook: @LaTabernaDelMagallanes  Canal de difusión en WhatsApp: Únete a la tertulia bucanera El debate se nutre con argumentos, no con consignas. La tribuna de La Taberna está abierta.","autor":"Por Luis Enrique Aponte (Editor en Jefe)","fecha":"2026-10-24","badge":"CRÓNICA ANALÍTICA & SABERMETRÍA LVBP"}],"hero":null,"jugadas":[],"galerias":{}}</script>
   <script>
 
 var DATOS = null;
@@ -855,7 +960,7 @@ function pintarNota(d, id) {
       cuerpo: cuerpoHero || d.hero.epigrafe || '',
       imagen: d.hero.imagen || '',
       autor: d.hero.autor || 'Redacción Central',
-      fecha: d.hero.fecha || d.hero.meta || '',
+      fecha: d.hero.fecha || '',
       badge: d.hero.badge || 'Investigación',
       video: d.hero.video || '',
       audioUrl: d.hero.audioUrl || '',
@@ -1055,7 +1160,7 @@ function pintarNota(d, id) {
   document.getElementById('lateral').innerHTML = '';
 
   /* En modo lectura la nota ocupa todo el ancho de la página. */
-  ['sello', 'titulo', 'intro'].forEach(function (id) {
+  ['sello', 'titulo', 'intro', 'portadasAnteriores'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -1084,7 +1189,7 @@ function mostrarIndice(d) {
     return '<article class="tarjeta" id="' + esc(c.id) + '" style="gap:10px;">' +
       (c.imagen ? '<img src="' + esc(urlFotoNota(c.imagen)) + '" alt="" style="width:100%; height:170px; object-fit:cover; border-radius:9px;">' : '') +
       '<span class="etiqueta">' + esc(c.badge || 'Crónica') + '</span>' +
-      '<h3>' + ricoHtml(c.titulo) + '</h3>' +
+      '<h3><a href="cronica.html?c=' + encodeURIComponent(c.id) + '" style="color:inherit; text-decoration:none;">' + ricoHtml(c.titulo) + '</a></h3>' +
       '<p>' + ricoHtml(c.entradilla || '') + '</p>' +
       '<p class="nota"><b>' + esc(c.autor || 'Redacción') + '</b> · ' + esc(c.fecha || '') + '</p>' +
       '<span style="display:flex; gap:6px; flex-wrap:wrap;">' +
@@ -1116,12 +1221,50 @@ function mostrarIndice(d) {
     '</div>';
 }
 
+/* Hemeroteca: las portadas anteriores conservan su página completa.
+   La lista la escribe el build en notas/portadas.json. */
+function mostrarPortadasAnteriores() {
+  var caja = document.getElementById('portadasAnteriores');
+  var lista = document.getElementById('portadasLista');
+  if (!caja || !lista) return;
+  fetch('notas/portadas.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (items) {
+      var previas = (Array.isArray(items) ? items : []).filter(function (p) {
+        return p && p.url && p.actual !== true;
+      });
+      if (!previas.length) { caja.hidden = true; return; }
+      lista.innerHTML = previas.map(function (p) {
+        return '<a href="' + esc(p.url) + '">' +
+          (p.fecha ? '<time>' + esc(p.fecha) + '</time>' : '') +
+          esc(ricoTexto(p.titulo || '').slice(0, 120)) + '</a>';
+      }).join('');
+      caja.hidden = false;
+    })
+    .catch(function () { caja.hidden = true; });
+}
+
 function pintar(d) {
   var id = idDeNota();
   if (id) { pintarNota(d, id); return; }
   mostrarIndice(d);
+  mostrarPortadasAnteriores();
 }
 document.addEventListener('DOMContentLoaded', function () {
+  /* Las portadas llevan su contenido escrito dentro: se leen igual aunque el
+     data.json del día ya tenga otra tapa. */
+  var cajaEmbebida = document.getElementById('notaEmbebida');
+  if (cajaEmbebida) {
+    try {
+      var dentro = JSON.parse(cajaEmbebida.textContent);
+      if (dentro && dentro.cronicas && dentro.cronicas.length) {
+        DATOS = dentro;
+        document.getElementById('cargando').className = 'oculto';
+        pintar(dentro);
+        return;
+      }
+    } catch (e) { }
+  }
   fetch('../data.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
     DATOS = d;
     document.getElementById('cargando').className = 'oculto';

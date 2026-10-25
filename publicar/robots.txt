@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /redaccion-cms.html
 
 Sitemap: https://latabernadelmagallanesnews-jpg.github.io/taberna-magallanes-informa/sitemap.xml

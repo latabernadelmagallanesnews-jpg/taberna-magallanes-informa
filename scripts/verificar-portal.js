@@ -100,10 +100,12 @@ let logicaEditorial = true;
   /* La redacción (Director y periodistas con código personal) debe ver la
      puerta siempre: el código da prioridad a la sesión sobre el interruptor
      de los lectores. */
-  if (par[1].indexOf('redaccion || (visibleParaLectores') === -1) logicaEditorial = false;
+  const prioridadSesion = par[1].indexOf('redaccion || dispositivo || (visibleParaLectores') !== -1;
+  const prioridadDispositivo = par[1].indexOf('esDispositivoAutorizado') !== -1;
+  if (!prioridadSesion || !prioridadDispositivo) logicaEditorial = false;
 });
-if (logicaEditorial) ok('la puerta se muestra siempre a quien esté autorizado (Director o periodista con código)');
-else ko('no se encontró la prioridad de la sesión editorial sobre el interruptor de lectores');
+if (logicaEditorial) ok('la puerta se muestra siempre a quien esté autorizado (Director, periodista o dispositivo privado)');
+else ko('no se encontró la prioridad de la sesión editorial o del dispositivo privado sobre el interruptor de lectores');
 
 // El lector de contenido con formato y las páginas que lo usan
 console.log('\n=== páginas sueltas con contenido con formato ===');

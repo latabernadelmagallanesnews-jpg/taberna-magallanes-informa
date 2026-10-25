@@ -245,9 +245,13 @@ instala **en la portada y en la nota larga**, para que se vean igual.
 
 1. Copia de trabajo: `editor/index.html`.
 2. Ábrala con doble clic (o `npm run servidor` → `http://localhost:8099/editor/index.html`).
-3. Entre al CMS: botón **⚙️ Abrir CMS** (aparece en los equipos ya
-   autenticados), o `?cms=1` al final de la dirección, o `Ctrl+Alt+M`, o
-   `publicar/redaccion-cms.html`.
+3. Entre al CMS con el **enlace privado del Director** (se entrega por un canal
+   aparte y no se guarda en este repositorio). Ese enlace autoriza el teléfono o
+   la computadora y hace aparecer el botón **🔒 Acceso Redacción**; después se
+   escribe la clave. Los lectores no ven ninguna puerta. Los métodos internos de
+   respaldo se entregan al Director por separado. La página
+   `publicar/redaccion-cms.html` sigue existiendo como entrada de emergencia,
+   sin enlaces públicos.
 4. Escriba con formato en el editor estilo Word y suba sus fotos, audios y
    videos.
 5. Pulse **🚀 Publicar ahora**: el contenido viaja directo a la computadora

@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { slugDeHero } = require('./portadas');
 
 const RAIZ = path.resolve(__dirname, '..');
 const RE = /<script type="application\/json" id="estadoEmbebido">([\s\S]*?)<\/script>/;
@@ -54,7 +55,8 @@ function principal() {
 }
 
 const BASE = urlPublica();
-const hoy = new Date().toISOString().slice(0, 10);
+const ahora = new Date();
+const hoy = ahora.getFullYear() + '-' + String(ahora.getMonth() + 1).padStart(2, '0') + '-' + String(ahora.getDate()).padStart(2, '0');
 
 const lineas = [];
 lineas.push('<?xml version="1.0" encoding="UTF-8"?>');
@@ -88,14 +90,35 @@ if (m) {
     lineas.push('  </url>');
   });
 
-  /* La nota principal de la portada también tiene su página propia. */
+  /* La nota principal de la portada también tiene su página propia y
+     PERMANENTE: notas/<slug>.html (la misma que se comparte). */
   if (e.hero && sinFormato(e.hero.titulo) && !/^nueva cr[oó]nica$/i.test(sinFormato(e.hero.titulo))) {
     lineas.push('  <url>');
-    lineas.push('    <loc>' + BASE + 'notas/hero.html</loc>');
+    lineas.push('    <loc>' + BASE + 'notas/' + slugDeHero(e.hero) + '.html</loc>');
     lineas.push('    <lastmod>' + (sinFormato(e.hero.fecha) || hoy) + '</lastmod>');
     lineas.push('    <changefreq>weekly</changefreq>');
     lineas.push('    <priority>0.9</priority>');
     lineas.push('  </url>');
+  }
+
+  /* La hemeroteca: las portadas anteriores conservan su página completa y
+     también se indexan (son notas enteras, no copias de la tapa de hoy). */
+  let portadas = [];
+  try {
+    portadas = JSON.parse(fs.readFileSync(path.join(RAIZ, 'publicar', 'notas', 'portadas.json'), 'utf8'));
+  } catch (x) { portadas = []; }
+  if (Array.isArray(portadas)) {
+    portadas.forEach(function (p) {
+      if (!p || !p.url) return;
+      const ya = lineas.some(function (l) { return l.indexOf('<loc>' + BASE + p.url + '</loc>') !== -1; });
+      if (ya) return;
+      lineas.push('  <url>');
+      lineas.push('    <loc>' + BASE + p.url + '</loc>');
+      lineas.push('    <lastmod>' + (p.fecha || hoy) + '</lastmod>');
+      lineas.push('    <changefreq>weekly</changefreq>');
+      lineas.push('    <priority>0.7</priority>');
+      lineas.push('  </url>');
+    });
   }
 }
 
@@ -116,11 +139,11 @@ fs.writeFileSync(path.join(RAIZ, 'publicar', 'sitemap.xml'), lineas.join('\n'), 
 console.log('✓ sitemap.xml con ' + (lineas.filter(function (l) { return l.indexOf('<url>') !== -1; }).length) + ' direcciones');
 
 /* El robots.txt: se permite el diario y se apunta al mapa. La sala de
-   redacción no se indexa (tiene puerta, pero tampoco hace falta). */
+   redacción NO se nombra aquí: la página ya lleva noindex y no tiene enlaces
+   públicos; escribir su ruta en robots.txt solo la anunciaría. */
 const robots = [
   'User-agent: *',
   'Allow: /',
-  'Disallow: /redaccion-cms.html',
   '',
   'Sitemap: ' + BASE + 'sitemap.xml',
   ''

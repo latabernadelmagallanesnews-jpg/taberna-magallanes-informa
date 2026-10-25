@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { slugDeHero } = require('./portadas');
 
 const RAIZ = path.resolve(__dirname, '..');
 const PORTAL = path.join(RAIZ, 'publicar', 'index.html');
@@ -120,6 +121,12 @@ function main() {
     });
     if (!hallado) throw new Error('No se encontró la foto del hero');
   }
+
+  /* La llamada «Leer la crónica completa» apunta a la página PERMANENTE de
+     esta portada (notas/<slug>.html): la misma que guarda la hemeroteca. */
+  const slug = slugDeHero(hero);
+  html = html.replace(/(<a\b[^>]*\bid="heroLeerMas"[^>]*\bhref=")[^"]*(")/i,
+    '$1notas/' + slug + '.html$2');
 
   fs.writeFileSync(PORTAL, html, 'utf8');
   console.log('✓ publicar/index.html: hero estático sincronizado con la nota publicada.');

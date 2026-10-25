@@ -9,6 +9,9 @@ Thumbs.db
 .env
 .env.*
 
+# Llave personal de acceso al CMS: nunca se sube al repositorio público
+ENTRAR-AL-CMS.html
+
 # Marcador local del vigilante de Descargas (no va al repositorio)
 .html-procesados.json
 .ultimo-html-procesado.json

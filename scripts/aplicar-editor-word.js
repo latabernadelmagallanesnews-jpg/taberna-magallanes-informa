@@ -132,7 +132,7 @@ const CSS_WORD = `/*__CSS_PROPIO_INICIO__*/
     .cms-rico-btn:focus-visible { outline: 2px solid #c59b27; outline-offset: 1px; }
     .cms-rico-sel { border: 1px solid #cbd5e1; border-radius: 5px; height: 29px; font-size: 0.72rem; font-family: 'Inter', sans-serif; color: #0b2240; background: #ffffff; padding: 0 4px; }
     .cms-rico-color { width: 27px; height: 27px; padding: 0; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; cursor: pointer; }
-    .cms-rico-editor { min-height: 168px; max-height: 520px; overflow-y: auto; padding: 0.95rem 1.1rem; outline: none; background: #ffffff; color: #1f2937; font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; }
+    .cms-rico-editor { min-height: 380px; max-height: none; overflow-y: auto; padding: 0.95rem 1.1rem; outline: none; background: #ffffff; color: #1f2937; font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; }
     .cms-rico-editor:focus { background: #fffdf7; box-shadow: inset 0 0 0 2px rgba(197,155,39,0.35); }
     .cms-rico-editor:empty::before { content: attr(data-marcador); color: #94a3b8; font-style: italic; }
     .cms-rico-editor h1, .cms-rico-editor h2, .cms-rico-editor h3, .cms-rico-editor h4, .cms-rico-editor h5, .cms-rico-editor h6 { font-family: 'Playfair Display', Georgia, serif; color: #0b2240; line-height: 1.25; margin: 0.7em 0 0.35em; font-weight: 800; }
@@ -165,10 +165,11 @@ const CSS_WORD = `/*__CSS_PROPIO_INICIO__*/
        La redacción entra por el atajo Ctrl+Alt+M, el gesto del logotipo o la
        dirección privada; nunca por un enlace visible en el pie. */
     footer a[href="redaccion-cms.html"] { display: none !important; }
-    /* Columna derecha del muro de crónicas: la nota de la redacción */
-    .cronicas-cabecera { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 34%); gap: 1.6rem; align-items: start; border-bottom: 2px solid #0b2240; padding-bottom: 1.1rem; margin-bottom: 1.4rem; }
+    /* Cabecera del muro de crónicas: una sola columna, sin caja lateral.
+       El título manda y la nota de la redacción (si existe) se lee debajo. */
+    .cronicas-cabecera { display: block; border-bottom: 2px solid #0b2240; padding-bottom: 1.1rem; margin-bottom: 1.4rem; }
     .cronicas-cabecera-izq { min-width: 0; }
-    .cronicas-nota { background: #fffdf5; border: 1px solid #e8e0cc; border-left: 4px solid #c59b27; border-radius: 0 10px 10px 0; padding: 1rem 1.15rem; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+    .cronicas-nota { margin-top: 0.9rem; background: #fffdf5; border: 1px solid #e8e0cc; border-left: 4px solid #c59b27; border-radius: 0 10px 10px 0; padding: 1rem 1.15rem; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
     .cronicas-nota-tit { display: block; font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #b45309; margin-bottom: 0.55rem; }
     .cronicas-nota-cuerpo { font-family: 'EB Garamond', Georgia, serif; font-size: 1.02rem; line-height: 1.72; color: #3f3f46; }
     .cronicas-nota-cuerpo p { margin: 0 0 0.75em; }
@@ -181,7 +182,15 @@ const CSS_WORD = `/*__CSS_PROPIO_INICIO__*/
     .cronicas-nota-cuerpo strong, .cronicas-nota-cuerpo b { color: #0b2240; }
     .cronicas-nota-cuerpo mark { background: #ffe9a8; padding: 1px 3px; border-radius: 3px; }
     .cronicas-nota-cuerpo blockquote { border-left: 3px solid #c59b27; margin: 0.7em 0; padding: 0.4em 0.9em; font-style: italic; color: #4a3f1c; }
-    @media (max-width: 860px) { .cronicas-cabecera { grid-template-columns: 1fr; } }
+    /* Portadas anteriores: las tapas que ya cumplieron su día no se pierden;
+       cada una conserva su página completa. */
+    .portadas-anteriores { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid #e8e4df; }
+    .portadas-anteriores[hidden] { display: none; }
+    .portadas-tit { display: block; font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #8a6d1f; margin-bottom: 0.5rem; }
+    .portadas-lista { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .portadas-lista a { display: inline-flex; align-items: baseline; gap: 0.4rem; font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600; color: #0b2240; text-decoration: none; border: 1px solid #dcd9d9; border-radius: 999px; padding: 4px 12px; background: #ffffff; max-width: 100%; }
+    .portadas-lista a:hover { border-color: #c59b27; background: #fffdf5; color: #8c1d2f; }
+    .portadas-lista time { color: #9aa0a8; font-weight: 500; font-size: 0.66rem; }
 /*__CSS_PROPIO_FIN__*/
 `;
 
@@ -1181,7 +1190,7 @@ function aplicar(archivo) {
   h = reemplazar(
     h,
     `        { path: 'cronicasSeccion.nota', label: 'Nota derecha', tipo: 'texto' },`,
-    `        { path: 'cronicasSeccion.nota', label: 'Nota de la redacción (columna derecha del muro)', tipo: 'area', rico: true },`,
+    `        { path: 'cronicasSeccion.nota', label: 'Nota de la redacción (se lee debajo del título del muro)', tipo: 'area', rico: true },`,
     'nota derecha del muro de crónicas'
   );
 
@@ -1288,7 +1297,7 @@ function aplicar(archivo) {
     `        '<h3 class="teaser-titular">' + esc(c.titulo) + '</h3>' +
         (c.subtitulo ? '<p class="teaser-subtitulo">' + esc(c.subtitulo) + '</p>' : '') +
         '<p class="teaser-lead">' + esc(c.entradilla) + '</p>' +`,
-    `        '<h3 class="teaser-titular">' + htmlDeContenido(c.titulo) + '</h3>' +
+    `        '<h3 class="teaser-titular"><a href="cronica.html?c=' + encodeURIComponent(c.id) + '" style="color:inherit; text-decoration:none;">' + htmlDeContenido(c.titulo) + '</a></h3>' +
         (c.subtitulo ? '<p class="teaser-subtitulo">' + htmlDeContenido(c.subtitulo) + '</p>' : '') +
         '<p class="teaser-lead">' + htmlDeContenido(c.entradilla) + '</p>' +`,
     'teaser de la crónica'
